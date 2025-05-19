@@ -1,0 +1,359 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id            String    @id @default(cuid())
+    name          String?
+    email         String    @unique
+    emailVerified DateTime?
+    image         String?
+    password      String?
+    accounts      Account[]
+    sessions      Session[]
+    userType      UserType?
+
+    candidate Candidate?
+    Owner     Owner?
+
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+    SavedJobPost SavedJobPost[]
+}
+
+enum UserType {
+    CANDIDATE
+    ADMIN
+    RECURITER
+}
+
+model Account {
+    userId            String
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String?
+    access_token      String?
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String?
+    session_state     String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([provider, providerAccountId])
+}
+
+model Session {
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+    identifier String
+    token      String
+    expires    DateTime
+
+    @@id([identifier, token])
+}
+
+model Candidate {
+    id        String            @id @default(cuid())
+    userId    String            @unique
+    user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+    profile   CandidateProfile?
+    resumes   Resume[]
+    aiResumes AiResume[]
+    createdAt DateTime          @default(now())
+    updatedAt DateTime          @updatedAt
+
+    jobs             JobApplication? @relation(fields: [jobApplicationId], references: [id])
+    jobApplicationId String?
+}
+
+model CandidateProfile {
+    id                  String    @id @default(cuid())
+    candidateId         String    @unique
+    candidate           Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+    phone               String?
+    nationality         String?
+    gender              String?
+    languages           String[]
+    age                 Int?
+    profilePicture      String?
+    jobType             String?
+    skills              String[]
+    experience          String?
+    education           String?
+    degree              String?
+    onboardingCompleted Boolean   @default(false)
+    createdAt           DateTime  @default(now())
+    updatedAt           DateTime  @updatedAt
+}
+
+model Owner {
+    id        String   @id @default(cuid())
+    userId    String   @unique
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    jobs      Job[]
+    phone     String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+}
+
+model Job {
+    id                  String    @id @default(cuid())
+    title               String
+    company             String
+    companyDescription  String
+    companyLogo         String
+    jobType             String
+    salaryMin           Int
+    salaryMax           Int
+    location            String?
+    description         String
+    requirements        String
+    benefits            String[]
+    applicationDeadline DateTime?
+    contactEmail        String?
+    contactPhone        String?
+    requiredSkills      String[]
+    views               Int       @default(0)
+    applicationsCount   Int       @default(0)
+    status              JobStatus   @default(ACTIVE)
+    isActive            Boolean   @default(true)
+    createdAt           DateTime  @default(now())
+    updatedAt           DateTime  @updatedAt
+
+    ownerId String
+    owner   Owner  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+    applicants   JobApplication[]
+    SavedJobPost SavedJobPost[]
+
+    @@index([ownerId])
+}
+
+enum JobStatus {
+    ACTIVE
+    PAUSED
+    CLOSED
+}
+
+model JobApplication {
+    id           String @id @default(uuid())
+    matchedScore Int    @default(0)
+    status      String @default("pending")
+    Job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+    jobId String
+
+    candidate Candidate[]
+}
+
+model SavedJobPost {
+    id     String @id @default(uuid())
+    jobId  String
+    userId String
+
+    job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([userId, jobId])
+}
+
+model Resume {
+    id              String    @id @default(cuid())
+    candidateId     String
+    candidate       Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+    filename        String
+    originalUrl     String
+    formatedUrl     String?
+    formatedContent String?   @db.Text
+    createdAt       DateTime  @default(now())
+    updatedAt       DateTime  @updatedAt
+
+    @@index([candidateId])
+}
+
+model AiResume {
+    id              String    @id @default(cuid())
+    candidateId     String
+    candidate       Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+    
+    // Status and Progress
+    status          AiResumeStatus @default(DRAFT)
+    progress        Int         @default(0)
+    paymentStatus   Boolean     @default(false)
+    paymentAmount   Float?
+    paymentDate     DateTime?
+    
+    // Personal Details
+    personalDetails AiResumePersonalDetails?
+    
+    // Professional Details
+    professionalDetails AiProfessionalDetails?
+    
+    // Employment History
+    employmentHistory AiEmploymentHistory[]
+    
+    // Education
+    education       AiEducation[]
+    
+    // Skills
+    skills          AiSkill[]
+    
+    // Languages
+    languages       AiLanguage[]
+    
+    // Generated Content
+    originalUrl     String?
+    formatedUrl     String?
+    formatedContent String?     @db.Text
+    
+    createdAt       DateTime    @default(now())
+    updatedAt       DateTime    @updatedAt
+
+    @@index([candidateId])
+}
+
+model AiResumePersonalDetails {
+    id          String    @id @default(cuid())
+    aiResumeId  String    @unique
+    aiResume    AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
+    fullName    String
+    email       String
+    phone       String
+    country     String
+    city        String
+    socialLinks AiSocialLink[]
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([aiResumeId])
+}
+model AiSocialLink {
+    id              String    @id @default(cuid())
+    personalDetailsId String
+    personalDetails   AiResumePersonalDetails @relation(fields: [personalDetailsId], references: [id], onDelete: Cascade)
+    label           String
+    url             String
+    createdAt       DateTime  @default(now())
+    updatedAt       DateTime  @updatedAt
+
+    @@index([personalDetailsId])
+}
+
+model AiProfessionalDetails {
+    id          String    @id @default(cuid())
+    aiResumeId  String    @unique
+    aiResume    AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
+    summary     String    @db.Text
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([aiResumeId])
+}
+
+
+
+enum AiResumeStatus {
+    DRAFT
+    IN_PROGRESS
+    COMPLETED
+}
+
+model AiEmploymentHistory {
+    id          String    @id @default(cuid())
+    aiResumeId  String
+    aiResume    AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
+    company     String
+    position    String
+    startDate   DateTime
+    endDate     DateTime?
+    current     Boolean   @default(false)
+    description String    @db.Text
+    achievements String[]
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([aiResumeId])
+}
+
+model AiEducation {
+    id          String    @id @default(cuid())
+    aiResumeId  String
+    aiResume    AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
+    institution String
+    degree      String
+    field       String
+    startDate   DateTime
+    endDate     DateTime?
+    current     Boolean   @default(false)
+    gpa         Float?
+    achievements String[]
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([aiResumeId])
+}
+
+model AiSkill {
+    id          String    @id @default(cuid())
+    aiResumeId  String
+    aiResume    AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
+    category    String
+    name        String
+    level       SkillLevel?
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([aiResumeId])
+}
+
+model AiLanguage {
+    id          String    @id @default(cuid())
+    aiResumeId  String
+    aiResume    AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
+    name        String
+    proficiency LanguageProficiency
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([aiResumeId])
+}
+
+enum SkillLevel {
+    BEGINNER
+    INTERMEDIATE
+    ADVANCED
+    EXPERT
+}
+
+enum LanguageProficiency {
+    BASIC
+    INTERMEDIATE
+    ADVANCED
+    NATIVE
+}
