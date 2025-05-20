@@ -12,31 +12,31 @@ export function MatchedJobs() {
       <div className="flex flex-col lg:flex-row gap-5">
         <div className="w-full lg:w-[58%] grid grid-cols-1 md:grid-cols-3 gap-4 text-black">
           <MatchedJobCard
-            title="UI/UX Intern"
+            title="Software Developer"
             company="Jobstar"
-            location="Shanghai China"
-            salary="$ 35,000 /y"
+            location="Dubai, UAE"
+            salary="AED 150,000 /y"
             gradient="linear-gradient(100.95deg, #276EFE 1.25%, #5F92F9 98.75%)"
             shadow="0px 4px 4px 0px #4682FB47"
-            tags={["Onsite", "Internship"]}
+            tags={["Remote", "Full-time"]}
           />
           <MatchedJobCard
-            title="UX Designers"
+            title="Data Analyst"
             company="Etisalat"
-            location="Shanghai China"
-            salary="$ 35,000 /y"
+            location="Abu Dhabi, UAE"
+            salary="AED 120,000 /y"
             gradient="linear-gradient(102.25deg, #F4AA53 0.46%, #F1977D 99.54%)"
             shadow="0px 4px 4px 0px #F4A75B4F"
-            tags={["Onsite", "Internship"]}
+            tags={["Hybrid", "Full-time"]}
           />
           <MatchedJobCard
-            title="UI/UX Designer"
+            title="Digital Marketing Specialist"
             company="Etisalat"
-            location="Shanghai China"
-            salary="$ 35,000 /y"
+            location="Sharjah, UAE"
+            salary="AED 100,000 /y"
             gradient="linear-gradient(102.25deg, #D679ED 0.46%, #B37BEE 99.54%)"
             shadow="0px 4px 4px 0px #CF7AEE4A"
-            tags={["Onsite", "Internship"]}
+            tags={["Onsite", "Full-time"]}
           />
         </div>
         <div className="w-full lg:w-[40%] text-black">

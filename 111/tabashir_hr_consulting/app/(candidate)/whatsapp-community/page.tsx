@@ -3,7 +3,7 @@ import { UserProfileHeader } from "../dashboard/_components/user-profile-header"
 
 export default function WhatsappCommunityPage() {
   // You can replace this with your actual WhatsApp group link
-  const whatsappGroupLink = "https://chat.whatsapp.com/your-group-link";
+  const whatsappGroupLink = "https://whatsapp.com/channel/0029VbAat9u9sBI5JEzjmr01";
 
   return (
     <div className=" min-h-[calc(100vh-140px)]">
