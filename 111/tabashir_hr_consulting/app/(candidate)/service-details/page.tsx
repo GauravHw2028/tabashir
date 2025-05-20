@@ -122,7 +122,7 @@ export default function ServiceDetailsPage() {
             </CardFooter>
           </Card>
 
-          {/* New 200 Job Applications Package - 200AED */}
+          {/* AI Job Apply Package - 200AED */}
           <Card className="shadow-md hover:shadow-lg">
             <CardHeader>
               <div className="flex items-center">
@@ -131,7 +131,7 @@ export default function ServiceDetailsPage() {
                 </div>
                 <div>
                   <CardTitle className="text-xl">200AED</CardTitle>
-                  <CardDescription className="text-lg font-semibold">200 Job Applications</CardDescription>
+                  <CardDescription className="text-lg font-semibold">AI Job Apply</CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -139,7 +139,7 @@ export default function ServiceDetailsPage() {
               <div className="space-y-3">
                 <div className="flex items-start">
                   <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Applying to 200 jobs based on your CV</span>
+                  <span>AI matches your CV to the best 200 jobs from our database and applies on your behalf.</span>
                 </div>
               </div>
             </CardContent>
@@ -147,6 +147,7 @@ export default function ServiceDetailsPage() {
               <Button 
                 className="w-full"
                 style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
+                onClick={() => window.open('https://pay.ziina.com/tabashirae/t64TaIkBY', '_blank')}
               >
                 Get Service
               </Button>
@@ -155,7 +156,7 @@ export default function ServiceDetailsPage() {
           </Card>
         </div>
 
-        {/* New Services Section */}
+        {/* Services Section */}
         <div className="mt-12">
           <h2 className="text-xl font-bold mb-4">Services</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -166,12 +167,13 @@ export default function ServiceDetailsPage() {
                 <CardDescription className="text-lg font-semibold">70AED</CardDescription>
               </CardHeader>
               <CardContent>
-                <p>We help you perfect your LinkedIn profile</p>
+                <p>Enhance your professional presence with a profile that stands out to recruiters.</p>
               </CardContent>
               <CardFooter>
                 <Button 
                   className="w-full"
                   style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
+                  onClick={() => window.open('https://pay.ziina.com/tabashirae/5zRYy0U5b', '_blank')}
                 >
                   Get Service
                 </Button>
@@ -185,12 +187,13 @@ export default function ServiceDetailsPage() {
                 <CardDescription className="text-lg font-semibold">40AED</CardDescription>
               </CardHeader>
               <CardContent>
-                <p>Upload your CV for ATS optimization</p>
+                <p>Optimize your CV for Applicant Tracking Systems to increase your chances of getting noticed.</p>
               </CardContent>
               <CardFooter>
                 <Button 
                   className="w-full"
                   style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
+                  onClick={() => window.open('https://pay.ziina.com/tabashirae/ofRnnqkFf', '_blank')}
                 >
                   Get Service
                 </Button>
@@ -204,12 +207,13 @@ export default function ServiceDetailsPage() {
                 <CardDescription className="text-lg font-semibold">100AED</CardDescription>
               </CardHeader>
               <CardContent>
-                <p>Prep for interviews with focus points</p>
+                <p>Gain confidence and skills with tailored interview preparation and strategies.</p>
               </CardContent>
               <CardFooter>
                 <Button 
                   className="w-full"
                   style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
+                  onClick={() => window.open('https://pay.ziina.com/tabashirae/_35fUuRa-', '_blank')}
                 >
                   Get Service
                 </Button>

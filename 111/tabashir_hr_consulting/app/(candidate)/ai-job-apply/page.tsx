@@ -1,7 +1,8 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+
+import { useState } from "react"
 import { Plus, Sparkles, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,13 +12,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { toast } from "@/components/ui/use-toast"
 import { UserProfileHeader } from "../dashboard/_components/user-profile-header"
-import { getUserResumes } from "@/actions/resume"
-import { Resume } from "@prisma/client"
 
 // Define the form schema with Zod
 const formSchema = z.object({
   resume: z
-    .string()
+    .number()
     .nullable()
     .refine((val) => val !== null, {
       message: "Please select a resume",
@@ -26,25 +25,10 @@ const formSchema = z.object({
   locations: z.array(z.string()).min(1, "Please select at least one preferred location"),
 })
 
-type FormValues = {
-  resume: string | null;
-  positions: string[];
-  locations: string[];
-}
+type FormValues = z.infer<typeof formSchema>
 
 export default function AIJobApplyPage() {
-  const [resumeList, setResumeList] = useState<Resume[]|null>(null)
   const [positionInput, setPositionInput] = useState<string>("")
-
-  useEffect(() => {
-    async function fetchResumeList() {
-      const response = await getUserResumes()
-      if(response.data){
-        setResumeList(response.data)
-      }
-    }
-    fetchResumeList()
-  }, [])
 
   // Initialize the form
   const form = useForm<FormValues>({
@@ -93,7 +77,7 @@ export default function AIJobApplyPage() {
   const onSubmit = (data: FormValues) => {
     toast({
       title: "Application started",
-      description: `Starting to apply with ${selectedPositions.length} positions and ${selectedLocations.length} locations`,
+      description: Starting to apply with ${selectedPositions.length} positions and ${selectedLocations.length} locations,
     })
     console.log("Form submitted:", data)
   }
@@ -127,58 +111,47 @@ export default function AIJobApplyPage() {
                   <FormItem>
                     <FormControl>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {resumeList && resumeList.length > 0 ? (
-                          resumeList.map((item) => (
-                            <div
-                              key={item.id}
-                              onClick={() =>
-                                setValue("resume", field.value === item.id ? null : item.id, { shouldValidate: true })
-                              }
-                              className={`cursor-pointer rounded-md ${
-                                field.value === item.id
-                                  ? "p-0" // No padding when selected to accommodate the border
-                                  : "border p-4 hover:border-blue-200"
-                              }`}
-                            >
-                              {field.value === item.id ? (
-                                <div className="rounded-md p-[3px] bg-gradient-to-r from-blue-950 to-blue-700">
-                                  <div className="bg-white p-4 rounded-[4px] flex">
-                                    <div className="flex-shrink-0 mr-4">
-                                      <div className="w-16 h-20 bg-red-500 rounded-md flex items-center justify-center text-white font-bold">
-                                        PDF
-                                      </div>
-                                    </div>
-                                    <div className="flex-1">
-                                      <p className="font-medium text-sm">{item.filename}</p>
-                                      <p className="text-xs text-gray-500 mt-1">
-                                        Created on: {new Date(item.createdAt).toLocaleDateString()}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="flex">
+                        {[1, 2, 3].map((item) => (
+                          <div
+                            key={item}
+                            onClick={() =>
+                              setValue("resume", field.value === item ? null : item, { shouldValidate: true })
+                            }
+                            className={`cursor-pointer rounded-md ${
+                              field.value === item
+                                ? "p-0" // No padding when selected to accommodate the border
+                                : "border p-4 hover:border-blue-200"
+                            }`}
+                          >
+                            {field.value === item ? (
+                              <div className="rounded-md p-[3px] bg-gradient-to-r from-blue-950 to-blue-700">
+                                <div className="bg-white p-4 rounded-[4px] flex">
                                   <div className="flex-shrink-0 mr-4">
                                     <div className="w-16 h-20 bg-red-500 rounded-md flex items-center justify-center text-white font-bold">
                                       PDF
                                     </div>
                                   </div>
                                   <div className="flex-1">
-                                    <p className="font-medium text-sm">{item.filename}</p>
-                                    <p className="text-xs text-gray-500 mt-1">
-                                      Created on: {new Date(item.createdAt).toLocaleDateString()}
-                                    </p>
+                                    <p className="font-medium text-sm">Sami-Haider-Wordpress-Developer-Resume</p>
+                                    <p className="text-xs text-gray-500 mt-1">Created on: 12/3/2023</p>
                                   </div>
                                 </div>
-                              )}
-                            </div>
-                          ))
-                        ) : (
-                          <div className="col-span-3 text-center py-8">
-                            <div className="text-gray-500 mb-2">No resumes found</div>
-                            <p className="text-sm text-gray-400">Please upload a resume to get started</p>
+                              </div>
+                            ) : (
+                              <div className="flex">
+                                <div className="flex-shrink-0 mr-4">
+                                  <div className="w-16 h-20 bg-red-500 rounded-md flex items-center justify-center text-white font-bold">
+                                    PDF
+                                  </div>
+                                </div>
+                                <div className="flex-1">
+                                  <p className="font-medium text-sm">Sami-Haider-Wordpress-Developer-Resume</p>
+                                  <p className="text-xs text-gray-500 mt-1">Created on: 12/3/2023</p>
+                                </div>
+                              </div>
+                            )}
                           </div>
-                        )}
+                        ))}
                       </div>
                     </FormControl>
                     <FormMessage className="text-red-500 mt-2" />
@@ -206,7 +179,7 @@ export default function AIJobApplyPage() {
                       <div>
                         <div className="relative mb-4">
                           <Input
-                            placeholder="e.g., Personal Growth"
+                            placeholder="e.g., Software Engineer"
                             className="pr-10 border-gray-300 rounded-full"
                             value={positionInput}
                             onChange={(e) => setPositionInput(e.target.value)}
