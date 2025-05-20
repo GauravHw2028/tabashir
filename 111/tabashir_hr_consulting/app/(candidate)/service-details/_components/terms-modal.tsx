@@ -22,18 +22,18 @@ export function TermsModal({ isOpen, onClose }: TermsModalProps) {
 
           <div className="prose prose-sm max-w-none mb-6">
             <p>
-              By accessing or using [Your Company Name]&apos;s website, app, or related services (&quot;Services&quot;),
+              By accessing or using Tabashir'&apos;s website, app, or related services (&quot;Services&quot;),
               you agree to comply with and be bound by these Terms and Conditions. We reserve the right to update or
               modify these Terms at any time without prior notice, and your continued use of the Services constitutes
               acceptance of those changes. You must be at least 18 years old or have parental consent to use our
               Services. You are responsible for maintaining the confidentiality of your account and for all activities
-              under it. All content provided is owned by [Your Company Name] and protected by intellectual property
+              under it. All content provided is owned by Tabashir and protected by intellectual property
               laws. You may not misuse our Services or interfere with their operation. The Services are provided
-              &quot;as is&quot; without warranties, and [Your Company Name] is not liable for any damages resulting from
+              &quot;as is&quot; without warranties, and Tabashir is not liable for any damages resulting from
               your use. We may include third-party links, which we do not control or endorse. These Terms are governed
               by the laws of [Your Country/State], and any disputes will be handled in the courts of that jurisdiction.
               We reserve the right to suspend or terminate your access at any time. For questions, contact us at
-              [your-email@yourcompany.com].
+              [support@tabashir.ae].
             </p>
           </div>
 
