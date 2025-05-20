@@ -74,7 +74,7 @@ const CandidateLoginForm = () => {
               <FormLabel className="text-gray-900">Email</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="balamia@gmail.com"
+                  placeholder="User@gmail.com"
                   {...field}
                   className="text-gray-900"
                 />
