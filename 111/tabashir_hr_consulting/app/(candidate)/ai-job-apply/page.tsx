@@ -91,7 +91,7 @@ export default function AIJobApplyPage() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex items-center mb-10">
-              <h1 className="text-2xl font-bold">Automate your Applying Job</h1>
+              <h1 className="text-2xl font-bold">Automated job application</h1>
               <Sparkles className="ml-3 text-yellow-400 h-6 w-6" />
             </div>
 
@@ -179,7 +179,7 @@ export default function AIJobApplyPage() {
                       <div>
                         <div className="relative mb-4">
                           <Input
-                            placeholder="e.g., Personal Growth"
+                            placeholder="e.g., Web Developer"
                             className="pr-10 border-gray-300 rounded-full"
                             value={positionInput}
                             onChange={(e) => setPositionInput(e.target.value)}
