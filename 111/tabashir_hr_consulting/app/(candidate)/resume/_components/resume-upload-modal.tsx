@@ -239,6 +239,6 @@ If a section is empty, use null or empty arrays.`
           </button>
         </div>
       </div>
-    </div>
-  )
+    </div>
+  )
 }
