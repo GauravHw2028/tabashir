@@ -19,7 +19,7 @@ export function MatchingJobsChart() {
         <div className="text-2xl font-bold">{total}</div>
       </div>
 
-      <div className="flex items-center">
+      <div className="flex items-center text-black" >
         <div className="h-48 w-48">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
