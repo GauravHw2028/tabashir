@@ -1,4 +1,4 @@
-import {  MatchedJobCard } from "./job-card";
+import { MatchedJobCard } from "./job-card";
 import { AppliedJobsCard } from "./applied-jobs-card";
 import { UserProfileHeader } from "./user-profile-header";
 
@@ -10,7 +10,7 @@ export function MatchedJobs() {
         <UserProfileHeader />
       </div>
       <div className="flex flex-col lg:flex-row gap-5">
-        <div className="w-full lg:w-[58%] grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="w-full lg:w-[58%] grid grid-cols-1 md:grid-cols-3 gap-4 text-black">
           <MatchedJobCard
             title="UI/UX Intern"
             company="Jobstar"
@@ -39,7 +39,7 @@ export function MatchedJobs() {
             tags={["Onsite", "Internship"]}
           />
         </div>
-        <div className="w-full lg:w-[40%]">
+        <div className="w-full lg:w-[40%] text-black">
           <AppliedJobsCard count={46} />
         </div>
       </div>
