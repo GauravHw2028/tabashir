@@ -204,7 +204,7 @@ export default function ServiceDetailsPage() {
             <Card className="shadow-md hover:shadow-lg">
               <CardHeader>
                 <CardTitle className="text-xl">Interview Training</CardTitle>
-                <CardDescription className="text-lg font-semibold">100AED</CardDescription>
+                <CardDescription className="text-lg font-semibold">150AED</CardDescription>
               </CardHeader>
               <CardContent>
                 <p>Gain confidence and skills with tailored interview preparation and strategies.</p>
