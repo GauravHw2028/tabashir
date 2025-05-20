@@ -82,63 +82,63 @@ If a section is empty, use null or empty arrays.`
 
   const handleFileUpload = async (file: File) => {
     try {
-      setIsLoading(true);
-      setUploadStatus('idle');
-      setErrorMessage('');
+      setIsLoading(true)
+      setUploadStatus('idle')
+      setErrorMessage('')
 
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = async (e) => {
-        const text = e.target?.result as string;
+        const text = e.target?.result as string
         if (!text) {
-          setUploadStatus('error');
-          setErrorMessage('Failed to read file');
-          setIsLoading(false);
-          return;
+          setUploadStatus('error')
+          setErrorMessage('Failed to read file')
+          setIsLoading(false)
+          return
         }
 
         try {
-          const formatedContent = await processCVWithAI(text);
+          const formatedContent = await processCVWithAI(text)
 
-          const uploadResult = await onUploadResume(file);
+          const uploadResult = await onUploadResume(file)
 
           if (uploadResult.error || !uploadResult.newResume) {
-            setUploadStatus('error');
-            setErrorMessage(uploadResult.message || 'Upload failed');
-            setIsLoading(false);
-            return;
+            setUploadStatus('error')
+            setErrorMessage(uploadResult.message || 'Upload failed')
+            setIsLoading(false)
+            return
           }
 
           const processedResume = {
             ...uploadResult.newResume,
             formatedContent,
             formatedUrl: null,
-          };
+          }
 
-          setUploadStatus('success');
-          onUploadSuccess(processedResume);
+          setUploadStatus('success')
+          onUploadSuccess(processedResume)
 
           setTimeout(() => {
-            setUploadStatus('idle');
-            onClose();
-          }, 1000);
+            setUploadStatus('idle')
+            onClose()
+          }, 1000)
         } catch (error) {
-          setUploadStatus('error');
-          setErrorMessage(error instanceof Error ? error.message : 'Processing failed');
-          setIsLoading(false);
+          setUploadStatus('error')
+          setErrorMessage(error instanceof Error ? error.message : 'Processing failed')
+          setIsLoading(false)
         }
-      };
+      }
       reader.onerror = () => {
-        setUploadStatus('error');
-        setErrorMessage('Error reading file');
-        setIsLoading(false);
-      };
-      reader.readAsText(file);
+        setUploadStatus('error')
+        setErrorMessage('Error reading file')
+        setIsLoading(false)
+      }
+      reader.readAsText(file)
     } catch (error) {
-      setUploadStatus('error');
-      setErrorMessage(error instanceof Error ? error.message : 'Something went wrong');
-      setIsLoading(false);
+      setUploadStatus('error')
+      setErrorMessage(error instanceof Error ? error.message : 'Something went wrong')
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleCreateWithAI = () => {
     onClose()
@@ -239,6 +239,6 @@ If a section is empty, use null or empty arrays.`
           </button>
         </div>
       </div>
-    </div>
-  )
+    </div>
+  )
 }
