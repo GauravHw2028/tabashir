@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
 import { Plus, Sparkles, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -14,6 +13,7 @@ import { toast } from "@/components/ui/use-toast"
 import { UserProfileHeader } from "../dashboard/_components/user-profile-header"
 import { getUserResumes } from "@/actions/resume"
 import { Resume } from "@prisma/client"
+
 // Define the form schema with Zod
 const formSchema = z.object({
   resume: z
@@ -37,7 +37,6 @@ export default function AIJobApplyPage() {
   const [positionInput, setPositionInput] = useState<string>("")
 
   useEffect(() => {
-    
     async function fetchResumeList() {
       const response = await getUserResumes()
       if(response.data){
@@ -45,7 +44,8 @@ export default function AIJobApplyPage() {
       }
     }
     fetchResumeList()
-  }, []);
+  }, [])
+
   // Initialize the form
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -93,7 +93,7 @@ export default function AIJobApplyPage() {
   const onSubmit = (data: FormValues) => {
     toast({
       title: "Application started",
-      description: Starting to apply with ${selectedPositions.length} positions and ${selectedLocations.length} locations,
+      description: `Starting to apply with ${selectedPositions.length} positions and ${selectedLocations.length} locations`,
     })
     console.log("Form submitted:", data)
   }
