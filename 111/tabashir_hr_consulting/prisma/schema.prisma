@@ -139,7 +139,7 @@ model Job {
     requiredSkills      String[]
     views               Int       @default(0)
     applicationsCount   Int       @default(0)
-    status              JobStatus   @default(ACTIVE)
+    status              JobStatus @default(ACTIVE)
     isActive            Boolean   @default(true)
     createdAt           DateTime  @default(now())
     updatedAt           DateTime  @updatedAt
@@ -162,9 +162,9 @@ enum JobStatus {
 model JobApplication {
     id           String @id @default(uuid())
     matchedScore Int    @default(0)
-    status      String @default("pending")
-    Job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
-    jobId String
+    status       String @default("pending")
+    Job          Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+    jobId        String
 
     candidate Candidate[]
 }
@@ -198,85 +198,84 @@ model Resume {
 }
 
 model AiResume {
-    id              String    @id @default(cuid())
-    candidateId     String
-    candidate       Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-    
+    id          String    @id @default(cuid())
+    candidateId String
+    candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
     // Status and Progress
-    status          AiResumeStatus @default(DRAFT)
-    progress        Int         @default(0)
-    paymentStatus   Boolean     @default(false)
-    paymentAmount   Float?
-    paymentDate     DateTime?
-    
+    status        AiResumeStatus @default(DRAFT)
+    progress      Int            @default(0)
+    paymentStatus Boolean        @default(false)
+    paymentAmount Float?
+    paymentDate   DateTime?
+
     // Personal Details
     personalDetails AiResumePersonalDetails?
-    
+
     // Professional Details
     professionalDetails AiProfessionalDetails?
-    
+
     // Employment History
     employmentHistory AiEmploymentHistory[]
-    
+
     // Education
-    education       AiEducation[]
-    
+    education AiEducation[]
+
     // Skills
-    skills          AiSkill[]
-    
+    skills AiSkill[]
+
     // Languages
-    languages       AiLanguage[]
-    
+    languages AiLanguage[]
+
     // Generated Content
     originalUrl     String?
     formatedUrl     String?
-    formatedContent String?     @db.Text
-    
-    createdAt       DateTime    @default(now())
-    updatedAt       DateTime    @updatedAt
+    formatedContent String? @db.Text
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     @@index([candidateId])
 }
 
 model AiResumePersonalDetails {
-    id          String    @id @default(cuid())
-    aiResumeId  String    @unique
-    aiResume    AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
+    id          String         @id @default(cuid())
+    aiResumeId  String         @unique
+    aiResume    AiResume       @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
     fullName    String
     email       String
     phone       String
     country     String
     city        String
     socialLinks AiSocialLink[]
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
+    createdAt   DateTime       @default(now())
+    updatedAt   DateTime       @updatedAt
 
     @@index([aiResumeId])
 }
+
 model AiSocialLink {
-    id              String    @id @default(cuid())
+    id                String                  @id @default(cuid())
     personalDetailsId String
     personalDetails   AiResumePersonalDetails @relation(fields: [personalDetailsId], references: [id], onDelete: Cascade)
-    label           String
-    url             String
-    createdAt       DateTime  @default(now())
-    updatedAt       DateTime  @updatedAt
+    label             String
+    url               String
+    createdAt         DateTime                @default(now())
+    updatedAt         DateTime                @updatedAt
 
     @@index([personalDetailsId])
 }
 
 model AiProfessionalDetails {
-    id          String    @id @default(cuid())
-    aiResumeId  String    @unique
-    aiResume    AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
-    summary     String    @db.Text
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
+    id         String   @id @default(cuid())
+    aiResumeId String   @unique
+    aiResume   AiResume @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
+    summary    String   @db.Text
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
 
     @@index([aiResumeId])
 }
-
-
 
 enum AiResumeStatus {
     DRAFT
@@ -285,63 +284,58 @@ enum AiResumeStatus {
 }
 
 model AiEmploymentHistory {
-    id          String    @id @default(cuid())
-    aiResumeId  String
-    aiResume    AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
-    company     String
-    position    String
-    startDate   DateTime
-    endDate     DateTime?
-    current     Boolean   @default(false)
-    description String    @db.Text
+    id           String    @id @default(cuid())
+    aiResumeId   String
+    aiResume     AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
+    company      String
+    position     String
+    startDate    DateTime
+    endDate      DateTime?
+    country      String
+    city         String
+    current      Boolean   @default(false)
+    description  String    @db.Text
     achievements String[]
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
-
-    @@index([aiResumeId])
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
 }
 
 model AiEducation {
-    id          String    @id @default(cuid())
-    aiResumeId  String
-    aiResume    AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
-    institution String
-    degree      String
-    field       String
-    startDate   DateTime
-    endDate     DateTime?
-    current     Boolean   @default(false)
-    gpa         Float?
+    id           String    @id @default(cuid())
+    aiResumeId   String
+    aiResume     AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
+    institution  String
+    degree       String
+    field        String
+    city         String
+    startDate    DateTime
+    endDate      DateTime?
+    current      Boolean   @default(false)
+    gpa          Float?
     achievements String[]
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
-
-    @@index([aiResumeId])
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
 }
 
 model AiSkill {
-    id          String    @id @default(cuid())
-    aiResumeId  String
-    aiResume    AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
-    category    String
-    name        String
-    level       SkillLevel?
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
-
-    @@index([aiResumeId])
+    id         String      @id @default(cuid())
+    aiResumeId String
+    aiResume   AiResume    @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
+    category   String
+    name       String
+    level      SkillLevel?
+    createdAt  DateTime    @default(now())
+    updatedAt  DateTime    @updatedAt
 }
 
 model AiLanguage {
-    id          String    @id @default(cuid())
+    id          String              @id @default(cuid())
     aiResumeId  String
-    aiResume    AiResume  @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
+    aiResume    AiResume            @relation(fields: [aiResumeId], references: [id], onDelete: Cascade)
     name        String
     proficiency LanguageProficiency
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
-
-    @@index([aiResumeId])
+    createdAt   DateTime            @default(now())
+    updatedAt   DateTime            @updatedAt
 }
 
 enum SkillLevel {

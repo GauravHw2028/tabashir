@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button"
 import { ResumeSidebar } from "../_components/resume-sidebar"
 import { useResumeStore } from "../store/resume-store"
 import { cn } from "@/lib/utils"
+import { getResumeScore } from "@/actions/ai-resume"
+import { toast } from "sonner"
 
 export default function ResumeLayout({
   children,
@@ -20,21 +22,34 @@ export default function ResumeLayout({
 }) {
   const { resumeId } = use(params)
   const [resumeScore, setResumeScore] = useState(0)
-  const { getResumeScore, isSidebarVisible } = useResumeStore()
+  const { isSidebarVisible } = useResumeStore()
 
   // Update score whenever relevant state changes
   useEffect(() => {
     // Force re-calculation of score by directly calling the function
-    const score = useResumeStore.getState().getResumeScore()
-    setResumeScore(score)
+    const calculateScore = async () => {
+      const score = await getResumeScore(resumeId)
+      if (!score.error) {
+        setResumeScore(score.data || 0)
+      }
+      else {
+        setResumeScore(0)
+      }
+    }
+    calculateScore()
 
     // Set up a subscription to the store to update score when state changes
-    const unsubscribe = useResumeStore.subscribe((state) => {
-      const newScore = state.getResumeScore()
-      if (newScore !== resumeScore) {
-        setResumeScore(newScore)
-      }
-    })
+    const unsubscribe = () => {
+      (async () => {
+        const score = await getResumeScore(resumeId)
+        if (!score.error) {
+          setResumeScore(score.data || 0)
+        }
+        else {
+          setResumeScore(0)
+        }
+      })()
+    }
 
     return () => unsubscribe()
   }, [resumeScore])
@@ -48,47 +63,51 @@ export default function ResumeLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5]">
-      {/* Full width header card */}
-      <Card className="rounded-[6px] bg-white p-4 mb-6" style={{ boxShadow: "0px 4px 4px 0px #00000040" }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-            <div>
-              <h2 className="text-sm font-medium text-gray-700 mb-1">Sami-Haider-Resume</h2>
+    <>
+      <h1 className="text-4xl font-bold text-gray-900 mb-6">TABASHIR</h1>
+
+      <div className="max-w-[1300px] mb-[100px] mx-auto ">
+        {/* Full width header card */}
+        <div className="px-4 text-[#000000] font-medium mb-1">
+          Sami-Haider-Wordpress-Developer-Resume
+        </div>
+        <Card className="rounded-[6px] bg-white py-4 px-6 mb-[50px]" style={{ boxShadow: "0px 4px 4px 0px #00000040" }}>
+          <div className="mx-auto">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
               <div className="flex items-center gap-2">
-                <div className={`${getScoreColor(resumeScore)} text-gray-50 text-xs px-2 py-0.5 rounded`}>
+                <div className={`${getScoreColor(resumeScore)} text-gray-50 text-xs px-4 py-0.5 rounded`}>
                   {resumeScore}%
                 </div>
-                <span className="text-sm font-medium text-gray-700">Resume Score</span>
+                <span className="text-md font-medium text-gray-700">Resume Score</span>
               </div>
-              <Progress value={resumeScore} className="h-2 w-full mt-1 bg-gray-200" />
+              <Button variant="link" size="sm" className="h-8 gap-1 text-gray-700 mt-2 sm:mt-0">
+                <Info size={16} />
+                <span>Tips</span>
+              </Button>
             </div>
-            <Button variant="outline" size="sm" className="h-8 gap-1 text-gray-700 mt-2 sm:mt-0">
-              <Info size={16} />
-              <span>Tips</span>
-            </Button>
+            <Progress value={resumeScore} className="h-2 w-full mt-1 bg-gray-200" indicatorClassName={getScoreColor(resumeScore)} />
           </div>
-        </div>
-      </Card>
+        </Card>
 
-      {/* Sidebar and content area */}
-      <div className="flex">
-        {/* Sidebar - only visible when isSidebarVisible is true */}
-        {isSidebarVisible && <ResumeSidebar resumeId={resumeId} />}
+        {/* Sidebar and content area */}
+        <div className="flex gap-[50px]">
+          {/* Sidebar - only visible when isSidebarVisible is true */}
+          {isSidebarVisible && <ResumeSidebar resumeId={resumeId} />}
 
-        {/* Main content - takes full width when sidebar is hidden */}
-        <div className={cn("flex-1 transition-all duration-300")}>
-          {/* Main Content with spacing */}
-          <div className="px-6">
-            <div
-              className="max-w-3xl mx-auto bg-white p-6 rounded-md"
-              style={{ boxShadow: "0px 4px 4px 0px #00000040" }}
-            >
-              {children}
+          {/* Main content - takes full width when sidebar is hidden */}
+          <div className={cn("flex-1 transition-all duration-300")}>
+            {/* Main Content with spacing */}
+            <div>
+              <div
+                className="bg-white p-6 rounded-md"
+                style={{ boxShadow: "0px 4px 4px 0px #00000040" }}
+              >
+                {children}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

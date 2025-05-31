@@ -38,7 +38,7 @@ const NavItem = ({
       className={cn(
         "flex items-center gap-3 rounded-[6px] text-sm font-medium transition-all",
         " justify-between pt-[25px] pr-[23px] pb-[25px] pl-3",
-        "bg-white shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] mb-4 ",
+        "bg-white shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] mb-[20px] ",
         isActive
           ? "bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white pl-[23px]"
           : "text-gray-700 hover:bg-gradient-to-r hover:from-[#042052] hover:to-[#0D57E1] hover:text-white hover:pl-[23px]",
@@ -87,17 +87,11 @@ export function ResumeSidebar({ resumeId }: ResumeSidebarProps) {
       label: "Skills",
       icon: Lightbulb,
       href: `/resume/new/${resumeId}/skills`,
-    },
-    {
-      id: "languages",
-      label: "Languages",
-      icon: Languages,
-      href: `/resume/new/${resumeId}/languages`,
-    },
+    }
   ]
 
   return (
-    <div className="w-[335px] p-4 overflow-y-auto h-full">
+    <div className="w-[310px] h-full">
       <nav className="">
         {sidebarItems.map((item) => {
           const isActive = pathname === item.href

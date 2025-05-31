@@ -6,6 +6,7 @@ import { UTApi } from "uploadthing/server";
 import OpenAI from "openai";
 import { extractText, getDocumentProxy } from 'unpdf';
 import { revalidatePath } from "next/cache";
+import { toast } from "sonner";
 
 interface Resume {
   id: string;
@@ -485,3 +486,62 @@ export async function downloadResume(resumeId: string) {
     }
   }
 } 
+
+export async function uploadAIResume(file: File, resumeId: string) {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return {
+        error: true,
+        message: "Unauthorized access",
+      }
+    }
+
+    const candidate = await prisma.candidate.findUnique({
+      where: {
+        userId: session.user.id,
+      },
+    })
+
+    if (!candidate) {
+      return {
+        error: true,
+        message: "Candidate profile not found",
+      }
+    }
+
+    const utapi = new UTApi();
+    const uploadedFiles = await utapi.uploadFiles([file]);
+    const uploadedFile = uploadedFiles[0];
+
+    if (!uploadedFile || !uploadedFile.data?.ufsUrl) {
+      return {
+        error: true,
+        message: "Failed to upload file to UploadThing",
+      }
+    }
+
+    // Update the resume record with the formatted URL
+    const updateResult = await prisma.aiResume.update({
+      where: { id: resumeId },
+      data: {
+        formatedUrl: uploadedFile.data.ufsUrl,
+        progress: 100 // Mark as complete
+      },
+    });
+
+    return {
+      error: false,
+      message: "AI resume uploaded successfully",
+      data: updateResult.formatedUrl,
+    }
+    
+  } catch (error) {
+    console.error("[UPLOAD_AI_RESUME_ERROR]", error)
+    return {
+      error: true,
+      message: "Failed to upload AI resume",
+    }
+  }
+}

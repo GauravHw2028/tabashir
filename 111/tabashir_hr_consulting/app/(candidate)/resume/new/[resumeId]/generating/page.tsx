@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation"
 import { Progress } from "@/components/ui/progress"
 import { useResumeStore } from "../../store/resume-store"
 
-export default function GeneratingPage({ params }: { params: { resumeId: string } }) {
+export default function GeneratingPage({ params }: { params: Promise<{ resumeId: string }> }) {
   const [progress, setProgress] = useState(0)
   const router = useRouter()
-  const resumeId = use(Promise.resolve(params.resumeId))
+  const resumeId = use(params)
   const setResumeGenerated = useResumeStore((state) => state.setResumeGenerated)
 
   useEffect(() => {

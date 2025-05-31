@@ -1,0 +1,330 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { z } from "zod"
+import { useForm, useFieldArray } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { useToast } from "@/components/ui/use-toast"
+import { X, Plus } from "lucide-react"
+import { useResumeStore } from "../../store/resume-store"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { AiSkill } from "@prisma/client"
+import { onSaveSkills } from "@/actions/ai-resume"
+import { useSession } from "next-auth/react"
+import { getCV } from "@/actions/ai-resume"
+import { UTApi } from "uploadthing/server"
+import { prisma } from "@/app/utils/db"
+import { uploadAIResume } from "@/actions/resume"
+
+const skillSchema = z.object({
+  name: z.string().min(2, { message: "Skill name is required" }),
+  level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED", "EXPERT"], {
+    required_error: "Please select a skill level",
+  }),
+  category: z.string().min(2, { message: "Category is required" }),
+})
+
+const skillsFormSchema = z.object({
+  skills: z.array(skillSchema).min(1, { message: "At least one skill is required" }),
+})
+
+type SkillsFormValues = z.infer<typeof skillsFormSchema>
+
+const skillCategories = [
+  "Technical",
+  "Soft Skills",
+  "Languages",
+  "Tools",
+  "Frameworks",
+  "Databases",
+  "Cloud",
+  "DevOps",
+  "Design",
+  "Other",
+]
+
+export default function SkillsForm({
+  resumeId,
+  aiResumeSkills,
+  userId,
+}: {
+  resumeId: string,
+  aiResumeSkills: AiSkill[],
+  userId: string
+}) {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
+  const { toast } = useToast()
+  const { setFormCompleted } = useResumeStore()
+
+  // Initialize form with default values
+  const form = useForm<SkillsFormValues>({
+    resolver: zodResolver(skillsFormSchema),
+    defaultValues: {
+      skills: aiResumeSkills.length > 0 ? aiResumeSkills.map((skill) => ({
+        name: skill.name,
+        level: skill.level || "INTERMEDIATE",
+        category: skill.category,
+      })) : [{
+        name: "",
+        level: "INTERMEDIATE",
+        category: "Technical",
+      }],
+    },
+  })
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "skills",
+  })
+
+  const onSubmit = async (data: SkillsFormValues) => {
+    setIsSubmitting(true)
+
+    try {
+      const response = await onSaveSkills(resumeId, data)
+
+      if (response.error) {
+        toast({
+          title: "Error",
+          description: response.message,
+          variant: "destructive",
+        })
+        return
+      }
+
+      // Mark this form as completed
+      setFormCompleted("skills")
+
+      toast({
+        title: "Success",
+        description: "Your skills have been saved successfully.",
+      })
+
+      // Navigate to the next section
+      console.log("Generating CV......");
+      await handleGenerateCV();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was a problem saving your information.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleGenerateCV = async () => {
+    console.log("CV Data fetching......");
+    const data = await getCV(resumeId);
+
+    console.log("CV data:", data);
+
+    if (data.error) {
+      toast({
+        title: "Error",
+        description: data.message,
+        variant: "destructive",
+      })
+      return;
+    }
+
+    console.log("Generating CV WITH AI......");
+
+    const response = await fetch(`http://77.243.85.225:5050/api/v1/resume/format-from-raw`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        raw_data: JSON.stringify(data.data),
+      }),
+    });
+
+    const file = await response.arrayBuffer();
+    console.log("CV generated WITH AI......");
+
+
+    console.log("CV generated", file);
+
+    if (!file) {
+      console.log("Failed to generate CV", file);
+      toast({
+        title: "Error",
+        description: "Failed to generate CV",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Convert base64 to Blob
+      console.log("Converting base64 to Blob......");
+      const blob = new Blob([file], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+
+      // Create a File object from the Blob
+      const namedFile = new File([blob], `resume_${resumeId}.docx`, { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+
+      // Upload to UploadThing
+      const uploadResult = await uploadAIResume(namedFile, resumeId);
+
+      if (uploadResult.error) {
+        toast({
+          title: "Error",
+          description: uploadResult.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "CV generated and saved successfully",
+      });
+
+      // Optionally redirect to a success page or show the download link
+      console.log("Formatted resume URL:", uploadResult.data);
+
+      router.push(`/resume/new/${resumeId}/download`);
+
+    } catch (error) {
+      console.error("Error saving formatted resume:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save formatted resume",
+        variant: "destructive",
+      });
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-gray-800">Skills</h2>
+        <Button
+          type="button"
+          size="sm"
+          className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:opacity-90 text-white h-8 px-3"
+          onClick={() =>
+            append({
+              name: "",
+              level: "INTERMEDIATE",
+              category: "Technical",
+            })
+          }
+        >
+          <Plus size={16} className="mr-1" />
+          Add Skill
+        </Button>
+      </div>
+
+      <Form {...form}>
+        <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+          {fields.map((field, index) => (
+            <div key={field.id} className="p-6 border border-gray-200 rounded-md bg-[#FCFCFC]">
+              {index > 0 && (
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-medium text-gray-700">Skill {index + 1}</h3>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1 h-8"
+                    onClick={() => remove(index)}
+                  >
+                    <X size={16} />
+                  </Button>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name={`skills.${index}.name`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700">Skill Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className="text-gray-900 placeholder:text-gray-500 border-gray-300"
+                          placeholder="e.g., JavaScript, Project Management"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name={`skills.${index}.category`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700">Category</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="text-gray-900 border-gray-300">
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {skillCategories.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name={`skills.${index}.level`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700">Proficiency Level</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="text-gray-900 border-gray-300">
+                            <SelectValue placeholder="Select level" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="BEGINNER">Beginner</SelectItem>
+                          <SelectItem value="INTERMEDIATE">Intermediate</SelectItem>
+                          <SelectItem value="ADVANCED">Advanced</SelectItem>
+                          <SelectItem value="EXPERT">Expert</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          ))}
+
+          <div className="flex justify-end mt-8">
+            <Button
+              type="submit"
+              className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:opacity-90 text-white"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Saving..." : "Generate CV"}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  )
+} 

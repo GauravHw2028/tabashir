@@ -21,30 +21,32 @@ import {
   aiResumePersonalDetailsSchema,
   AiResumePersonalDetailsSchemaType,
 } from "./schema";
-import { AiResumePersonalDetails } from "@prisma/client";
+import { AiResumePersonalDetails, AiSocialLink } from "@prisma/client";
 import { onSavePersonalDetails } from "@/actions/ai-resume";
 import { toast } from "sonner";
 const AiResumePersonalDetailsForm = ({
   aiResumePersonalDetails,
   aiResumeId,
 }: {
-  aiResumePersonalDetails?: AiResumePersonalDetails;
+  aiResumePersonalDetails?: AiResumePersonalDetails & { socialLinks: AiSocialLink[] };
   aiResumeId: string;
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const { setFormCompleted } = useResumeStore();
 
   // Initialize form with default values
   const form = useForm<AiResumePersonalDetailsSchemaType>({
     resolver: zodResolver(aiResumePersonalDetailsSchema),
     defaultValues: {
-      fullName: "",
-      email: "",
-      phone: "",
-      country: "",
-      city: "",
-      socialLinks: [],
+      fullName: aiResumePersonalDetails?.fullName || "",
+      email: aiResumePersonalDetails?.email || "",
+      phone: aiResumePersonalDetails?.phone || "",
+      country: aiResumePersonalDetails?.country || "",
+      city: aiResumePersonalDetails?.city || "",
+      socialLinks: aiResumePersonalDetails?.socialLinks || [{
+        label: "",
+        url: "",
+      }],
     },
   });
 
@@ -83,7 +85,7 @@ const AiResumePersonalDetailsForm = ({
       console.log("response", response);
       if (response.error) {
         toast.error(response.message, {
-          className:"bg-red-500 text-white"
+          className: "bg-red-500 text-white"
         });
         return;
       }
@@ -111,8 +113,8 @@ const AiResumePersonalDetailsForm = ({
   };
   return (
     <Form {...form}>
-      <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form className="space-y-" onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="flex flex-col gap-6 max-w-[500px] mx-auto">
           <FormField
             control={form.control}
             name="fullName"
@@ -168,41 +170,43 @@ const AiResumePersonalDetailsForm = ({
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="country"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-700">Country</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    className="text-gray-900 placeholder:text-gray-500 border-gray-300"
-                    placeholder="Enter your country"
-                  />
-                </FormControl>
-                <FormMessage className="text-red-500" />
-              </FormItem>
-            )}
-          />
+          <div className="flex gap-[34px]">
+            <FormField
+              control={form.control}
+              name="country"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel className="text-gray-700">Country</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      className="text-gray-900 placeholder:text-gray-500 border-gray-300"
+                      placeholder="Enter your country"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="city"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-700">City</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    className="text-gray-900 placeholder:text-gray-500 border-gray-300"
-                    placeholder="Enter your city"
-                  />
-                </FormControl>
-                <FormMessage className="text-red-500" />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel className="text-gray-700">City</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      className="text-gray-900 placeholder:text-gray-500 border-gray-300"
+                      placeholder="Enter your city"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <div className="col-span-2 space-y-4">
             <div className="flex justify-between items-center">
