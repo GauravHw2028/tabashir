@@ -59,7 +59,7 @@ export default function SkillsForm({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
-  const { setFormCompleted } = useResumeStore()
+  const { setNormalResumeScore } = useResumeStore()
 
   // Initialize form with default values
   const form = useForm<SkillsFormValues>({
@@ -98,7 +98,7 @@ export default function SkillsForm({
       }
 
       // Mark this form as completed
-      setFormCompleted("skills")
+      setNormalResumeScore(60)
 
       toast({
         title: "Success",
@@ -150,6 +150,7 @@ export default function SkillsForm({
     const file = await response.arrayBuffer();
     console.log("CV generated WITH AI......");
 
+    setNormalResumeScore(80);
 
     console.log("CV generated", file);
 

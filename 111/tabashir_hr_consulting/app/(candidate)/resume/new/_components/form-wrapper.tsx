@@ -24,7 +24,7 @@ export function FormWrapper({ children, section, resumeId, isLastStep = false, o
       const success = await onSubmit()
 
       if (success) {
-        setFormCompleted(section)
+        // setFormCompleted(section)
 
         toast({
           title: "Success",
@@ -42,7 +42,7 @@ export function FormWrapper({ children, section, resumeId, isLastStep = false, o
             "employment-history",
             "education",
             "skills",
-            "languages",
+            // "languages",
           ]
 
           const currentIndex = sections.indexOf(section)

@@ -43,11 +43,10 @@ export default function EducationForm({
   aiResumeEducation: AiEducation[]
 }) {
 
-  console.log(aiResumeEducation, "AI Resume Education")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
-  const { setFormCompleted } = useResumeStore()
+  const { setNormalResumeScore } = useResumeStore()
 
   // Initialize form with default values
   const form = useForm<EducationFormValues>({
@@ -93,7 +92,7 @@ export default function EducationForm({
       }
 
       // Mark this form as completed
-      setFormCompleted("education")
+      setNormalResumeScore(48)
 
       toast({
         title: "Success",

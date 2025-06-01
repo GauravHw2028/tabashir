@@ -57,7 +57,7 @@ export default function LanguagesPage({ params }: { params: { resumeId: string }
       console.log("Languages saved:", data)
 
       // Mark this form as completed
-      setFormCompleted("languages")
+      // setFormCompleted("languages")
 
       toast({
         title: "Success",

@@ -7,7 +7,6 @@ export type ResumeSection =
   | "employment-history"
   | "education"
   | "skills"
-  | "languages"
 
 interface ResumeStore {
   resumeId: string | null
@@ -15,6 +14,7 @@ interface ResumeStore {
   isResumeGenerated: boolean
   isPaymentCompleted: boolean
   isSidebarVisible: boolean
+  resumeScore: number
 
   setResumeId: (id: string) => void
   setFormCompleted: (section: ResumeSection) => void
@@ -24,6 +24,10 @@ interface ResumeStore {
   setResumeGenerated: (status: boolean) => void
   setPaymentCompleted: (status: boolean) => void
   getResumeScore: () => number
+  setResumeScore: (score: number) => void
+  normalResumeScore: number
+  setNormalResumeScore: (score: number) => void
+  resetNormalResumeScore: () => void
   setSidebarVisibility: (isVisible: boolean) => void
 }
 
@@ -37,11 +41,12 @@ export const useResumeStore = create<ResumeStore>()(
         "employment-history": false,
         education: false,
         skills: false,
-        languages: false,
       },
       isResumeGenerated: false,
       isPaymentCompleted: false,
       isSidebarVisible: true,
+      resumeScore: 0,
+      normalResumeScore: 0,
 
       setResumeId: (id) => set({ resumeId: id }),
 
@@ -61,10 +66,10 @@ export const useResumeStore = create<ResumeStore>()(
             "employment-history": false,
             education: false,
             skills: false,
-            languages: false,
           },
           isResumeGenerated: false,
           isPaymentCompleted: false,
+          resumeScore: 0,
         }),
 
       isFormCompleted: (section) => get().completedForms[section],
@@ -78,10 +83,17 @@ export const useResumeStore = create<ResumeStore>()(
 
       setPaymentCompleted: (status) => set({ isPaymentCompleted: status }),
 
-      getResumeScore: () => {
-        const { completedForms, isResumeGenerated, isPaymentCompleted } = get()
+      setResumeScore: (score) => set({ resumeScore: score }),
 
-        // Calculate form completion percentage (worth 60% of total score)
+      getResumeScore: () => {
+        const { resumeScore, completedForms, isResumeGenerated, isPaymentCompleted } = get()
+        
+        // If we have a stored score, use that
+        if (resumeScore > 0) {
+          return resumeScore
+        }
+
+        // Otherwise calculate it
         const totalSections = Object.keys(completedForms).length
         const completedSections = Object.values(completedForms).filter(Boolean).length
         const formCompletionPercentage = totalSections > 0 ? (completedSections / totalSections) * 60 : 0
@@ -95,6 +107,10 @@ export const useResumeStore = create<ResumeStore>()(
         // Calculate total score
         return Math.round(formCompletionPercentage + generationScore + paymentScore)
       },
+
+      setNormalResumeScore: (score) => set({ normalResumeScore: score }),
+
+      resetNormalResumeScore: () => set({ normalResumeScore: 0 }),
 
       setSidebarVisibility: (isVisible) => set({ isSidebarVisible: isVisible }),
     }),

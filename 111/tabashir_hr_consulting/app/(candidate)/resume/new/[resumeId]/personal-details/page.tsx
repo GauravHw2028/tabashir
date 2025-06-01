@@ -19,10 +19,6 @@ export default async function PersonalDetailsPage({
       },
     });
 
-  console.log(resumeId)
-
-  console.log("AI Resume Personal Details: ", aiResumePersonalDetails)
-
   return (
     <div className="space-y-6 rounded-[6px]">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">

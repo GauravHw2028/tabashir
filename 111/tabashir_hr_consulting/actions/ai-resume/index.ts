@@ -570,7 +570,14 @@ export async function getResumeScore(resumeId: string) {
   return {
     error: false,
     message: "Resume score calculated successfully!",
-    data: score,
+    score: score,
+    data: {
+      "personal-details": personalDetails ? true : false,
+      "professional-summary": professionalSummary ? true : false,
+      "employment-history": employmentHistory.length > 0 ? true : false,
+      "education": education.length > 0 ? true : false,
+      "skills": skills.length > 0 ? true : false,
+    }
   };
   
 }

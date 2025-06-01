@@ -10,8 +10,7 @@ import { Button } from "@/components/ui/button"
 import { ResumeSidebar } from "../_components/resume-sidebar"
 import { useResumeStore } from "../store/resume-store"
 import { cn } from "@/lib/utils"
-import { getResumeScore } from "@/actions/ai-resume"
-import { toast } from "sonner"
+import { getResumeScore as getResumeScoreAction } from "@/actions/ai-resume"
 
 export default function ResumeLayout({
   children,
@@ -22,37 +21,30 @@ export default function ResumeLayout({
 }) {
   const { resumeId } = use(params)
   const [resumeScore, setResumeScore] = useState(0)
-  const { isSidebarVisible } = useResumeStore()
+  const { isSidebarVisible, normalResumeScore, setNormalResumeScore } = useResumeStore()
+
+  const calculateScore = async () => {
+    const score = await getResumeScoreAction(resumeId)
+    if (!score.error) {
+      const newScore = (score.score || 0) * 0.6
+      setResumeScore(newScore)
+      setNormalResumeScore(newScore)
+    }
+    else {
+      setResumeScore(0)
+      setNormalResumeScore(0)
+    }
+  }
 
   // Update score whenever relevant state changes
   useEffect(() => {
     // Force re-calculation of score by directly calling the function
-    const calculateScore = async () => {
-      const score = await getResumeScore(resumeId)
-      if (!score.error) {
-        setResumeScore(score.data || 0)
-      }
-      else {
-        setResumeScore(0)
-      }
-    }
     calculateScore()
+  }, [])
 
-    // Set up a subscription to the store to update score when state changes
-    const unsubscribe = () => {
-      (async () => {
-        const score = await getResumeScore(resumeId)
-        if (!score.error) {
-          setResumeScore(score.data || 0)
-        }
-        else {
-          setResumeScore(0)
-        }
-      })()
-    }
-
-    return () => unsubscribe()
-  }, [resumeScore])
+  useEffect(() => {
+    setResumeScore(normalResumeScore)
+  }, [normalResumeScore])
 
   // Get score color based on value
   const getScoreColor = (score: number) => {

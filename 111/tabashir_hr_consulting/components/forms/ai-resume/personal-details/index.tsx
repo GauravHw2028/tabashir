@@ -33,6 +33,7 @@ const AiResumePersonalDetailsForm = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const { setNormalResumeScore } = useResumeStore()
 
   // Initialize form with default values
   const form = useForm<AiResumePersonalDetailsSchemaType>({
@@ -90,15 +91,8 @@ const AiResumePersonalDetailsForm = ({
         return;
       }
       if (response.data) {
-        console.log("Personal details saved:", response.data);
-
         // Mark this form as completed - use setState to ensure updates
-        useResumeStore.setState((state) => ({
-          completedForms: {
-            ...state.completedForms,
-            "personal-details": true,
-          },
-        }));
+        setNormalResumeScore(12);
 
         toast.success(response.message);
 
