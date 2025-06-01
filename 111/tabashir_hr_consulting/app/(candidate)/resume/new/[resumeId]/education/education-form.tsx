@@ -46,7 +46,7 @@ export default function EducationForm({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
-  const { setNormalResumeScore } = useResumeStore()
+  const { setResumeScore, setFormCompleted } = useResumeStore()
 
   // Initialize form with default values
   const form = useForm<EducationFormValues>({
@@ -92,7 +92,7 @@ export default function EducationForm({
       }
 
       // Mark this form as completed
-      setNormalResumeScore(48)
+      setFormCompleted("education")
 
       toast({
         title: "Success",
@@ -219,7 +219,7 @@ export default function EducationForm({
                               )}
                             >
                               {field.value ? (
-                                format(new Date(field.value), "MMMM yyyy")
+                                format(new Date(field.value), "PPP")
                               ) : (
                                 <span>Pick a date</span>
                               )}
@@ -231,7 +231,7 @@ export default function EducationForm({
                           <Calendar
                             mode="single"
                             selected={field.value ? new Date(field.value) : undefined}
-                            onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM") : "")}
+                            onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
                             initialFocus
                           />
                         </PopoverContent>
@@ -258,7 +258,7 @@ export default function EducationForm({
                               )}
                             >
                               {field.value ? (
-                                format(new Date(field.value), "MMMM yyyy")
+                                format(new Date(field.value), "PPP")
                               ) : (
                                 <span>Pick a date</span>
                               )}
@@ -270,7 +270,7 @@ export default function EducationForm({
                           <Calendar
                             mode="single"
                             selected={field.value ? new Date(field.value + "-01") : undefined}
-                            onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM") : "")}
+                            onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
                             initialFocus
                           />
                         </PopoverContent>

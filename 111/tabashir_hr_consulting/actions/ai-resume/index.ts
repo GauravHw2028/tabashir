@@ -497,6 +497,12 @@ export async function getResumeScore(resumeId: string) {
     where: {
       id: resumeId,
     },
+    select: {
+      id: true,
+      paymentAmount: true,
+      paymentStatus: true,
+      paymentDate: true
+    },
   });
 
 
@@ -572,11 +578,12 @@ export async function getResumeScore(resumeId: string) {
     message: "Resume score calculated successfully!",
     score: score,
     data: {
-      "personal-details": personalDetails ? true : false,
-      "professional-summary": professionalSummary ? true : false,
-      "employment-history": employmentHistory.length > 0 ? true : false,
-      "education": education.length > 0 ? true : false,
-      "skills": skills.length > 0 ? true : false,
+      personalDetails: personalDetails ? true : false,
+      professionalSummary: professionalSummary ? true : false,
+      employmentHistory: employmentHistory.length > 0 ? true : false,
+      education: education.length > 0 ? true : false,
+      skills: skills.length > 0 ? true : false,
+      payment: resume.paymentStatus,
     }
   };
   

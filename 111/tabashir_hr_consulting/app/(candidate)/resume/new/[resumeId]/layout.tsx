@@ -21,18 +21,32 @@ export default function ResumeLayout({
 }) {
   const { resumeId } = use(params)
   const [resumeScore, setResumeScore] = useState(0)
-  const { isSidebarVisible, normalResumeScore, setNormalResumeScore } = useResumeStore()
+  const { isSidebarVisible, setFormCompleted, completedForms, getResumeScore, resetForms } = useResumeStore()
 
   const calculateScore = async () => {
+    resetForms();
     const score = await getResumeScoreAction(resumeId)
     if (!score.error) {
       const newScore = (score.score || 0) * 0.6
       setResumeScore(newScore)
-      setNormalResumeScore(newScore)
+      if (score.data?.personalDetails) {
+        setFormCompleted("personal-details")
+      }
+      if (score.data?.professionalSummary) {
+        setFormCompleted("professional-summary")
+      }
+      if (score.data?.employmentHistory) {
+        setFormCompleted("employment-history")
+      }
+      if (score.data?.education) {
+        setFormCompleted("education")
+      }
+      if (score.data?.skills) {
+        setFormCompleted("skills")
+      }
     }
     else {
       setResumeScore(0)
-      setNormalResumeScore(0)
     }
   }
 
@@ -43,8 +57,9 @@ export default function ResumeLayout({
   }, [])
 
   useEffect(() => {
-    setResumeScore(normalResumeScore)
-  }, [normalResumeScore])
+    const score = getResumeScore()
+    setResumeScore(score)
+  }, [completedForms])
 
   // Get score color based on value
   const getScoreColor = (score: number) => {

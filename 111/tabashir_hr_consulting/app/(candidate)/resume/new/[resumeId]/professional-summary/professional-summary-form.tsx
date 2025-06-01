@@ -30,7 +30,7 @@ export default function ProfessionalSummaryForm({ resumeId, aiResumeProfessional
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
-  const { setNormalResumeScore } = useResumeStore()
+  const { setResumeScore, setFormCompleted } = useResumeStore()
 
   // Initialize form with default values
   const form = useForm<ProfessionalSummaryFormValues>({
@@ -61,8 +61,7 @@ export default function ProfessionalSummaryForm({ resumeId, aiResumeProfessional
       console.log("Professional summary saved:", data)
 
       // Mark this form as completed
-      setNormalResumeScore(24);
-
+      setFormCompleted("professional-summary")
       toast({
         title: "Success",
         description: "Your professional summary has been saved successfully.",

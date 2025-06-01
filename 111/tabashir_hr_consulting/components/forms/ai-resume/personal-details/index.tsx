@@ -33,7 +33,7 @@ const AiResumePersonalDetailsForm = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const { setNormalResumeScore } = useResumeStore()
+  const { setResumeScore, setFormCompleted } = useResumeStore()
 
   // Initialize form with default values
   const form = useForm<AiResumePersonalDetailsSchemaType>({
@@ -92,8 +92,7 @@ const AiResumePersonalDetailsForm = ({
       }
       if (response.data) {
         // Mark this form as completed - use setState to ensure updates
-        setNormalResumeScore(12);
-
+        setFormCompleted("personal-details")
         toast.success(response.message);
 
         // Navigate to the next section

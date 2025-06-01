@@ -24,6 +24,8 @@ model User {
     candidate Candidate?
     Owner     Owner?
 
+    subscriptions Subscription[]
+
     createdAt    DateTime       @default(now())
     updatedAt    DateTime       @updatedAt
     SavedJobPost SavedJobPost[]
@@ -350,4 +352,57 @@ enum LanguageProficiency {
     INTERMEDIATE
     ADVANCED
     NATIVE
+}
+
+enum PlanType {
+    BUSINESS
+    PRO_PLAYER
+    AI_JOB_APPLY
+}
+
+model Subscription {
+    id        String             @id @default(cuid())
+    userId    String
+    user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+    plan      PlanType
+    status    SubscriptionStatus @default(ACTIVE)
+    startDate DateTime           @default(now())
+    endDate   DateTime
+    autoRenew Boolean            @default(false)
+    createdAt DateTime           @default(now())
+    updatedAt DateTime           @updatedAt
+
+    payments Payment[]
+
+    @@index([userId])
+}
+
+enum SubscriptionStatus {
+    ACTIVE
+    CANCELLED
+    EXPIRED
+    PENDING
+}
+
+model Payment {
+    id             String        @id @default(cuid())
+    subscriptionId String
+    subscription   Subscription  @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+    amount         Float
+    currency       String        @default("AED")
+    status         PaymentStatus @default(PENDING)
+    paymentMethod  String        @default("ziina")
+    transactionId  String?       @unique
+    paymentDate    DateTime?
+    createdAt      DateTime      @default(now())
+    updatedAt      DateTime      @updatedAt
+
+    @@index([subscriptionId])
+}
+
+enum PaymentStatus {
+    PENDING
+    COMPLETED
+    FAILED
+    REFUNDED
 }

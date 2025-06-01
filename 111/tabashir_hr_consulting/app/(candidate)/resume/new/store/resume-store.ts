@@ -25,9 +25,6 @@ interface ResumeStore {
   setPaymentCompleted: (status: boolean) => void
   getResumeScore: () => number
   setResumeScore: (score: number) => void
-  normalResumeScore: number
-  setNormalResumeScore: (score: number) => void
-  resetNormalResumeScore: () => void
   setSidebarVisibility: (isVisible: boolean) => void
 }
 
@@ -46,7 +43,6 @@ export const useResumeStore = create<ResumeStore>()(
       isPaymentCompleted: false,
       isSidebarVisible: true,
       resumeScore: 0,
-      normalResumeScore: 0,
 
       setResumeId: (id) => set({ resumeId: id }),
 
@@ -107,10 +103,6 @@ export const useResumeStore = create<ResumeStore>()(
         // Calculate total score
         return Math.round(formCompletionPercentage + generationScore + paymentScore)
       },
-
-      setNormalResumeScore: (score) => set({ normalResumeScore: score }),
-
-      resetNormalResumeScore: () => set({ normalResumeScore: 0 }),
 
       setSidebarVisibility: (isVisible) => set({ isSidebarVisible: isVisible }),
     }),

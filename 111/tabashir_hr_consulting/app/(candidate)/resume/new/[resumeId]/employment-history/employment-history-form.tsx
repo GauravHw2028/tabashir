@@ -46,7 +46,7 @@ type EmploymentHistoryFormValues = z.infer<typeof employmentHistorySchema>
 export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHistory }: { resumeId: string, aiResumeEmploymentHistory: AiEmploymentHistory[] }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
-  const { setNormalResumeScore } = useResumeStore()
+  const { setResumeScore, setFormCompleted } = useResumeStore()
 
   // Initialize form with default values
   const form = useForm<EmploymentHistoryFormValues>({
@@ -101,7 +101,7 @@ export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHist
       }
 
       // Mark this form as completed
-      setNormalResumeScore(36);
+      setFormCompleted("employment-history")
 
       toast.success("Your employment history has been saved successfully.")
 
