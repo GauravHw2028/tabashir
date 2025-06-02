@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { z } from "zod"
 import { useForm, useFieldArray } from "react-hook-form"
@@ -17,7 +17,7 @@ import { onSaveSkills } from "@/actions/ai-resume"
 import { getCV } from "@/actions/ai-resume"
 import { uploadAIResume } from "@/actions/resume"
 import ResumePayment from "../../../_components/resume-payment"
-
+import { getResumePaymentStatus as getResumePaymentStatusAction } from "@/actions/ai-resume"
 const skillSchema = z.object({
   name: z.string().min(2, { message: "Skill name is required" }),
   level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED", "EXPERT"], {
@@ -49,16 +49,19 @@ export default function SkillsForm({
   resumeId,
   aiResumeSkills,
   userId,
+  paymentCompleted,
 }: {
   resumeId: string,
   aiResumeSkills: AiSkill[],
-  userId: string
+  userId: string,
+  paymentCompleted: string | undefined,
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
   const [isPaymentOpened, setIsPaymentOpened] = useState(false)
-  const { setResumeScore, setFormCompleted, isPaymentCompleted } = useResumeStore()
+  const { setFormCompleted, isPaymentCompleted } = useResumeStore()
+  const [generatingCV, setGeneratingCV] = useState(false)
 
   // Initialize form with default values
   const form = useForm<SkillsFormValues>({
@@ -126,6 +129,7 @@ export default function SkillsForm({
 
   const handleGenerateCV = async () => {
     console.log("CV Data fetching......");
+    setGeneratingCV(true);
     const data = await getCV(resumeId);
 
     console.log("CV data:", data);
@@ -206,6 +210,22 @@ export default function SkillsForm({
       });
     }
   }
+
+  useEffect(() => {
+    if (paymentCompleted) {
+      (async () => {
+        const isPaymentCompleted = await getResumePaymentStatusAction(resumeId)
+
+        if (isPaymentCompleted.data?.paymentStatus) {
+          setIsPaymentOpened(false);
+          if (!generatingCV) {
+            setIsSubmitting(true);
+            await handleGenerateCV();
+          }
+        }
+      })()
+    }
+  }, [paymentCompleted]);
 
   return (
     <div className="space-y-6">

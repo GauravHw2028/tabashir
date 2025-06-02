@@ -3,8 +3,9 @@ import SkillsForm from "./skills-form"
 import { auth } from "@/app/utils/auth";
 import { redirect } from "next/navigation";
 
-export default async function SkillsPage({ params }: { params: Promise<{ resumeId: string }> }) {
+export default async function SkillsPage({ params, searchParams }: { params: Promise<{ resumeId: string }>, searchParams: Promise<{ payment_completed?: string }> }) {
   const { resumeId } = await params;
+  const { payment_completed } = await searchParams;
 
   const skills = await prisma.aiSkill.findMany({
     where: {
@@ -17,5 +18,5 @@ export default async function SkillsPage({ params }: { params: Promise<{ resumeI
     return redirect("/login");
   }
 
-  return <SkillsForm resumeId={resumeId} aiResumeSkills={skills} userId={session.user.id} />
+  return <SkillsForm resumeId={resumeId} aiResumeSkills={skills} userId={session.user.id} paymentCompleted={payment_completed} />
 }
