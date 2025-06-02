@@ -623,3 +623,36 @@ export async function getResumePaymentStatus(resumeId: string) {
     data: resume,
   };
 }
+
+export async function getResumeGeneratedStatus(resumeId: string) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { error: true, message: "Unauthenticated" };
+  }
+
+  const candidate = await prisma.candidate.findUnique({
+    where: {
+      userId: session.user.id,
+    },
+  });
+  
+  if (!candidate) {
+    return { error: true, message: "Candidate not found" };
+  }
+
+  const resume = await prisma.aiResume.findUnique({
+    where: {
+      id: resumeId,
+    },
+    select: {
+      formatedUrl: true,
+    },
+  });
+
+  return {
+    error: false,
+    message: "Resume generated status fetched successfully!",
+    data: resume,
+  };
+}

@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { ResumeSidebar } from "../_components/resume-sidebar"
 import { useResumeStore } from "../store/resume-store"
 import { cn } from "@/lib/utils"
-import { getResumeScore as getResumeScoreAction } from "@/actions/ai-resume"
+import { getResumeGeneratedStatus, getResumeScore as getResumeScoreAction } from "@/actions/ai-resume"
 import { getResumePaymentStatus as getResumePaymentStatusAction } from "@/actions/ai-resume"
 
 export default function ResumeLayout({
@@ -22,14 +22,13 @@ export default function ResumeLayout({
 }) {
   const { resumeId } = use(params)
   const [resumeScore, setResumeScore] = useState(0)
-  const { isSidebarVisible, setFormCompleted, completedForms, getResumeScore, resetForms, setPaymentCompleted } = useResumeStore()
+  const { isSidebarVisible, setFormCompleted, completedForms, getResumeScore, resetForms, setPaymentCompleted, setResumeGenerated } = useResumeStore()
 
   const calculateScore = async () => {
     resetForms();
     const score = await getResumeScoreAction(resumeId)
     if (!score.error) {
-      const newScore = (score.score || 0) * 0.6
-      setResumeScore(newScore)
+
       if (score.data?.personalDetails) {
         setFormCompleted("personal-details")
       }
@@ -54,6 +53,16 @@ export default function ResumeLayout({
 
     if (resumePaymentStatus.data?.paymentStatus) {
       setPaymentCompleted(true)
+      const resumeScore = getResumeScore();
+      setResumeScore(resumeScore)
+    }
+
+    const resumeGenerated = await getResumeGeneratedStatus(resumeId);
+
+    if (resumeGenerated.data?.formatedUrl) {
+      setResumeGenerated(true)
+      const resumeScore = getResumeScore();
+      setResumeScore(resumeScore)
     }
   }
 

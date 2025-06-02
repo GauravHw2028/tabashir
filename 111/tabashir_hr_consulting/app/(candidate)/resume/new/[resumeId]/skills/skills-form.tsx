@@ -60,7 +60,7 @@ export default function SkillsForm({
   const router = useRouter()
   const { toast } = useToast()
   const [isPaymentOpened, setIsPaymentOpened] = useState(false)
-  const { setFormCompleted, isPaymentCompleted } = useResumeStore()
+  const { setFormCompleted, isPaymentCompleted, setResumeGenerated } = useResumeStore()
   const [generatingCV, setGeneratingCV] = useState(false)
   const [isCheckingPayment, setIsCheckingPayment] = useState(false)
 
@@ -199,6 +199,8 @@ export default function SkillsForm({
 
       // Optionally redirect to a success page or show the download link
       console.log("Formatted resume URL:", uploadResult.data);
+
+      setResumeGenerated(true);
 
       router.push(`/resume/new/${resumeId}/download`);
 
