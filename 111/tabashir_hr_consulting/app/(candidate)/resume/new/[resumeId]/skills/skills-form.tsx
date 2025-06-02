@@ -14,11 +14,9 @@ import { useResumeStore } from "../../store/resume-store"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AiSkill } from "@prisma/client"
 import { onSaveSkills } from "@/actions/ai-resume"
-import { useSession } from "next-auth/react"
 import { getCV } from "@/actions/ai-resume"
-import { UTApi } from "uploadthing/server"
-import { prisma } from "@/app/utils/db"
 import { uploadAIResume } from "@/actions/resume"
+import ResumePayment from "../../../_components/resume-payment"
 
 const skillSchema = z.object({
   name: z.string().min(2, { message: "Skill name is required" }),
@@ -59,7 +57,8 @@ export default function SkillsForm({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
-  const { setResumeScore, setFormCompleted } = useResumeStore()
+  const [isPaymentOpened, setIsPaymentOpened] = useState(false)
+  const { setResumeScore, setFormCompleted, isPaymentCompleted } = useResumeStore()
 
   // Initialize form with default values
   const form = useForm<SkillsFormValues>({
@@ -107,7 +106,13 @@ export default function SkillsForm({
 
       // Navigate to the next section
       console.log("Generating CV......");
-      await handleGenerateCV();
+
+      if (isPaymentCompleted) {
+        await handleGenerateCV();
+      } else {
+        setIsPaymentOpened(true);
+      }
+
     } catch (error) {
       toast({
         title: "Error",
@@ -324,6 +329,7 @@ export default function SkillsForm({
           </div>
         </form>
       </Form>
+      <ResumePayment resumeId={resumeId} isOpened={isPaymentOpened} />
     </div>
   )
 } 

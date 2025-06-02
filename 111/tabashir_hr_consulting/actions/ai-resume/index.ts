@@ -588,3 +588,38 @@ export async function getResumeScore(resumeId: string) {
   };
   
 }
+
+export async function getResumePaymentStatus(resumeId: string) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { error: true, message: "Unauthenticated" };
+  }
+
+  const candidate = await prisma.candidate.findUnique({
+    where: {
+      userId: session.user.id,
+    },
+  });
+
+  if (!candidate) {
+    return { error: true, message: "Candidate not found" };
+  }
+  
+  const resume = await prisma.aiResume.findUnique({
+    where: {
+      id: resumeId,
+    },
+    select: {
+      paymentStatus: true,
+      paymentAmount: true,
+      paymentDate: true,
+    },
+  });
+
+  return {
+    error: false,
+    message: "Resume payment status fetched successfully!",
+    data: resume,
+  };
+}
