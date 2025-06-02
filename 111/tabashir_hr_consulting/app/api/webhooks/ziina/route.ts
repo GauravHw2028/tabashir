@@ -1,5 +1,6 @@
 // app/api/ziina-webhook/route.ts
 import { NextResponse } from 'next/server' 
+import {prisma} from '@/lib/prisma'
 
 export const config = { api: { bodyParser: false } }
 
@@ -42,12 +43,46 @@ export async function POST(request: Request) {
     // Getting resumeId from success_url
     // https://tabashir-ten.vercel.app/resume/new/cmbf9iyzh0003gtgwb9f9gfi5/skills?intent_id=4f624ae4-b78f-435b-aa1d-387a7de2a01e&payment_completed=true
 
-    const resumeId = event.data.success_url.split('/resume/new/')[1].split('/')[0]
 
-    console.log(resumeId);
+    if(!event.data.success_url) {
+      return NextResponse.json({ error: 'No success_url' }, { status: 400 })
+    }
 
-    if (intent.status === 'completed') {
-      
+    // If it's the resume payment success url
+    if(event.data.success_url.startsWith(`${process.env.NEXT_PUBLIC_APP_URL}/resume/new/`)){
+      const resumeId = event.data.success_url.split('/resume/new/')[1].split('/')[0];
+
+      if (intent.status === 'completed') {
+        const resume = await prisma.aiResume.findUnique({
+          where: {
+            id: resumeId
+          },
+          select: {
+            id: true,
+            candidate: {
+              select: {
+                userId: true,
+              },
+            },
+          },
+        })
+        
+        if (resume) {
+          await prisma.aiResume.update({
+            where: { id: resume.id },
+            data: { paymentStatus: true, paymentAmount: intent.amount, paymentDate: new Date() }
+          })
+
+          await prisma.payment.create({
+            data: {
+              amount: intent.amount,
+              currency: intent.currency_code,
+              status: intent.status === 'completed' ? 'COMPLETED' : 'FAILED',
+              userId: resume.candidate.userId,
+            }
+          })
+        }
+      }
     }
   }
 

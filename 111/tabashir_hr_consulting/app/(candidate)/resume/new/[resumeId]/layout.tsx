@@ -11,6 +11,7 @@ import { ResumeSidebar } from "../_components/resume-sidebar"
 import { useResumeStore } from "../store/resume-store"
 import { cn } from "@/lib/utils"
 import { getResumeScore as getResumeScoreAction } from "@/actions/ai-resume"
+import { getResumePaymentStatus as getResumePaymentStatusAction } from "@/actions/ai-resume"
 
 export default function ResumeLayout({
   children,
@@ -21,7 +22,7 @@ export default function ResumeLayout({
 }) {
   const { resumeId } = use(params)
   const [resumeScore, setResumeScore] = useState(0)
-  const { isSidebarVisible, setFormCompleted, completedForms, getResumeScore, resetForms } = useResumeStore()
+  const { isSidebarVisible, setFormCompleted, completedForms, getResumeScore, resetForms, setPaymentCompleted } = useResumeStore()
 
   const calculateScore = async () => {
     resetForms();
@@ -47,6 +48,12 @@ export default function ResumeLayout({
     }
     else {
       setResumeScore(0)
+    }
+
+    const resumePaymentStatus = await getResumePaymentStatusAction(resumeId)
+
+    if (resumePaymentStatus.data?.paymentStatus) {
+      setPaymentCompleted(true)
     }
   }
 
