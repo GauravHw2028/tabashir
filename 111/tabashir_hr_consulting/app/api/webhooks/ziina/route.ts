@@ -36,9 +36,19 @@ export async function POST(request: Request) {
       status:       string
       amount:       number
       currency_code:string
+      success_url:  string
     }
 
-    console.log(intent);
+    // Getting resumeId from success_url
+    // https://tabashir-ten.vercel.app/resume/new/cmbf9iyzh0003gtgwb9f9gfi5/skills?intent_id=4f624ae4-b78f-435b-aa1d-387a7de2a01e&payment_completed=true
+
+    const resumeId = event.data.success_url.split('/resume/new/')[1].split('/')[0]
+
+    console.log(resumeId);
+
+    if (intent.status === 'completed') {
+      
+    }
   }
 
   return NextResponse.json({ received: true })
