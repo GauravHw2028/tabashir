@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
-import { X, Plus } from "lucide-react"
+import { X, Plus, Loader2 } from "lucide-react"
 import { useResumeStore } from "../../store/resume-store"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AiSkill } from "@prisma/client"
@@ -62,6 +62,7 @@ export default function SkillsForm({
   const [isPaymentOpened, setIsPaymentOpened] = useState(false)
   const { setFormCompleted, isPaymentCompleted } = useResumeStore()
   const [generatingCV, setGeneratingCV] = useState(false)
+  const [isCheckingPayment, setIsCheckingPayment] = useState(false)
 
   // Initialize form with default values
   const form = useForm<SkillsFormValues>({
@@ -213,8 +214,12 @@ export default function SkillsForm({
 
   useEffect(() => {
     if (paymentCompleted) {
-      (async () => {
+      // Waiting for three seconds to make sure the payment is completed
+      setIsCheckingPayment(true);
+      setTimeout(async () => {
         const isPaymentCompleted = await getResumePaymentStatusAction(resumeId)
+
+        setIsCheckingPayment(false);
 
         if (isPaymentCompleted.data?.paymentStatus) {
           setIsPaymentOpened(false);
@@ -223,7 +228,7 @@ export default function SkillsForm({
             await handleGenerateCV();
           }
         }
-      })()
+      }, 3000)
     }
   }, [paymentCompleted]);
 
@@ -349,6 +354,12 @@ export default function SkillsForm({
           </div>
         </form>
       </Form>
+      {isCheckingPayment && (
+        <div className="flex justify-center items-center absolute top-0 left-0 w-full h-full bg-black/50">
+          <Loader2 className="w-4 h-4 animate-spin" />
+          <p className="text-white">Checking payment status...</p>
+        </div>
+      )}
       <ResumePayment resumeId={resumeId} isOpened={isPaymentOpened} />
     </div>
   )
