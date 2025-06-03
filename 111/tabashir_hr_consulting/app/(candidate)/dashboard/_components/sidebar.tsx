@@ -18,6 +18,7 @@ import {
   LogOut,
 } from "lucide-react"
 import { onLogout } from "@/actions/auth"
+import Image from "next/image"
 
 export function Sidebar() {
   const pathname = usePathname()
@@ -40,9 +41,9 @@ export function Sidebar() {
   ]
 
   return (
-    <div className="h-full w-[250px] bg-white border-r flex flex-col rounded-lg p-2">
-      <div className="p-4 border-b">
-        <h1 className="text-xl font-bold text-gray-900">TABASHIR</h1>
+    <div className="h-full w-[250px] bg-white border-r flex flex-col rounded-lg p-3">
+      <div className="px-3 pb-4 pt-5 border-b mb-3">
+        <Image src="/logo.png" alt="logo" width={217} height={32} className="mx-auto" />
       </div>
 
       <div className="flex-1 overflow-auto py-4">
@@ -51,9 +52,8 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center px-2 py-2 mb-2 text-base font-medium rounded-md ${
-                isActive(item.href) ? "blue-gradient text-white" : "text-gray-700 hover:bg-gray-100"
-              }`}
+              className={`flex items-center px-2 py-2 mb-2 text-base font-medium rounded-md ${isActive(item.href) ? "blue-gradient text-white" : "text-gray-700 hover:bg-gray-100"
+                }`}
             >
               <item.icon className="mr-3 h-5 w-5" />
               {item.label}
@@ -70,9 +70,9 @@ export function Sidebar() {
           <User className="mr-3 h-5 w-5" />
           Account
         </Link>
-        <button onClick={() =>{
+        <button onClick={() => {
           onLogout("/candidate/login")
-        }}  className="flex items-center px-2 py-2 mt-2 text-sm rounded-md text-red-500 hover:bg-gray-100 w-full text-left">
+        }} className="flex items-center px-2 py-2 mt-2 text-sm rounded-md text-red-500 hover:bg-gray-100 w-full text-left">
           <LogOut className="mr-3 h-5 w-5" />
           Logout
         </button>

@@ -194,6 +194,7 @@ model Resume {
     originalUrl     String
     formatedUrl     String?
     formatedContent String?   @db.Text
+    isAiResume      Boolean?  @default(false)
     createdAt       DateTime  @default(now())
     updatedAt       DateTime  @updatedAt
 

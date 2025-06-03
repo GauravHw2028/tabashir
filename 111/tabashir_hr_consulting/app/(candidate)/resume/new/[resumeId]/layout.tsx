@@ -115,7 +115,8 @@ export default function ResumeLayout({
         {/* Sidebar and content area */}
         <div className="flex gap-[50px]">
           {/* Sidebar - only visible when isSidebarVisible is true */}
-          {isSidebarVisible && <ResumeSidebar resumeId={resumeId} />}
+          {/* {isSidebarVisible && <ResumeSidebar resumeId={resumeId} />} */}
+          <ResumeSidebar resumeId={resumeId} />
 
           {/* Main content - takes full width when sidebar is hidden */}
           <div className={cn("flex-1 transition-all duration-300")}>

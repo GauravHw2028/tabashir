@@ -17,6 +17,12 @@ interface Resume {
   formatedContent: string | null
 }
 
+interface AiResume {
+  id: string
+  formatedUrl: string | null
+  createdAt: Date
+}
+
 interface ResumeListClientProps {
   initialResumes: Resume[]
 }
@@ -76,7 +82,7 @@ export function ResumeListClient({
         // Fetch the file content as a Blob
         const response = await fetch(result.data.url);
         if (!response.ok) {
-            throw new Error(`Failed to fetch file: ${response.statusText}`);
+          throw new Error(`Failed to fetch file: ${response.statusText}`);
         }
         const blob = await response.blob();
 
@@ -92,8 +98,8 @@ export function ResumeListClient({
 
         // Clean up the temporary URL after a short delay
         setTimeout(() => {
-            URL.revokeObjectURL(blobUrl);
-            document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl);
+          document.body.removeChild(link);
         }, 100);
       }
     } catch (error) {
@@ -106,8 +112,8 @@ export function ResumeListClient({
   return (
     <div className="bg-white rounded-lg px-6 min-h-[calc(100vh-35px)]">
       {/* Resume Upload Modal */}
-      <ResumeUploadModal 
-        isOpen={isModalOpen} 
+      <ResumeUploadModal
+        isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onUploadSuccess={handleUploadSuccess}
       />
@@ -124,9 +130,9 @@ export function ResumeListClient({
         description="Are you sure you want to delete this resume? This action cannot be undone."
       />
 
-        <div className="w-full flex justify-end py-3">
-            <UserProfileHeader />
-        </div>
+      <div className="w-full flex justify-end py-3">
+        <UserProfileHeader />
+      </div>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-semibold text-gray-900">My Resume</h1>
         <button
@@ -169,6 +175,7 @@ export function ResumeListClient({
               isDownloading={downloadingResumeId === resume.id}
             />
           ))}
+
         </div>
       )}
     </div>
@@ -215,4 +222,11 @@ function ResumeCard({ resume, onDelete, onDownload, isDownloading }: ResumeCardP
       </div>
     </div>
   )
-} 
+}
+
+interface AiResumeCardProps {
+  resume: AiResume
+  onDelete: () => void
+  onDownload: () => void
+  isDownloading: boolean
+}

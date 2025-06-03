@@ -527,14 +527,31 @@ export async function uploadAIResume(file: File, resumeId: string) {
       where: { id: resumeId },
       data: {
         formatedUrl: uploadedFile.data.ufsUrl,
+        originalUrl: uploadedFile.data.ufsUrl,
         progress: 100 // Mark as complete
       },
     });
 
+    const aiResumePersonalDetails = await prisma.aiResumePersonalDetails.findUnique({
+      where: { id: resumeId },
+      select: {
+        fullName: true,
+      }
+    });
+
+    const aiResume = await prisma.resume.create({
+      data: {
+        candidateId: candidate.id,
+        formatedUrl: uploadedFile.data.ufsUrl,
+        originalUrl: uploadedFile.data.ufsUrl,
+        filename: aiResumePersonalDetails?.fullName || file.name,
+      },
+    })
+
     return {
       error: false,
       message: "AI resume uploaded successfully",
-      data: updateResult.formatedUrl,
+      data: aiResume,
     }
     
   } catch (error) {
@@ -542,6 +559,60 @@ export async function uploadAIResume(file: File, resumeId: string) {
     return {
       error: true,
       message: "Failed to upload AI resume",
+    }
+  }
+}
+
+export async function getAiResumeFiles() {
+  try {
+    const session = await auth();
+
+
+    if (!session?.user?.id) {
+      return {
+        error: true,
+        message: "Unauthorized access",
+      }
+    }
+
+    const candidate = await prisma.candidate.findUnique({
+      where: {
+        userId: session.user.id,
+      },
+      select: {
+        id: true,
+      },
+    })
+
+    if (!candidate) {
+      return {
+        error: true,
+        message: "Candidate profile not found",
+      }
+    }
+
+    const aiResume = await prisma.aiResume.findMany({
+      where: {
+        candidateId: candidate.id,
+        formatedUrl: {
+          not: null
+        }
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    })
+
+    return {
+      error: false,
+      message: "AI resume files fetched successfully",
+      data: aiResume, 
+    }
+  } catch (error) {
+    console.error("[GET_AI_RESUME_FILES_ERROR]", error)
+    return {
+      error: true,
+      message: "Failed to fetch AI resume files",
     }
   }
 }

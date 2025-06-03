@@ -1,4 +1,4 @@
-import { getUserResumes, deleteResume, downloadResume } from "@/actions/resume"
+import { getUserResumes } from "@/actions/resume"
 import { ResumeListClient } from "./_components/resume-list-client"
 
 export default async function ResumePage() {
