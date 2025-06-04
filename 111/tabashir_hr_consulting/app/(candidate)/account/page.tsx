@@ -1,12 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Pencil, Check, X } from "lucide-react"
+import { Pencil, Check, X, Eye, EyeOff } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getUserProfile, updateUserProfile } from "./actions"
+import { getUserProfile, updateUserProfile, updatePassword } from "./actions"
 import { toast } from "sonner"
 
 const GENDER_OPTIONS = [
@@ -38,6 +38,10 @@ export default function AccountPage() {
   const [newSkill, setNewSkill] = useState("")
   const [editingField, setEditingField] = useState<string | null>(null)
   const [editValue, setEditValue] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -150,6 +154,31 @@ export default function AccountPage() {
     } catch (error) {
       console.error('Error removing skill:', error)
       toast.error("Failed to remove skill")
+    }
+  }
+
+  const handlePasswordChange = async () => {
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match")
+      return
+    }
+
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters long")
+      return
+    }
+
+    try {
+      setIsChangingPassword(true)
+      await updatePassword(newPassword)
+      setNewPassword("")
+      setConfirmPassword("")
+      setIsChangingPassword(false)
+      toast.success("Password updated successfully")
+    } catch (error) {
+      console.error('Error updating password:', error)
+      toast.error("Failed to update password")
+      setIsChangingPassword(false)
     }
   }
 
@@ -268,6 +297,51 @@ export default function AccountPage() {
             <div className="space-y-4">
               {renderEditableField('email', userData.email, 'Email')}
               {renderEditableField('phone', userData.candidate?.profile?.phone, 'Phone')}
+
+              <div className="grid grid-cols-1 gap-4 items-center">
+                <label className="text-black font-medium">Change Password</label>
+                <div className="col-span-3 space-y-4">
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="New password"
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Confirm new password"
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                  <button
+                    onClick={handlePasswordChange}
+                    disabled={isChangingPassword || !newPassword || !confirmPassword}
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isChangingPassword ? "Updating..." : "Update Password"}
+                  </button>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/app/utils/auth";
+import bcrypt from "bcryptjs";
 
 export async function getUserProfile() {
   const session = await auth();
@@ -94,6 +95,24 @@ export async function updateUserProfile(data: {
       },
     });
   }
+
+  return { success: true };
+}
+
+export async function updatePassword(password: string) {
+  const session = await auth();
+  if (!session?.user) {
+    throw new Error("Not authenticated");
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  await prisma.user.update({
+    where: { id: session.user.id },
+    data: {
+      password: hashedPassword,
+    },
+  });
 
   return { success: true };
 } 

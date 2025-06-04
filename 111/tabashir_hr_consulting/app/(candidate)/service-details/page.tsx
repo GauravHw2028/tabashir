@@ -3,7 +3,10 @@
 import { useState, useEffect } from "react"
 import { Check, CoinsIcon as Coin } from "lucide-react"
 import { TermsModal } from "./_components/terms-modal"
+import { ServiceModal } from "./_components/service-modal"
+import { PaymentSuccessModal } from "./_components/payment-success-modal"
 import { UserProfileHeader } from "../dashboard/_components/user-profile-header"
+import { useSearchParams } from "next/navigation"
 import {
   Card,
   CardContent,
@@ -16,6 +19,16 @@ import { Button } from "@/components/ui/button"
 
 export default function ServiceDetailsPage() {
   const [showTermsModal, setShowTermsModal] = useState(false)
+  const [selectedService, setSelectedService] = useState<{
+    id: string
+    title: string
+    price: number
+    description: string
+    features?: string[]
+  } | null>(null)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [successServiceId, setSuccessServiceId] = useState<string | null>(null)
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     // Check if user has already accepted terms
@@ -24,12 +37,31 @@ export default function ServiceDetailsPage() {
     if (!hasAcceptedTerms) {
       setShowTermsModal(true)
     }
-  }, [])
+
+    // Check for payment success
+    const paymentCompleted = searchParams.get('payment_completed')
+    const serviceId = searchParams.get('service_id')
+
+    if (paymentCompleted === 'true' && serviceId) {
+      setShowSuccessModal(true)
+      setSuccessServiceId(serviceId)
+    }
+  }, [searchParams])
 
   const handleCloseTermsModal = () => {
     // Save to localStorage that user has accepted terms
     localStorage.setItem("tabashir-terms-accepted", "true")
     setShowTermsModal(false)
+  }
+
+  const handleServiceClick = (service: {
+    id: string
+    title: string
+    price: number
+    description: string
+    features?: string[]
+  }) => {
+    setSelectedService(service)
   }
 
   return (
@@ -71,8 +103,22 @@ export default function ServiceDetailsPage() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
-              <Button variant="outline" className="w-full">
-                Current Service
+              <Button
+                className="w-full"
+                style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
+                onClick={() => handleServiceClick({
+                  id: "business-plan",
+                  title: "Business Plan",
+                  price: 10000,
+                  description: "Perfect for job seekers looking to make their mark in the industry",
+                  features: [
+                    "Applying to 100 jobs",
+                    "ATS Complaint CV Writing",
+                    "Tailored Cover letter for each job"
+                  ],
+                })}
+              >
+                Get Service
               </Button>
               <p className="text-sm text-muted-foreground text-center">Plan Description</p>
             </CardFooter>
@@ -112,9 +158,21 @@ export default function ServiceDetailsPage() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
-              <Button 
+              <Button
                 className="w-full"
                 style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
+                onClick={() => handleServiceClick({
+                  id: "pro-player-plan",
+                  title: "Pro Player Plan",
+                  price: 25000,
+                  description: "Comprehensive package for serious job seekers",
+                  features: [
+                    "Applying to 100 jobs",
+                    "Interview Training 100 mins",
+                    "ATS Complaint CV Writing",
+                    "Tailored Cover letter for each job"
+                  ],
+                })}
               >
                 Get Service
               </Button>
@@ -144,10 +202,20 @@ export default function ServiceDetailsPage() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
-              <Button 
+              <Button
                 className="w-full"
                 style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
-                onClick={() => window.open('https://pay.ziina.com/tabashirae/t64TaIkBY', '_blank')}
+                onClick={() => handleServiceClick({
+                  id: "ai-job-apply",
+                  title: "AI Job Apply",
+                  price: 20000,
+                  description: "Let AI find and apply to the best jobs for you",
+                  features: [
+                    "AI matches your CV to the best 200 jobs",
+                    "Automatic job applications",
+                    "Smart job matching algorithm"
+                  ],
+                })}
               >
                 Get Service
               </Button>
@@ -170,10 +238,15 @@ export default function ServiceDetailsPage() {
                 <p>Enhance your professional presence with a profile that stands out to recruiters.</p>
               </CardContent>
               <CardFooter>
-                <Button 
+                <Button
                   className="w-full"
                   style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
-                  onClick={() => window.open('https://pay.ziina.com/tabashirae/5zRYy0U5b', '_blank')}
+                  onClick={() => handleServiceClick({
+                    id: "linkedin-optimization",
+                    title: "LinkedIn Optimization",
+                    price: 7000,
+                    description: "Enhance your professional presence with a profile that stands out to recruiters",
+                  })}
                 >
                   Get Service
                 </Button>
@@ -190,10 +263,15 @@ export default function ServiceDetailsPage() {
                 <p>Optimize your CV for Applicant Tracking Systems to increase your chances of getting noticed.</p>
               </CardContent>
               <CardFooter>
-                <Button 
+                <Button
                   className="w-full"
                   style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
-                  onClick={() => window.open('https://pay.ziina.com/tabashirae/ofRnnqkFf', '_blank')}
+                  onClick={() => handleServiceClick({
+                    id: "ats-cv",
+                    title: "ATS CV",
+                    price: 4000,
+                    description: "Optimize your CV for Applicant Tracking Systems to increase your chances of getting noticed",
+                  })}
                 >
                   Get Service
                 </Button>
@@ -210,10 +288,15 @@ export default function ServiceDetailsPage() {
                 <p>Gain confidence and skills with tailored interview preparation and strategies.</p>
               </CardContent>
               <CardFooter>
-                <Button 
+                <Button
                   className="w-full"
                   style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
-                  onClick={() => window.open('https://pay.ziina.com/tabashirae/_35fUuRa-', '_blank')}
+                  onClick={() => handleServiceClick({
+                    id: "interview-training",
+                    title: "Interview Training",
+                    price: 15000,
+                    description: "Gain confidence and skills with tailored interview preparation and strategies",
+                  })}
                 >
                   Get Service
                 </Button>
@@ -243,6 +326,23 @@ export default function ServiceDetailsPage() {
         </div>
       </div>
       <TermsModal isOpen={showTermsModal} onClose={handleCloseTermsModal} />
+      {selectedService && (
+        <ServiceModal
+          isOpen={!!selectedService}
+          onClose={() => setSelectedService(null)}
+          service={selectedService}
+        />
+      )}
+      {successServiceId && (
+        <PaymentSuccessModal
+          isOpen={showSuccessModal}
+          onClose={() => {
+            setShowSuccessModal(false)
+            setSuccessServiceId(null)
+          }}
+          serviceId={successServiceId}
+        />
+      )}
     </div>
   )
 }

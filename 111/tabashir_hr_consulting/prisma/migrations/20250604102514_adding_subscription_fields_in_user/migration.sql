@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "aiJobApplyCount" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "jobCount" INTEGER NOT NULL DEFAULT 0;

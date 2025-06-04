@@ -146,7 +146,7 @@ export default function SkillsForm({
 
     console.log("Generating CV WITH AI......");
 
-    const response = await fetch(`http://77.243.85.225:5050/api/v1/resume/format-from-raw`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/format-from-raw`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

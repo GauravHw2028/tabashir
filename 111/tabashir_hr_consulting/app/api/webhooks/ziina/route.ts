@@ -93,6 +93,24 @@ export async function POST(request: Request) {
         }
       }
     }
+
+    // If it's the service payment success url
+    if(event.data.success_url.startsWith(`${process.env.NEXT_PUBLIC_APP_URL}/service-details`)){
+      const serviceId = event.data.success_url.split('service_id=')[1];
+      const userId = event.data.success_url.split('userId=')[1];
+      console.log(serviceId);
+
+      if(serviceId){
+        const service = await prisma.user.update({
+          where: {
+            id: serviceId
+          },
+          data: {
+            jobCount: 1,
+          }
+        })
+      }
+    }
   }
 
   return NextResponse.json({ received: true })
