@@ -18,6 +18,8 @@ import { getCV } from "@/actions/ai-resume"
 import { uploadAIResume } from "@/actions/resume"
 import ResumePayment from "../../../_components/resume-payment"
 import { getResumePaymentStatus as getResumePaymentStatusAction } from "@/actions/ai-resume"
+import Image from "next/image"
+
 const skillSchema = z.object({
   name: z.string().min(2, { message: "Skill name is required" }),
   level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED", "EXPERT"], {
@@ -195,9 +197,6 @@ export default function SkillsForm({
         description: "CV generated and saved successfully",
       });
 
-      // Optionally redirect to a success page or show the download link
-      console.log("Formatted resume URL:", uploadResult.data);
-
       setResumeGenerated(true);
 
       router.push(`/resume/new/${resumeId}/download`);
@@ -231,6 +230,44 @@ export default function SkillsForm({
       }, 3000)
     }
   }, [paymentCompleted]);
+
+  useEffect(() => {
+    (async () => {
+      const result = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "entity": "string",
+          "nationality": "string",
+          "gender": "string",
+          "job_title": "string",
+          "academic_qualification": "string",
+          "experience": "string",
+          "languages": "string",
+          "salary": "string",
+          "vacancy_city": "string",
+          "working_hours": "string",
+          "working_days": "string",
+          "application_email": "string",
+          "job_description": "string",
+          "job_date": "string",
+          "link": "string",
+          "phone": "string"
+        }),
+      })
+    })()
+  }, []);
+
+  if (generatingCV) {
+    return (
+      <div className="flex flex-col gap-[28px] justify-center items-center py-[100px]">
+        <p className="text-[25.69px] font-semibold">Generating Resume...</p>
+        <Image src="/ai_generating.svg" alt="Loading" width={133} height={109} />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -355,9 +392,9 @@ export default function SkillsForm({
         </form>
       </Form>
       {isCheckingPayment && (
-        <div className="flex justify-center items-center absolute top-0 left-0 w-full h-full bg-black/50">
-          <Loader2 className="w-4 h-4 animate-spin" />
-          <p className="text-white">Checking payment status...</p>
+        <div className="flex justify-center items-center gap-3 absolute top-0 left-0 w-full h-full bg-black/80">
+          <Loader2 className="w-6 h-6 animate-spin" />
+          <p className="text-white text-lg">Checking payment status...</p>
         </div>
       )}
       <ResumePayment resumeId={resumeId} isOpened={isPaymentOpened} />

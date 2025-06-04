@@ -60,6 +60,7 @@ export default function ResumeLayout({
     const resumeGenerated = await getResumeGeneratedStatus(resumeId);
 
     if (resumeGenerated.data?.formatedUrl) {
+      console.log("resumeGenerated", resumeGenerated.data?.formatedUrl)
       setResumeGenerated(true)
       const resumeScore = getResumeScore();
       setResumeScore(resumeScore)
