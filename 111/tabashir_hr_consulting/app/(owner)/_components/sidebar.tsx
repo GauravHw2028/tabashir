@@ -11,6 +11,7 @@ import {
   HelpCircle,
   LogOut,
   CreditCard,
+  Users,
 } from "lucide-react";
 import { signOut } from "@/app/utils/auth";
 import { onLogout } from "@/actions/auth";
@@ -33,6 +34,11 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
       name: "Jobs",
       href: "/admin/jobs",
       icon: Briefcase,
+    },
+    {
+      name: "Users",
+      href: "/admin/users",
+      icon: Users,
     },
     {
       name: "AI Resumes",

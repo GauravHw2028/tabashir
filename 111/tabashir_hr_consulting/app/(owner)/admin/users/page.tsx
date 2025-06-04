@@ -61,8 +61,8 @@ export default function UsersPage() {
                 <td className="py-3 px-4">{user.email}</td>
                 <td className="py-3 px-4">
                   <span className={`px-2 py-1 rounded-full text-sm ${user.userType === 'ADMIN' ? 'bg-purple-100 text-purple-800' :
-                      user.userType === 'RECURITER' ? 'bg-blue-100 text-blue-800' :
-                        'bg-green-100 text-green-800'
+                    user.userType === 'RECURITER' ? 'bg-blue-100 text-blue-800' :
+                      'bg-green-100 text-green-800'
                     }`}>
                     {user.userType || 'CANDIDATE'}
                   </span>
