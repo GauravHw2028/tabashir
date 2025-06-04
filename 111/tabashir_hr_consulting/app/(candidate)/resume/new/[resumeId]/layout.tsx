@@ -12,6 +12,7 @@ import { useResumeStore } from "../store/resume-store"
 import { cn } from "@/lib/utils"
 import { getResumeGeneratedStatus, getResumeScore as getResumeScoreAction } from "@/actions/ai-resume"
 import { getResumePaymentStatus as getResumePaymentStatusAction } from "@/actions/ai-resume"
+import Link from "next/link"
 
 export default function ResumeLayout({
   children,
@@ -22,7 +23,7 @@ export default function ResumeLayout({
 }) {
   const { resumeId } = use(params)
   const [resumeScore, setResumeScore] = useState(0)
-  const { isSidebarVisible, setFormCompleted, completedForms, getResumeScore, resetForms, setPaymentCompleted, setResumeGenerated } = useResumeStore()
+  const { setFormCompleted, completedForms, getResumeScore, resetForms, setPaymentCompleted, setResumeGenerated, isResumeGenerated } = useResumeStore()
 
   const calculateScore = async () => {
     resetForms();
@@ -92,8 +93,13 @@ export default function ResumeLayout({
 
       <div className="max-w-[1300px] mb-[100px] mx-auto ">
         {/* Full width header card */}
-        <div className="px-4 text-[#000000] font-medium mb-1">
-          Sami-Haider-Wordpress-Developer-Resume
+        <div className="flex flex-wrap justify-between items-center mb-1">
+          <div className="px-4 text-[#000000] font-medium">
+            Sami-Haider-Wordpress-Developer-Resume
+          </div>
+          {isResumeGenerated && <Button variant="outline" size="sm" className="h-8 gap-1 text-gray-700 mt-2 sm:mt-0" asChild>
+            <Link href={`/resume/new/${resumeId}/download`}>Check Generated CV</Link>
+          </Button>}
         </div>
         <Card className="rounded-[6px] bg-white py-4 px-6 mb-[50px]" style={{ boxShadow: "0px 4px 4px 0px #00000040" }}>
           <div className="mx-auto">

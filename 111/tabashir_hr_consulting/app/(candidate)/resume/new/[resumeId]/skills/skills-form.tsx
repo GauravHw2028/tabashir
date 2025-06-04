@@ -231,35 +231,6 @@ export default function SkillsForm({
     }
   }, [paymentCompleted]);
 
-  useEffect(() => {
-    (async () => {
-      const result = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          "entity": "string",
-          "nationality": "string",
-          "gender": "string",
-          "job_title": "string",
-          "academic_qualification": "string",
-          "experience": "string",
-          "languages": "string",
-          "salary": "string",
-          "vacancy_city": "string",
-          "working_hours": "string",
-          "working_days": "string",
-          "application_email": "string",
-          "job_description": "string",
-          "job_date": "string",
-          "link": "string",
-          "phone": "string"
-        }),
-      })
-    })()
-  }, []);
-
   if (generatingCV) {
     return (
       <div className="flex flex-col gap-[28px] justify-center items-center py-[100px]">
