@@ -35,6 +35,11 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
       icon: Briefcase,
     },
     {
+      name: "AI Resumes",
+      href: "/admin/aicv",
+      icon: FileText,
+    },
+    {
       name: "Payments",
       href: "/admin/payments",
       icon: CreditCard,
@@ -73,8 +78,8 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                 key={item.name}
                 href={item.href}
                 className={`flex items-center px-4 py-3 my-1 rounded-lg text-sm ${isActive
-                    ? "blue-gradient text-white"
-                    : "text-gray-700 hover:bg-gray-100"
+                  ? "blue-gradient text-white"
+                  : "text-gray-700 hover:bg-gray-100"
                   }`}
               >
                 <item.icon
@@ -94,8 +99,8 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                   key={item.name}
                   href={item.href}
                   className={`flex items-center px-4 py-3 my-1 rounded-lg text-sm ${isActive
-                      ? "blue-gradient text-white"
-                      : "text-gray-700 hover:bg-gray-100"
+                    ? "blue-gradient text-white"
+                    : "text-gray-700 hover:bg-gray-100"
                     }`}
                 >
                   <item.icon

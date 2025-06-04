@@ -3,6 +3,7 @@
 import { auth } from "@/app/utils/auth";
 import { prisma } from "@/app/utils/db";
 import { aiResumePersonalDetailsSchema, AiResumePersonalDetailsSchemaType } from "@/components/forms/ai-resume/personal-details/schema";
+import { AiResumeStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 export async function onSetupResume() {
@@ -654,5 +655,41 @@ export async function getResumeGeneratedStatus(resumeId: string) {
     error: false,
     message: "Resume generated status fetched successfully!",
     data: resume,
+  };
+}
+
+export async function changeResumeStatus(resumeId: string, status: AiResumeStatus) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { error: true, message: "Unauthenticated" };
+  }
+  
+  const candidate = await prisma.candidate.findUnique({
+    where: {
+      userId: session.user.id,
+    },
+  });
+
+  if (!candidate) {
+    return { error: true, message: "Candidate not found" };
+  }
+
+  const resume = await prisma.aiResume.update({
+    where: {
+      id: resumeId,
+    },
+    data: {
+      status: status,
+    },
+  });
+  
+  if (!resume) {
+    return { error: true, message: "Failed to change resume status" };
+  }
+
+  return {
+    error: false,
+    message: "Resume status changed successfully!",
   };
 }

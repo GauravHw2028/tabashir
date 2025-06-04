@@ -13,7 +13,7 @@ import { X, Plus, Loader2 } from "lucide-react"
 import { useResumeStore } from "../../store/resume-store"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AiSkill } from "@prisma/client"
-import { onSaveSkills } from "@/actions/ai-resume"
+import { changeResumeStatus, onSaveSkills } from "@/actions/ai-resume"
 import { getCV } from "@/actions/ai-resume"
 import { uploadAIResume } from "@/actions/resume"
 import ResumePayment from "../../../_components/resume-payment"
@@ -158,9 +158,6 @@ export default function SkillsForm({
     });
 
     const file = await response.arrayBuffer();
-    console.log("CV generated WITH AI......");
-
-    console.log("CV generated", file);
 
     if (!file) {
       console.log("Failed to generate CV", file);
@@ -182,6 +179,7 @@ export default function SkillsForm({
 
       // Upload to UploadThing
       const uploadResult = await uploadAIResume(namedFile, resumeId);
+      const changeStatusResume = await changeResumeStatus(resumeId, "COMPLETED");
 
       if (uploadResult.error) {
         toast({
