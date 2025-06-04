@@ -91,7 +91,7 @@ export function ResumeSidebar({ resumeId }: ResumeSidebarProps) {
   ]
 
   return (
-    <div className="w-[310px] h-full">
+    <div className="w-[310px] h-full max-lg:w-full">
       <nav className="">
         {sidebarItems.map((item) => {
           const isActive = pathname === item.href

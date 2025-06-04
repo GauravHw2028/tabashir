@@ -114,7 +114,7 @@ export default function ResumeLayout({
         </Card>
 
         {/* Sidebar and content area */}
-        <div className="flex gap-[50px]">
+        <div className="flex gap-[50px] max-lg:flex-col max-lg:gap-[20px]">
           {/* Sidebar - only visible when isSidebarVisible is true */}
           {/* {isSidebarVisible && <ResumeSidebar resumeId={resumeId} />} */}
           <ResumeSidebar resumeId={resumeId} />
