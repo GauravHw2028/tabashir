@@ -120,7 +120,7 @@ export default function JobsPage() {
   }, [location, jobType, salaryMin, salaryMax, experience, attendance, query, sort])
 
   return (
-    <div className="h-screen flex gap-6 rounded-lg max-h-[calc(100vh-35px)] relative">
+    <div className="h-screen flex flex-col lg:flex-row gap-6 rounded-lg max-h-[calc(100vh-35px)] relative">
       {/* {loading && (
         <div className="absolute inset-0 bg-white/80 flex flex-col items-center justify-center rounded-lg z-50">
           <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin mb-4"></div>
@@ -129,7 +129,16 @@ export default function JobsPage() {
       )} */}
       {/* First column: Search preferences (conditionally rendered) */}
       {showFilters && (
-        <div className="w-[280px] bg-white rounded-lg shadow-sm p-6 overflow-y-auto flex-shrink-0 animate-in slide-in-from-left duration-300">
+        <div className="fixed inset-0 lg:relative lg:inset-auto lg:w-[280px] bg-white rounded-lg shadow-sm p-6 overflow-y-auto flex-shrink-0 animate-in slide-in-from-left duration-300 z-40 lg:z-auto">
+          <div className="flex justify-between items-center lg:hidden mb-4">
+            <h2 className="text-lg font-semibold">Filters</h2>
+            <button
+              onClick={() => setShowFilters(false)}
+              className="p-2 hover:bg-gray-100 rounded-md"
+            >
+              ✕
+            </button>
+          </div>
           <SearchPreferences
             location={location}
             jobType={jobType}
@@ -143,7 +152,7 @@ export default function JobsPage() {
       )}
 
       {/* Second column: Job listings */}
-      <div className="flex-1 overflow-y-scroll rounded-lg bg-white">
+      <div className={`flex-1 overflow-y-scroll rounded-lg bg-white ${selectedJob ? 'hidden lg:block lg:flex-1' : ''}`}>
         <JobListings
           onSelectJob={setSelectedJob}
           jobs={jobs}
@@ -161,7 +170,7 @@ export default function JobsPage() {
 
       {/* Third column: Job details (conditionally rendered) */}
       {selectedJob && (
-        <div className="w-[400px] bg-white rounded-lg shadow-sm overflow-y-auto flex-shrink-0 animate-in slide-in-from-right duration-300">
+        <div className="fixed inset-0 lg:relative lg:inset-auto lg:w-[400px] bg-white rounded-lg shadow-sm overflow-y-auto flex-shrink-0 animate-in slide-in-from-right duration-300 z-50 lg:z-auto">
           <JobDetails job={selectedJob} onClose={() => setSelectedJob(null)} />
         </div>
       )}

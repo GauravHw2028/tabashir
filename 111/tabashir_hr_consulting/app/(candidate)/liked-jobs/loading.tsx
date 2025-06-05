@@ -1,17 +1,12 @@
 import { Skeleton } from "@/components/ui/skeleton"
 
-export default function Loading() {
+export default function LikedJobsLoading() {
   return (
-    <div className="p-6 max-w-[1200px] mx-auto">
-      <div className="mb-6">
-        <Skeleton className="h-10 w-full rounded-md" />
-      </div>
-
-      <div className="space-y-4">
-        {[1, 2, 3, 4].map((i) => (
-          <Skeleton key={i} className="h-[120px] w-full rounded-lg" />
-        ))}
+    <div className="px-6 py-2 bg-white rounded-md mx-auto max-h-[calc(100vh-35px)] overflow-y-scroll">
+      <div className="flex justify-center items-center h-64">
+        <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
+        <span className="ml-3 text-gray-600">Loading your favorite jobs...</span>
       </div>
     </div>
-  )
+  );
 }

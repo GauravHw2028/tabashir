@@ -41,3 +41,22 @@ export const getJobs = async (
   }
 }
 
+export const getJobById = async (jobId: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs/${jobId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    )
+    const data = await response.json()
+    return { success: data.success, data: data.job }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: error }
+  }
+}
+
