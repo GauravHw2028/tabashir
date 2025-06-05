@@ -32,7 +32,7 @@ export function ServiceModal({ isOpen, onClose, service }: ServiceModalProps) {
       body: JSON.stringify({
         amount: service.price,  // AED 50 → 5000 fils
         currency: 'AED',
-        successUrl: `${window.location.origin}/service-details?payment_completed=true&service_id=${service.id}&userId=${session.data?.user?.id}`,
+        successUrl: `${window.location.origin}/service-details?payment_completed=true&service_id=${service.id}&user_info=${session.data?.user?.id}`,
         cancelUrl: `${window.location.origin}/service-details`,
       }),
     })

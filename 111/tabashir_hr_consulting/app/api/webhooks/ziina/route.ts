@@ -99,7 +99,7 @@ export async function POST(request: Request) {
       // Getting search params from the url params from the url params from the url
       const url = new URL(event.data.success_url)
       const serviceId = url.searchParams.get('service_id')
-      const userId = url.searchParams.get('userId')
+      const userId = url.searchParams.get('user_info')
 
       console.log(serviceId);
       console.log(userId);
