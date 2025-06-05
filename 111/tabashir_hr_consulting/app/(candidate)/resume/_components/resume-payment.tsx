@@ -13,7 +13,7 @@ export default function ResumePayment({ resumeId, isOpened }: { resumeId: string
       body: JSON.stringify({
         amount: 4000,  // AED 50 → 5000 fils
         currency: 'AED',
-        successUrl: `${window.location.origin}/resume/new/cmbf9iyzh0003gtgwb9f9gfi5/skills?intent_id={PAYMENT_INTENT_ID}&payment_completed=true`,
+        successUrl: `${window.location.origin}/resume/new/${resumeId}/skills?intent_id={PAYMENT_INTENT_ID}&payment_completed=true`,
         cancelUrl: `${window.location.origin}/canceled`,
       }),
     })

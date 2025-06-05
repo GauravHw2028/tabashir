@@ -145,7 +145,6 @@ const jobApplications = [
 export default function AppliedJobsPage() {
   const [currentTab, setCurrentTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState("10");
 
   // Filter jobs based on search query and selected tab

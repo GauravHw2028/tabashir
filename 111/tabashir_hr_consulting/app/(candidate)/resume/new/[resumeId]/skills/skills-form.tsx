@@ -58,6 +58,7 @@ export default function SkillsForm({
   userId: string,
   paymentCompleted: string | undefined,
 }) {
+  console.log(resumeId)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
@@ -150,9 +151,6 @@ export default function SkillsForm({
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/format-from-raw`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({
         user_id: userId,
         raw_data: JSON.stringify(data.data),
