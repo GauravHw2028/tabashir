@@ -3,6 +3,9 @@ import { Heart, MapPin } from "lucide-react";
 import Image from "next/image";
 import { Card } from "./ui/card";
 import { cn } from "@/lib/utils";
+import { getIsLiked, onLikeJob, onUnlikeJob } from "@/actions/job";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
 interface JobCardProps {
   job: Job;
@@ -11,7 +14,33 @@ interface JobCardProps {
 }
 
 export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
+  const [isLiked, setIsLiked] = useState(false);
 
+  const handleLike = async () => {
+    setIsLiked(true)
+    const result = await onLikeJob(job.id)
+    if (!result.success) {
+      toast.error(result.error)
+      setIsLiked(false)
+    }
+  }
+
+  const handleUnlike = async () => {
+    setIsLiked(false)
+    const result = await onUnlikeJob(job.id)
+    if (!result.success) {
+      toast.error(result.error)
+      setIsLiked(true)
+    }
+  }
+
+  useEffect(() => {
+    const checkIsLiked = async () => {
+      const result = await getIsLiked(job.id)
+      setIsLiked(result)
+    }
+    checkIsLiked()
+  }, [job.id])
   return (
     <Card
       className={`bg-white rounded-lg p-4  cursor-pointer transition-all shadow-md hover:shadow-lg  ${isSelected ? "bg-[#E9F5FF]" : ""
@@ -54,8 +83,14 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
                 </div>
               )}
 
-              <button className={cn("text-gray-400 hover:text-red-500", job.isLikded && "text-red-500")}>
-                <Heart size={20} fill={job.isLikded ? "currentColor" : "none"} />
+              <button className={cn("text-gray-400 hover:text-red-500", isLiked && "text-red-500")} onClick={() => {
+                if (isLiked) {
+                  handleUnlike()
+                } else {
+                  handleLike()
+                }
+              }}>
+                <Heart size={20} fill={isLiked ? "currentColor" : "none"} />
               </button>
             </div>
           </div>
