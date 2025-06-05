@@ -84,7 +84,7 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
             <div className="text-sm font-medium text-blue-500">
               {job.salary.amount}
               <span className="text-xs text-gray-500">
-                {job.salary && job.salary.period ? `/${job.salary.period}` : ''}
+                {/* {job.salary && job.salary.period ? `/${job.salary.period}` : ''} */}
               </span>
             </div>
           </div>

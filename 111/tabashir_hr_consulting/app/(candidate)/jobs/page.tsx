@@ -32,6 +32,8 @@ export default function JobsPage() {
     setLoading(true)
     const jobs = await getJobs(location, jobType, salaryMin, salaryMax, experience, attendance, query, sort)
 
+    console.log(jobs)
+
     if (jobs.success) {
       // Transform the API data to match the frontend's Job type
       const transformedJobs = jobs.data.map((job: any) => ({

@@ -1,12 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { X, MapPin, Globe, Building2, Briefcase, DollarSign, Calendar } from "lucide-react"
+import { X, Globe, Building2, Briefcase, DollarSign, Calendar } from "lucide-react"
 import type { Job } from "./types"
 import Image from "next/image"
 import { ApplicationModal } from "./application-modal"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { JsonToHtml } from "@/components/tiptap-editor/json-to-html"
 
 interface JobDetailsProps {
   job: Job
