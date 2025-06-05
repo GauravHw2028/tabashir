@@ -151,6 +151,9 @@ export default function SkillsForm({
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/format-from-raw`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         user_id: userId,
         raw_data: JSON.stringify(data.data),
