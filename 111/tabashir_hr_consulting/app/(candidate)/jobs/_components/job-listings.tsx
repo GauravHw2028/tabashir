@@ -1,100 +1,107 @@
 "use client";
 
-import { useState } from "react";
-import { Heart, MapPin, ChevronDown, Sparkles, Filter } from "lucide-react";
+import { ChevronDown, Sparkles, Filter, Search } from "lucide-react";
 import type { Job } from "./types";
-import { mockJobs } from "./mock-data";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { UserProfileHeader } from "../../dashboard/_components/user-profile-header";
 import JobCard from "@/components/job-card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface JobListingsProps {
-  onSelectJob: (job: Job) => void;
-  selectedJobId?: string;
-  showFilters: boolean;
-  setShowFilter: () => void;
-  selectedJob:boolean
+  jobs: Job[]
+  onSelectJob: (job: Job) => void
+  selectedJobId?: string
+  setShowFilter: () => void
+  showFilters: boolean
+  selectedJob: boolean
+  loading: boolean
+  query: string
+  onQueryChange: (value: string) => void
+  sort: "newest" | "oldest" | "salary_asc" | "salary_desc"
+  onSortChange: (value: "newest" | "oldest" | "salary_asc" | "salary_desc") => void
 }
 
 export function JobListings({
+  jobs,
   onSelectJob,
   selectedJobId,
-  showFilters,
   setShowFilter,
-  selectedJob
+  showFilters,
+  selectedJob,
+  loading,
+  query,
+  onQueryChange,
+  sort,
+  onSortChange
 }: JobListingsProps) {
-  const [jobs] = useState<Job[]>(mockJobs);
-
   return (
-    <div className="space-y-4 px-4 pt-6 pb-6 rounded-md   ">
-      {/* Search bar at the top */}
-      <div className="flex justify-between items-center ">
-        <div className="max-w-[70%] w-[70%]">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search by Category, Company or ..."
-              className="pl-4 pr-10 py-3 border border-gray-300 rounded-full w-full text-sm text-gray-700"
-            />
-            <button className="absolute right-0 top-0 bottom-0 bg-[#002B6B] text-white rounded-r-full px-4">
-              <Search size={18} />
+    <div className="h-full flex flex-col">
+      {/* Header */}
+      <div className="p-6 border-b">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={setShowFilter}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            >
+              <Filter className="w-4 h-4" />
+              {showFilters ? "Hide Filters" : "Show Filters"}
             </button>
-          </div>
-        </div>
-        {!(showFilters && selectedJob) && <UserProfileHeader />}
-      </div>
-
-      <div className="flex justify-between items-center sticky top-0  py-2 z-10 bg-white">
-        <div className="flex items-center justify-center gap-2">
-          <div className=" flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={setShowFilter}
-                className={cn(
-                  "flex items-center  bg-transparent border border-gray-300 rounded-lg pr-8 text-sm text-gray-700  gap-2 px-4 py-2  font-medium",
-                  showFilters &&
-                    " bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white"
-                )}
-              >
-                <Filter size={16} />
-                {showFilters ? "Hide Filters" : "Show Filters"}
-              </button>
-              {/* Sort controls would go here */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search jobs..."
+                className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={query}
+                onChange={(e) => onQueryChange(e.target.value)}
+              />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
           </div>
-
-          <div className="text-sm text-gray-700">Sort</div>
-          <div className="relative">
-            <select className="px-4 py-2 appearance-none bg-transparent border border-gray-300 rounded-lg pr-8 text-sm text-gray-700">
-              <option>Newest</option>
-              <option>Oldest</option>
-              <option>Highest Salary</option>
-              <option>Lowest Salary</option>
-            </select>
-            <ChevronDown
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
-              size={14}
-            />
-          </div>
+          <select
+            className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={sort}
+            onChange={(e) => onSortChange(e.target.value as "newest" | "oldest" | "salary_asc" | "salary_desc")}
+          >
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="salary_asc">Salary: Low to High</option>
+            <option value="salary_desc">Salary: High to Low</option>
+          </select>
         </div>
-
-        {/* AI Recommendation button with golden sparkle and blue gradient */}
-        <button className="flex items-center gap-2 bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white px-4 py-2 rounded-full text-sm font-medium">
-          <Sparkles className="text-yellow-300" size={16} />
-          <span>AI Recommendation</span>
-        </button>
       </div>
 
-      <div className="space-y-4">
-        {jobs.map((job) => (
-          <JobCard
-            key={job.id}
-            job={job}
-            onClick={() => onSelectJob(job)}
-            isSelected={job.id === selectedJobId}
-          />
-        ))}
+      {/* Job List */}
+      <div className="flex-1 overflow-y-auto">
+        {loading ? (
+          // Skeleton loading state
+          <div className="p-6 space-y-4">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="h-24 bg-gray-200 rounded-lg"></div>
+              </div>
+            ))}
+          </div>
+        ) : jobs.length === 0 ? (
+          // No jobs found state
+          <div className="flex flex-col items-center justify-center h-full text-gray-500">
+            <Search className="w-12 h-12 mb-4" />
+            <p className="text-lg font-medium">No jobs found</p>
+            <p className="text-sm">Try adjusting your search criteria</p>
+          </div>
+        ) : (
+          // Job cards
+          <div className="p-6 space-y-4">
+            {jobs.map((job) => (
+              <JobCard
+                key={job.id}
+                job={job}
+                onClick={() => onSelectJob(job)}
+                isSelected={job.id === selectedJobId}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -190,23 +197,3 @@ export function JobListings({
 //     </div>
 //   );
 // }
-
-function Search(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="11" cy="11" r="8" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
-  );
-}

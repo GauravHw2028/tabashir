@@ -95,10 +95,10 @@ export default function ResumeLayout({
         {/* Full width header card */}
         <div className="flex flex-wrap justify-between items-center mb-1">
           <div className="px-4 text-[#000000] font-medium">
-            Sami-Haider-Wordpress-Developer-Resume
+            Generate New Resume
           </div>
           {isResumeGenerated && <Button variant="outline" size="sm" className="h-8 gap-1 text-gray-700 mt-2 sm:mt-0" asChild>
-            <Link href={`/resume/new/${resumeId}/download`}>Check Generated CV</Link>
+            <Link href={`/resume/new/${resumeId}/download`}>Check Generated Resume</Link>
           </Button>}
         </div>
         <Card className="rounded-[6px] bg-white py-4 px-6 mb-[50px]" style={{ boxShadow: "0px 4px 4px 0px #00000040" }}>

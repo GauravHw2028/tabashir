@@ -156,6 +156,7 @@ export default function SkillsForm({
       body: JSON.stringify({
         user_id: userId,
         raw_data: JSON.stringify(data.data),
+        output_language: "regular"
       }),
     });
 
@@ -181,7 +182,6 @@ export default function SkillsForm({
 
       // Upload to UploadThing
       const uploadResult = await uploadAIResume(namedFile, resumeId);
-      const changeStatusResume = await changeResumeStatus(resumeId, "COMPLETED");
 
       if (uploadResult.error) {
         toast({

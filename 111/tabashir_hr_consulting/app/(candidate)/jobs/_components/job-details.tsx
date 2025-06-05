@@ -35,7 +35,7 @@ export function JobDetails({ job, onClose, isPreview = false }: JobDetailsProps)
           <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100">
             <Image
               src={job.logo || "/placeholder.svg"}
-              alt={job.company}
+              alt={job.company ? job.company + ' logo' : 'Company logo'}
               width={48}
               height={48}
               className="w-full h-full object-contain p-1"
@@ -44,7 +44,8 @@ export function JobDetails({ job, onClose, isPreview = false }: JobDetailsProps)
           <div>
             <h2 className="font-semibold text-lg text-gray-900">{job.title}</h2>
             <p className="text-sm text-gray-600">
-              {job.company} • {job.location}, {job.country}
+              {job.company}
+              {job.location ? ` • ${job.location}` : ""}
             </p>
           </div>
         </div>
@@ -94,7 +95,7 @@ export function JobDetails({ job, onClose, isPreview = false }: JobDetailsProps)
             <Briefcase size={20} className="text-gray-500" />
             <div>
               <p className="text-sm text-gray-500">Job Type</p>
-              <p className="font-medium text-gray-900">{job.jobType}</p>
+              <p className="font-medium text-gray-900">{job.jobType || "-"}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
@@ -102,7 +103,7 @@ export function JobDetails({ job, onClose, isPreview = false }: JobDetailsProps)
             <div>
               <p className="text-sm text-gray-500">Salary</p>
               <p className="font-medium text-gray-900">
-                {Math.round(Number(job.salary.amount) / 1000)}k {job.salary.currency} / {job.salary.period}
+                {job.salary.amount}
               </p>
             </div>
           </div>
@@ -110,7 +111,7 @@ export function JobDetails({ job, onClose, isPreview = false }: JobDetailsProps)
             <Calendar size={20} className="text-gray-500" />
             <div>
               <p className="text-sm text-gray-500">Posted</p>
-              <p className="font-medium text-gray-900">{job.postedTime}</p>
+              <p className="font-medium text-gray-900">{job.postedTime || "-"}</p>
             </div>
           </div>
         </div>
@@ -125,52 +126,25 @@ export function JobDetails({ job, onClose, isPreview = false }: JobDetailsProps)
             <div>
               <h3 className="font-medium mb-3 text-gray-900">Job Description</h3>
               <div className="prose prose-sm max-w-none text-gray-700">
-                {job.description && <JsonToHtml json={JSON.parse(job.description)} />}
+                {job.description ? job.description : <span className="text-gray-400">No description provided.</span>}
               </div>
             </div>
 
             <div>
               <h3 className="font-medium mb-3 text-gray-900">Requirements</h3>
               <div className="prose prose-sm max-w-none text-gray-700">
-                {job.requirements && <JsonToHtml json={JSON.parse(job.requirements)} />}
+                {job.requirements ? job.requirements : <span className="text-gray-400">No requirements provided.</span>}
               </div>
             </div>
 
             <div>
-              <h3 className="font-medium mb-3 text-gray-900">Location</h3>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-4 h-4 rounded-full bg-blue-500"></div>
-                <span className="text-sm text-gray-700">{job.jobType}</span>
-
-                <div className="ml-4 flex items-center gap-1 text-sm text-gray-600">
-                  <MapPin size={14} />
-                  <span>{job.locationDetails?.place}</span>
-                </div>
-              </div>
+              <h3 className="font-medium mb-3 text-gray-900">Department</h3>
+              <div className="text-sm text-gray-700">{job.department || "-"}</div>
             </div>
 
             <div>
-              <h3 className="font-medium mb-3 text-gray-900">Required Skills</h3>
-              <div className="flex flex-wrap gap-4">
-                {job.skills?.map((skill, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className={`w-4 h-4 rounded-full`} style={{ backgroundColor: skill.color }}></div>
-                    <span className="text-sm text-gray-700">{skill.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-medium mb-3 text-gray-900">Benefits & Perks</h3>
-              <ul className="space-y-2 text-sm">
-                {job.perks?.map((perk, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <span className="text-gray-400">•</span>
-                    <span className="text-gray-700">{perk}</span>
-                  </li>
-                ))}
-              </ul>
+              <h3 className="font-medium mb-3 text-gray-900">Team</h3>
+              <div className="text-sm text-gray-700">{job.team || "-"}</div>
             </div>
           </TabsContent>
 
@@ -180,7 +154,7 @@ export function JobDetails({ job, onClose, isPreview = false }: JobDetailsProps)
                 <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
                   <Image
                     src={job.logo || "/placeholder.svg"}
-                    alt={job.company}
+                    alt={job.company ? job.company + ' logo' : 'Company logo'}
                     width={64}
                     height={64}
                     className="w-full h-full object-contain p-2"
@@ -188,30 +162,15 @@ export function JobDetails({ job, onClose, isPreview = false }: JobDetailsProps)
                 </div>
                 <div>
                   <h3 className="font-medium text-gray-900">{job.company}</h3>
-                  <p className="text-sm text-gray-600">{job.location}, {job.country}</p>
+                  <p className="text-sm text-gray-600">{job.location}</p>
                 </div>
               </div>
 
               <div>
                 <h3 className="font-medium mb-3 text-gray-900">About the Company</h3>
                 <p className="text-sm text-gray-700">
-                  {/* Add company description here when available */}
-                 {job.companyDescription}
+                  {job.companyDescription || <span className="text-gray-400">No company description provided.</span>}
                 </p>
-              </div>
-
-              <div>
-                <h3 className="font-medium mb-3 text-gray-900">Company Culture</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm font-medium text-gray-900">Work Environment</p>
-                    <p className="text-sm text-gray-600">Professional and collaborative</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm font-medium text-gray-900">Growth Opportunities</p>
-                    <p className="text-sm text-gray-600">Continuous learning and development</p>
-                  </div>
-                </div>
               </div>
             </div>
           </TabsContent>
