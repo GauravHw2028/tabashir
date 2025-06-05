@@ -96,9 +96,10 @@ export async function POST(request: Request) {
 
     // If it's the service payment success url
     if(event.data.success_url.startsWith(`${process.env.NEXT_PUBLIC_APP_URL}/service-details`)){
-      const serviceId = event.data.success_url.split('service_id=')[1];
-      const userId = event.data.success_url.split('userId=')[1];
-      console.log(serviceId);
+      // Getting search params from the url params from the url params from the url
+      const url = new URL(event.data.success_url)
+      const serviceId = url.searchParams.get('service_id')
+      const userId = url.searchParams.get('userId')
 
       if(serviceId){
         const service = await prisma.user.update({
@@ -106,7 +107,12 @@ export async function POST(request: Request) {
             id: serviceId
           },
           data: {
-            jobCount: 1,
+            jobCount: {
+              increment: 1
+            },
+            aiJobApplyCount: {
+              increment: 1
+            },
           }
         })
       }

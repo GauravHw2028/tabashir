@@ -162,6 +162,16 @@ export default function SkillsForm({
     });
 
     const file = await response.arrayBuffer();
+    // const json = await response.json();
+
+    // if (json.error) {
+    //   toast({
+    //     title: "Error",
+    //     description: json.message,
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
 
     if (!file) {
       console.log("Failed to generate CV", file);
@@ -170,6 +180,9 @@ export default function SkillsForm({
         description: "Failed to generate CV",
         variant: "destructive",
       });
+      setGeneratingCV(false);
+      setIsSubmitting(false);
+      setIsPaymentOpened(false);
       return;
     }
 
