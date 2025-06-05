@@ -20,12 +20,22 @@ import {
 import { onLogout } from "@/actions/auth"
 import Image from "next/image"
 
-export function Sidebar() {
+interface SidebarProps {
+  onNavigate?: () => void;
+}
+
+export function Sidebar({ onNavigate }: SidebarProps) {
   const pathname = usePathname()
 
   const isActive = (path: string) => {
     return pathname === path
   }
+
+  const handleNavigation = () => {
+    if (onNavigate) {
+      onNavigate();
+    }
+  };
 
   const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
@@ -41,17 +51,18 @@ export function Sidebar() {
   ]
 
   return (
-    <div className="h-full w-[250px] bg-white border-r flex flex-col rounded-lg p-3">
-      <div className="px-3 pb-4 pt-5 border-b mb-3">
+    <div className="h-full w-full lg:w-[250px] bg-white border-r flex flex-col rounded-lg p-3">
+      <div className="px-3 pb-4 pt-5 border-b mb-3 max-lg:hidden">
         <Image src="/logo.png" alt="logo" width={217} height={32} className="mx-auto" />
       </div>
 
-      <div className="flex-1 overflow-auto py-4">
+      <div className="flex-1 overflow-auto py-4 max-lg:py-1">
         <nav className=" px-2">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
+              onClick={handleNavigation}
               className={`flex items-center px-2 py-2 mb-2 text-base font-medium rounded-md ${isActive(item.href) ? "blue-gradient text-white" : "text-gray-700 hover:bg-gray-100"
                 }`}
             >
@@ -65,6 +76,7 @@ export function Sidebar() {
       <div className="p-4 border-t">
         <Link
           href="/account"
+          onClick={handleNavigation}
           className="flex items-center px-2 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100"
         >
           <User className="mr-3 h-5 w-5" />
