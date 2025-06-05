@@ -30,7 +30,16 @@ export default function NewJobPage() {
       contactEmail: "",
       contactPhone: "",
       companyLogo: "",
-      requiredSkills: []
+      requiredSkills: [],
+      nationality: "",
+      gender: "",
+      academicQualification: "",
+      experience: "",
+      languages: "",
+      workingHours: "",
+      workingDays: "",
+      jobDate: "",
+      link: "",
     },
   })
 

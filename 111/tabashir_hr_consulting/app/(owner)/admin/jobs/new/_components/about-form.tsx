@@ -31,11 +31,13 @@ export default function AboutForm({ form, onNext }: AboutFormProps) {
       "companyLogo",
       "jobType",
       "salaryMin",
-      "salaryMax",]
-    
+      "salaryMax",
+      "nationality",
+      "gender",]
+
     // Check if there are any errors in fields not in our list
     const hasOtherErrors = Object.keys(err).some(key => !fields.includes(key))
-    
+
     // If there are no errors in our specified fields, proceed to next step
     if (hasOtherErrors) {
       onNext()
@@ -123,9 +125,9 @@ export default function AboutForm({ form, onNext }: AboutFormProps) {
 
                     {uploadMethod === "url" ? (
                       <FormControl>
-                        <Input 
-                          placeholder="Paste company logo URL" 
-                          {...field} 
+                        <Input
+                          placeholder="Paste company logo URL"
+                          {...field}
                           onChange={(e) => {
                             field.onChange(e)
                             setCompanyLogoUrl(e.target.value)
@@ -200,6 +202,43 @@ export default function AboutForm({ form, onNext }: AboutFormProps) {
                       <SelectItem value="Remote">Remote</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gender Requirements</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select gender requirement" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Male">Male</SelectItem>
+                      <SelectItem value="Female">Female</SelectItem>
+                      <SelectItem value="Any">Any</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="nationality"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nationality Requirements</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. UAE National, Any, etc." {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

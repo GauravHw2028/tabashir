@@ -1,9 +1,9 @@
 "use server"
 
-
 import { auth } from "@/app/utils/auth"
 import { prisma } from "@/app/utils/db"
 import { revalidatePath } from "next/cache"
+import { createJobAPI } from "@/lib/api"
 
 export async function createJob(formData: {
   jobTitle: string
@@ -21,6 +21,16 @@ export async function createJob(formData: {
   contactEmail?: string
   contactPhone?: string
   requiredSkills: string[]
+  // New API required fields
+  nationality: string
+  gender: string
+  academicQualification: string
+  experience: string
+  languages: string
+  workingHours: string
+  workingDays: string
+  jobDate: string
+  link?: string
 }) {
   try {
     const session = await auth()
@@ -28,16 +38,42 @@ export async function createJob(formData: {
       throw new Error("Unauthorized")
     }
 
-    // Get the owner record
+    // Transform form data to API payload format
+    const apiPayload = {
+      entity: formData.company,
+      nationality: formData.nationality,
+      gender: formData.gender,
+      job_title: formData.jobTitle,
+      academic_qualification: formData.academicQualification,
+      experience: formData.experience,
+      languages: formData.languages,
+      salary: `${formData.salaryMin} - ${formData.salaryMax} AED`,
+      vacancy_city: formData.location || "",
+      working_hours: formData.workingHours,
+      working_days: formData.workingDays,
+      application_email: formData.contactEmail || "",
+      job_description: formData.description,
+      job_date: formData.jobDate,
+      link: formData.link || "",
+      phone: formData.contactPhone || "",
+    }
+
+    // Send to external API
+    const apiResult = await createJobAPI(apiPayload)
+    
+    if (!apiResult.success) {
+      return { success: false, error: "Failed to create job via API" }
+    }
+
+    // Also save to local database for admin management
     const owner = await prisma.owner.findUnique({
       where: { userId: session.user.id }
     })
 
     if (!owner) {
-      throw new Error("Owner not found")
+      return { success: false, error: "Owner not found" }
     }
 
-    // Create the job
     const job = await prisma.job.create({
       data: {
         title: formData.jobTitle,
@@ -60,7 +96,7 @@ export async function createJob(formData: {
     })
 
     revalidatePath("/admin/jobs")
-    return { success: true, jobId: job.id }
+    return { success: true, jobId: job.id, apiData: apiResult.data }
   } catch (error) {
     console.error("Error creating job:", error)
     return { success: false, error: "Failed to create job" }

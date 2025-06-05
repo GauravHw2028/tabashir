@@ -16,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function ServiceDetailsPage() {
   const [showTermsModal, setShowTermsModal] = useState(false)
@@ -74,7 +75,7 @@ export default function ServiceDetailsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {/* Business Plan Card */}
-          <Card className="shadow-md hover:shadow-lg">
+          {/* <Card className="shadow-md hover:shadow-lg">
             <CardHeader>
               <div className="flex items-center">
                 <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mr-3">
@@ -122,10 +123,10 @@ export default function ServiceDetailsPage() {
               </Button>
               <p className="text-sm text-muted-foreground text-center">Plan Description</p>
             </CardFooter>
-          </Card>
+          </Card> */}
 
           {/* Pro Player Plan Card - 250AED */}
-          <Card className="shadow-md hover:shadow-lg">
+          {/* <Card className="shadow-md hover:shadow-lg">
             <CardHeader>
               <div className="flex items-center">
                 <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mr-3">
@@ -178,7 +179,7 @@ export default function ServiceDetailsPage() {
               </Button>
               <p className="text-sm text-muted-foreground text-center">Plan Description</p>
             </CardFooter>
-          </Card>
+          </Card> */}
 
           {/* AI Job Apply Package - 200AED */}
           <Card className="shadow-md hover:shadow-lg">
@@ -229,7 +230,7 @@ export default function ServiceDetailsPage() {
           <h2 className="text-xl font-bold mb-4">Services</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* LinkedIn Optimization */}
-            <Card className="shadow-md hover:shadow-lg">
+            {/* <Card className="shadow-md hover:shadow-lg">
               <CardHeader>
                 <CardTitle className="text-xl">LinkedIn Optimization</CardTitle>
                 <CardDescription className="text-lg font-semibold">70AED</CardDescription>
@@ -251,7 +252,7 @@ export default function ServiceDetailsPage() {
                   Get Service
                 </Button>
               </CardFooter>
-            </Card>
+            </Card> */}
 
             {/* ATS CV */}
             <Card className="shadow-md hover:shadow-lg">
@@ -266,20 +267,17 @@ export default function ServiceDetailsPage() {
                 <Button
                   className="w-full"
                   style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
-                  onClick={() => handleServiceClick({
-                    id: "ats-cv",
-                    title: "ATS CV",
-                    price: 4000,
-                    description: "Optimize your CV for Applicant Tracking Systems to increase your chances of getting noticed",
-                  })}
+                  asChild
                 >
-                  Get Service
+                  <Link href="/resume/new">
+                    Get Service
+                  </Link>
                 </Button>
               </CardFooter>
             </Card>
 
             {/* Interview Training */}
-            <Card className="shadow-md hover:shadow-lg">
+            {/* <Card className="shadow-md hover:shadow-lg">
               <CardHeader>
                 <CardTitle className="text-xl">Interview Training</CardTitle>
                 <CardDescription className="text-lg font-semibold">150AED</CardDescription>
@@ -301,7 +299,7 @@ export default function ServiceDetailsPage() {
                   Get Service
                 </Button>
               </CardFooter>
-            </Card>
+            </Card> */}
           </div>
         </div>
 

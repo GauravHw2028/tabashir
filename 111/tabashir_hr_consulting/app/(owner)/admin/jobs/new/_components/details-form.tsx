@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
-import RichTextEditor from "@/app/components/rich-text-editor"
 import TiptapEditor from "@/components/tiptap-editor"
 
 interface DetailsFormProps {
@@ -133,7 +132,7 @@ export default function DetailsForm({ form, onNext, onPrev }: DetailsFormProps) 
                 <FormItem>
                   <FormLabel>Job Description</FormLabel>
                   <FormControl>
-                   <TiptapEditor field={field} />
+                    <TiptapEditor field={field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -147,7 +146,7 @@ export default function DetailsForm({ form, onNext, onPrev }: DetailsFormProps) 
                 <FormItem>
                   <FormLabel>Requirements</FormLabel>
                   <FormControl>
-                  <TiptapEditor field={field} />
+                    <TiptapEditor field={field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -185,6 +184,76 @@ export default function DetailsForm({ form, onNext, onPrev }: DetailsFormProps) 
                       </div>
                     ))}
                   </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="academicQualification"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Academic Qualification</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. Bachelor's Degree, Master's Degree, etc." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="experience"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Experience Requirements</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. 2-5 years, Fresh Graduate, etc." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="languages"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Language Requirements</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. English, Arabic, Hindi, etc." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="workingHours"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Working Hours</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. 9 AM - 6 PM, 8 hours/day, etc." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="workingDays"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Working Days</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. Monday - Friday, 5 days/week, etc." {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

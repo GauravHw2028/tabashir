@@ -9,6 +9,8 @@ export const aboutFormSchema = z.object({
   jobType: z.string().min(1, "Job type is required"),
   salaryMin: z.string().min(1, "Minimum salary is required"),
   salaryMax: z.string().min(1, "Maximum salary is required"),
+  nationality: z.string().min(1, "Nationality is required"),
+  gender: z.string().min(1, "Gender is required"),
 })
 
 // Step 2: Details form schema
@@ -18,6 +20,11 @@ export const detailsFormSchema = z.object({
   description: z.string().min(1, "Job description is required"),
   requirements: z.string().min(1, "Requirements are required"),
   benefits: z.array(z.string()).min(1, "At least one benefit is required"),
+  academicQualification: z.string().min(1, "Academic qualification is required"),
+  experience: z.string().min(1, "Experience is required"),
+  languages: z.string().min(1, "Languages are required"),
+  workingHours: z.string().min(1, "Working hours are required"),
+  workingDays: z.string().min(1, "Working days are required"),
 })
 
 // Step 3: Application form schema
@@ -25,6 +32,8 @@ export const applicationFormSchema = z.object({
   applicationDeadline: z.string().optional(),
   contactEmail: z.string().email().optional().or(z.literal("")),
   contactPhone: z.string().optional(),
+  jobDate: z.string().min(1, "Job date is required"),
+  link: z.string().url().optional().or(z.literal("")),
 })
 
 // Complete form schema (for preview and submission)

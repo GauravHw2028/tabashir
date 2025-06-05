@@ -60,3 +60,40 @@ export const getJobById = async (jobId: string) => {
   }
 }
 
+export const createJobAPI = async (jobData: {
+  entity: string
+  nationality: string
+  gender: string
+  job_title: string
+  academic_qualification: string
+  experience: string
+  languages: string
+  salary: string
+  vacancy_city: string
+  working_hours: string
+  working_days: string
+  application_email: string
+  job_description: string
+  job_date: string
+  link: string
+  phone: string
+}) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jobData),
+      }
+    )
+    const data = await response.json()
+    return { success: response.ok, data: data }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: error }
+  }
+}
+

@@ -101,20 +101,25 @@ export async function POST(request: Request) {
       const serviceId = url.searchParams.get('service_id')
       const userId = url.searchParams.get('userId')
 
+      console.log(serviceId);
+      console.log(userId);
+
       if(serviceId){
-        const service = await prisma.user.update({
-          where: {
-            id: serviceId
-          },
-          data: {
-            jobCount: {
-              increment: 1
+        if(serviceId === "ai-job-apply"){
+          const service = await prisma.user.update({
+            where: {
+              id: serviceId
             },
-            aiJobApplyCount: {
-              increment: 1
-            },
-          }
-        })
+            data: {
+              jobCount: {
+                increment: 200
+              },
+              aiJobApplyCount: {
+                increment: 1
+              },
+            }
+          })
+        }
       }
     }
   }
