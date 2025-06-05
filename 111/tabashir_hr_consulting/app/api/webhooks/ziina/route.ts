@@ -108,7 +108,7 @@ export async function POST(request: Request) {
         if(serviceId === "ai-job-apply"){
           const service = await prisma.user.update({
             where: {
-              id: serviceId
+              id: userId || ""
             },
             data: {
               jobCount: {

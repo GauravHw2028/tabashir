@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import { useSession } from "next-auth/react"
 
 interface ServiceModalProps {
   isOpen: boolean
@@ -21,6 +22,7 @@ interface ServiceModalProps {
 
 export function ServiceModal({ isOpen, onClose, service }: ServiceModalProps) {
   const [loading, setLoading] = useState(false)
+  const session = useSession()
 
   async function handlePay() {
     setLoading(true)
@@ -30,7 +32,7 @@ export function ServiceModal({ isOpen, onClose, service }: ServiceModalProps) {
       body: JSON.stringify({
         amount: service.price,  // AED 50 → 5000 fils
         currency: 'AED',
-        successUrl: `${window.location.origin}/service-details?payment_completed=true&service_id=${service.id}`,
+        successUrl: `${window.location.origin}/service-details?payment_completed=true&service_id=${service.id}&userId=${session.data?.user?.id}`,
         cancelUrl: `${window.location.origin}/service-details`,
       }),
     })
