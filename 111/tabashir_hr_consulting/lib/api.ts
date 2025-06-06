@@ -89,6 +89,7 @@ export const createJobAPI = async (jobData: {
         body: JSON.stringify(jobData),
       }
     )
+    console.log("response", response);
     const data = await response.json()
     return { success: response.ok, data: data }
   } catch (error) {

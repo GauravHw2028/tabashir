@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { X, Plus, Search } from "lucide-react";
+import { X, Plus, Search, Check, ChevronsUpDown } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import {
   candidateProfessionalInfoFormSchema,
@@ -28,6 +31,149 @@ import {
 import { onCandidateProfessionalInfoOnboarding } from "@/actions/auth";
 import { toast } from "sonner";
 import { useFormStatus } from "react-dom";
+
+const JOB_POSITIONS = [
+  // Technology & IT
+  "Web Designer",
+  "Product Manager",
+  "UX Designer",
+  "Frontend Developer",
+  "Backend Developer",
+  "Full Stack Developer",
+  "Data Scientist",
+  "Data Analyst",
+  "Software Engineer",
+  "DevOps Engineer",
+  "Mobile App Developer",
+  "UI/UX Designer",
+  "System Administrator",
+  "Network Engineer",
+  "Cybersecurity Specialist",
+  "Cloud Architect",
+  "Database Administrator",
+  "QA Engineer",
+  "Technical Writer",
+  "IT Support Specialist",
+
+  // Business & Management
+  "Business Analyst",
+  "Project Manager",
+  "Operations Manager",
+  "General Manager",
+  "Executive Assistant",
+  "Business Development Manager",
+  "Strategy Consultant",
+  "Management Consultant",
+  "Team Lead",
+  "Department Head",
+
+  // Marketing & Sales
+  "Digital Marketing Specialist",
+  "Social Media Manager",
+  "Content Creator",
+  "Marketing Manager",
+  "Sales Representative",
+  "Account Manager",
+  "Brand Manager",
+  "SEO Specialist",
+  "Email Marketing Specialist",
+  "Growth Hacker",
+  "Sales Manager",
+  "Customer Success Manager",
+
+  // Finance & Accounting
+  "Accountant",
+  "Financial Analyst",
+  "Finance Manager",
+  "Investment Analyst",
+  "Auditor",
+  "Tax Specialist",
+  "Credit Analyst",
+  "Risk Analyst",
+  "Treasury Analyst",
+  "Controller",
+
+  // Human Resources
+  "HR Specialist",
+  "Recruiter",
+  "HR Manager",
+  "Training Specialist",
+  "Compensation Analyst",
+  "Employee Relations Specialist",
+  "HR Business Partner",
+  "Talent Acquisition Specialist",
+
+  // Customer Service
+  "Customer Service Representative",
+  "Call Center Agent",
+  "Customer Support Specialist",
+  "Help Desk Technician",
+  "Client Relations Manager",
+
+  // Healthcare
+  "Registered Nurse",
+  "Medical Assistant",
+  "Healthcare Administrator",
+  "Physical Therapist",
+  "Pharmacist",
+  "Medical Technician",
+  "Healthcare Consultant",
+
+  // Education
+  "Teacher",
+  "Professor",
+  "Training Coordinator",
+  "Curriculum Developer",
+  "Educational Consultant",
+  "Academic Advisor",
+
+  // Engineering
+  "Mechanical Engineer",
+  "Civil Engineer",
+  "Electrical Engineer",
+  "Chemical Engineer",
+  "Industrial Engineer",
+  "Environmental Engineer",
+  "Quality Engineer",
+  "Process Engineer",
+
+  // Creative & Design
+  "Graphic Designer",
+  "Creative Director",
+  "Video Editor",
+  "Photographer",
+  "Content Writer",
+  "Copywriter",
+  "Art Director",
+  "Interior Designer",
+
+  // Operations & Logistics
+  "Supply Chain Manager",
+  "Logistics Coordinator",
+  "Warehouse Manager",
+  "Procurement Specialist",
+  "Operations Analyst",
+  "Production Manager",
+
+  // Legal
+  "Legal Assistant",
+  "Paralegal",
+  "Compliance Officer",
+  "Contract Specialist",
+  "Legal Counsel",
+
+  // Others
+  "Administrative Assistant",
+  "Office Manager",
+  "Receptionist",
+  "Research Assistant",
+  "Translator",
+  "Virtual Assistant",
+  "Consultant",
+  "Freelancer",
+  "Intern",
+  "Entry Level"
+];
 
 const CandidateProfessionalInfoForm = () => {
   const { pending } = useFormStatus()
@@ -101,11 +247,40 @@ const CandidateProfessionalInfoForm = () => {
                 What kind of job are you looking for?
               </FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Software Engineer"
-                  {...field}
-                  className="text-gray-900"
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className="w-full justify-between text-gray-900"
+                    >
+                      {field.value || "Select job position..."}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0">
+                    <Command>
+                      <CommandInput placeholder="Search job positions..." />
+                      <CommandEmpty>No job position found.</CommandEmpty>
+                      <CommandGroup className="max-h-64 overflow-auto">
+                        {JOB_POSITIONS.map((position) => (
+                          <CommandItem
+                            key={position}
+                            onSelect={() => field.onChange(position)}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                field.value === position ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {position}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -235,7 +410,7 @@ const CandidateProfessionalInfoForm = () => {
           className="w-full bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white hover:opacity-90"
           disabled={isLoading || pending}
         >
-         {isLoading || pending?"Please wait...":"Submit"}
+          {isLoading || pending ? "Please wait..." : "Submit"}
         </Button>
       </form>
     </Form>

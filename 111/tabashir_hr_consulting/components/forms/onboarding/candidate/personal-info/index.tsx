@@ -38,10 +38,7 @@ const CandidatePersonalInfoForm = ({
   profilePicture?: string;
 }) => {
   const [isLoading, setIsloading] = useState(false);
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([
-    "English",
-    "Arabic",
-  ]);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [profilePictureUrl, setProfilePictureUrl] = useState<string>(
     profilePicture || ""
   );

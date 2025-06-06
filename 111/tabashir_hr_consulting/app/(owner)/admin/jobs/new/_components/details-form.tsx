@@ -7,6 +7,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
 import TiptapEditor from "@/components/tiptap-editor"
+import * as z from "zod"
+import { detailsFormSchema } from "./job-form-schema"
 
 interface DetailsFormProps {
   form: UseFormReturn<any>
@@ -64,16 +66,68 @@ export default function DetailsForm({ form, onNext, onPrev }: DetailsFormProps) 
     form.setValue("benefits", newBenefits)
   }
 
-  const handleSubmit = form.handleSubmit(() => {
-    onNext()
-  })
+  const validateCurrentStep = async () => {
+    // Get current form values
+    const formData = form.getValues()
+
+    // Extract only the fields for this step
+    const stepData = {
+      location: formData.location,
+      requiredSkills: formData.requiredSkills,
+      description: formData.description,
+      requirements: formData.requirements,
+      benefits: formData.benefits,
+      academicQualification: formData.academicQualification,
+      experience: formData.experience,
+      languages: formData.languages,
+      workingHours: formData.workingHours,
+      workingDays: formData.workingDays,
+    }
+
+    try {
+      // Validate only the current step's fields
+      detailsFormSchema.parse(stepData)
+
+      // Clear any existing errors for these fields
+      const fieldNames = Object.keys(stepData) as Array<keyof typeof stepData>
+      fieldNames.forEach(fieldName => {
+        form.clearErrors(fieldName)
+      })
+
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Set errors for invalid fields
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            form.setError(err.path[0] as any, {
+              type: "manual",
+              message: err.message,
+            })
+          }
+        })
+      }
+      return false
+    }
+  }
+
+  const handleNext = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Validate current step
+    const isValid = await validateCurrentStep()
+
+    if (isValid) {
+      onNext()
+    }
+  }
 
   return (
     <div className="text-gray-900">
       <h2 className="text-xl font-semibold mb-6">Details</h2>
 
       <Form {...form}>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleNext} className="space-y-6">
           <div className="border rounded-lg p-6 space-y-6">
             <FormField
               control={form.control}

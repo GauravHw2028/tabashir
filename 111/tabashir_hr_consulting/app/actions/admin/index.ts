@@ -95,6 +95,8 @@ export async function createJob(formData: {
       }
     })
 
+    console.log("job", job);
+
     revalidatePath("/admin/jobs")
     return { success: true, jobId: job.id, apiData: apiResult.data }
   } catch (error) {

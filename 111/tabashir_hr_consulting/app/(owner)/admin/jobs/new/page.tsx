@@ -44,6 +44,7 @@ export default function NewJobPage() {
   })
 
   const nextStep = () => {
+    console.log("nextStep", form.getValues());
     setCurrentStep((prev) => Math.min(prev + 1, 4))
   }
 

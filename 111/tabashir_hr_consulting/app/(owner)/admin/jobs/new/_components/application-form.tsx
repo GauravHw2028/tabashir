@@ -7,6 +7,8 @@ import type { UseFormReturn } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import * as z from "zod"
+import { applicationFormSchema } from "./job-form-schema"
 
 interface ApplicationFormProps {
   form: UseFormReturn<any>
@@ -17,16 +19,63 @@ interface ApplicationFormProps {
 export default function ApplicationForm({ form, onNext, onPrev }: ApplicationFormProps) {
   const [applicationType, setApplicationType] = useState<"easy" | "screening">("easy")
 
-  const handleSubmit = form.handleSubmit(() => {
-    onNext()
-  })
+  const validateCurrentStep = async () => {
+    // Get current form values
+    const formData = form.getValues()
+
+    // Extract only the fields for this step
+    const stepData = {
+      applicationDeadline: formData.applicationDeadline,
+      contactEmail: formData.contactEmail,
+      contactPhone: formData.contactPhone,
+      jobDate: formData.jobDate,
+      link: formData.link,
+    }
+
+    try {
+      // Validate only the current step's fields
+      applicationFormSchema.parse(stepData)
+
+      // Clear any existing errors for these fields
+      const fieldNames = Object.keys(stepData) as Array<keyof typeof stepData>
+      fieldNames.forEach(fieldName => {
+        form.clearErrors(fieldName)
+      })
+
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Set errors for invalid fields
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            form.setError(err.path[0] as any, {
+              type: "manual",
+              message: err.message,
+            })
+          }
+        })
+      }
+      return false
+    }
+  }
+
+  const handleNext = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Validate current step
+    const isValid = await validateCurrentStep()
+
+    if (isValid) {
+      onNext()
+    }
+  }
 
   return (
     <div className="text-gray-900">
       <h2 className="text-xl font-semibold mb-6">Application</h2>
 
       <Form {...form}>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleNext} className="space-y-6">
           <div className="border rounded-lg p-6 space-y-6">
             <h3 className="text-lg font-medium mb-4">User Application Process</h3>
 
@@ -116,7 +165,7 @@ export default function ApplicationForm({ form, onNext, onPrev }: ApplicationFor
             <Button type="button" variant="outline" onClick={onPrev}>
               Previous
             </Button>
-            <Button type="submit" className="bg-blue-950 hover:blue-gradient transition-all duration-200 text-white">
+            <Button type="submit" className="bg-blue-950 hover:bg-blue-900 transition-all duration-200 text-white">
               Next
             </Button>
           </div>

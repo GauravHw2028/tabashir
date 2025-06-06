@@ -2,6 +2,7 @@ import type React from "react";
 import OwnerLayoutContent from "./layout-content";
 import { auth } from "../utils/auth";
 import { redirect } from "next/navigation";
+import { SessionProvider } from "next-auth/react";
 
 export default async function OwnerLayout({
   children,
@@ -14,8 +15,10 @@ export default async function OwnerLayout({
     redirect("/admin/login");
   }
   return (
-    <div className="flex h-screen bg-[#F0F0F0] text-gray-900">
-      <OwnerLayoutContent>{children}</OwnerLayoutContent>
-    </div>
+    <SessionProvider>
+      <div className="flex h-screen bg-[#F0F0F0] text-gray-900">
+        <OwnerLayoutContent>{children}</OwnerLayoutContent>
+      </div>
+    </SessionProvider>
   );
 }

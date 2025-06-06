@@ -11,10 +11,10 @@ import { useState } from "react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { jobFormSchema } from "./job-form-schema"
+import { aboutFormSchema } from "./job-form-schema"
 
 interface AboutFormProps {
-  form: UseFormReturn<z.infer<typeof jobFormSchema>>
+  form: UseFormReturn<any>
   onNext: () => void
 }
 
@@ -22,34 +22,67 @@ export default function AboutForm({ form, onNext }: AboutFormProps) {
   const [companyLogoUrl, setCompanyLogoUrl] = useState<string>("")
   const [uploadMethod, setUploadMethod] = useState<"url" | "file">("url")
 
-  const handleSubmit = form.handleSubmit(() => {
-    onNext()
-  }, (err) => {
-    console.error(err)
-    const fields = ["jobTitle",
-      "company",
-      "companyLogo",
-      "jobType",
-      "salaryMin",
-      "salaryMax",
-      "nationality",
-      "gender",]
+  const validateCurrentStep = async () => {
+    // Get current form values
+    const formData = form.getValues()
 
-    // Check if there are any errors in fields not in our list
-    const hasOtherErrors = Object.keys(err).some(key => !fields.includes(key))
+    // Extract only the fields for this step
+    const stepData = {
+      jobTitle: formData.jobTitle,
+      company: formData.company,
+      companyDescription: formData.companyDescription,
+      companyLogo: formData.companyLogo,
+      jobType: formData.jobType,
+      salaryMin: formData.salaryMin,
+      salaryMax: formData.salaryMax,
+      nationality: formData.nationality,
+      gender: formData.gender,
+    }
 
-    // If there are no errors in our specified fields, proceed to next step
-    if (hasOtherErrors) {
+    try {
+      // Validate only the current step's fields
+      aboutFormSchema.parse(stepData)
+
+      // Clear any existing errors for these fields
+      const fieldNames = Object.keys(stepData) as Array<keyof typeof stepData>
+      fieldNames.forEach(fieldName => {
+        form.clearErrors(fieldName)
+      })
+
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Set errors for invalid fields
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            form.setError(err.path[0] as any, {
+              type: "manual",
+              message: err.message,
+            })
+          }
+        })
+      }
+      return false
+    }
+  }
+
+  const handleNext = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Validate current step
+    const isValid = await validateCurrentStep()
+
+    if (isValid) {
       onNext()
     }
-  })
+  }
 
   return (
     <div>
       <h2 className="text-xl font-semibold mb-6">About</h2>
 
       <Form {...form}>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleNext} className="space-y-6">
           <div className="border rounded-lg p-6 space-y-6">
             <FormField
               control={form.control}
@@ -292,7 +325,7 @@ export default function AboutForm({ form, onNext }: AboutFormProps) {
 
           <div className="flex justify-between">
             <div>{/* Placeholder for alignment */}</div>
-            <Button type="submit" className="bg-blue-950 hover:blue-gradient text-white">
+            <Button type="submit" className="bg-blue-950 hover:bg-blue-900 text-white">
               Next
             </Button>
           </div>
