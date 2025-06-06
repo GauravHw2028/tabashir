@@ -106,7 +106,7 @@ export async function POST(request: Request) {
 
       if(serviceId){
         if(serviceId === "ai-job-apply"){
-          const service = await prisma.user.update({
+          await prisma.user.update({
             where: {
               id: userId || ""
             },
@@ -117,6 +117,14 @@ export async function POST(request: Request) {
               aiJobApplyCount: {
                 increment: 1
               },
+            }
+          })
+          await prisma.payment.create({
+            data: {
+              amount: 200,
+              currency: "USD",
+              status: "COMPLETED",
+              userId: userId || "",
             }
           })
         }
