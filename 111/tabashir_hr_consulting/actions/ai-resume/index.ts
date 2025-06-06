@@ -693,3 +693,84 @@ export async function changeResumeStatus(resumeId: string, status: AiResumeStatu
     message: "Resume status changed successfully!",
   };
 }
+
+export async function getAiJobApplyStatus() {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { error: true, message: "Unauthenticated" };
+  }
+
+  const dbUser = await prisma.user.findUnique({
+    where: {
+      id: session.user.id,
+    },
+    select: {
+      jobCount: true,
+      aiJobApplyCount: true,
+    },
+  });
+
+  if (!dbUser) {
+    return { error: true, message: "User not found" };
+  }
+
+  return {
+    error: false,
+    message: "Ai job apply status fetched successfully!",
+    data: {
+      jobCount: dbUser.jobCount,
+      aiJobApplyCount: dbUser.aiJobApplyCount,
+    },
+  };
+  
+}
+
+export async function submitAiJobApply(jobCount: boolean, aiJobApplyCount: boolean) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { error: true, message: "Unauthenticated" };
+  }
+
+  const dbUser = await prisma.user.findUnique({
+    where: {
+      id: session.user.id,
+    },
+    select: {
+      jobCount: true,
+      aiJobApplyCount: true,
+    },
+  });
+
+  if (!dbUser) {
+    return { error: true, message: "User not found" };
+  }
+
+  if (jobCount && dbUser.jobCount === 0) {
+    return { error: true, message: "You have already applied for a job" };
+  }
+
+  if (aiJobApplyCount && dbUser.aiJobApplyCount === 0) {
+    return { error: true, message: "You have already applied for a job" };
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: {
+      id: session.user.id,
+    },
+    data: {
+      jobCount: jobCount ? dbUser.jobCount - 1 : dbUser.jobCount,
+      aiJobApplyCount: aiJobApplyCount ? dbUser.aiJobApplyCount - 1 : dbUser.aiJobApplyCount,
+    },
+  });
+
+  if (!updatedUser) {
+    return { error: true, message: "Failed to update user" };
+  }
+
+  return {
+    error: false,
+    message: "User updated successfully!",
+  };
+}

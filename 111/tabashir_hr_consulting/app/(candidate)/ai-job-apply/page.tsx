@@ -2,20 +2,29 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { Plus, Sparkles, X, Check, ChevronsUpDown, Loader2 } from "lucide-react"
+import { Sparkles, X, Check, ChevronsUpDown, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { toast } from "@/components/ui/use-toast"
 import { UserProfileHeader } from "../dashboard/_components/user-profile-header"
 import { getUserResumes } from "@/actions/resume"
 import { Resume } from "@prisma/client"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
+import { toast } from "sonner"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import { getAiJobApplyStatus, submitAiJobApply } from "@/actions/ai-resume"
+import { useRouter } from "next/navigation"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 // Define the form schema with Zod
 const formSchema = z.object({
@@ -40,27 +49,211 @@ type FormValues = {
 }
 
 const NATIONALITIES = [
-  "Dubai, UAE",
-  "Abu Dhabi, UAE",
-  "Sharjah, UAE",
-  // Add more as needed
+  "Emirati",
+  "Saudi Arabian",
+  "Egyptian",
+  "Lebanese",
+  "Jordanian",
+  "Syrian",
+  "Palestinian",
+  "Kuwaiti",
+  "Qatari",
+  "Bahraini",
+  "Omani",
+  "Yemeni",
+  "Iraqi",
+  "Moroccan",
+  "Tunisian",
+  "Algerian",
+  "Sudanese",
+  "Indian",
+  "Pakistani",
+  "Bangladeshi",
+  "Sri Lankan",
+  "Filipino",
+  "Indonesian",
+  "Malaysian",
+  "Thai",
+  "Vietnamese",
+  "Chinese",
+  "Japanese",
+  "Korean",
+  "American",
+  "British",
+  "Canadian",
+  "Australian",
+  "German",
+  "French",
+  "Italian",
+  "Spanish",
+  "Dutch",
+  "Swedish",
+  "Norwegian",
+  "Russian",
+  "Ukrainian",
+  "Turkish",
+  "Iranian",
+  "Afghan",
+  "Ethiopian",
+  "Kenyan",
+  "Nigerian",
+  "South African",
+  "Brazilian",
+  "Argentinian",
+  "Other"
 ]
 
 const GENDERS = ["Male", "Female", "Other"]
 
 const JOB_POSITIONS = [
+  // Technology & IT
   "Web Designer",
   "Product Manager",
   "UX Designer",
   "Frontend Developer",
   "Backend Developer",
+  "Full Stack Developer",
   "Data Scientist",
-  // Add more as needed
+  "Data Analyst",
+  "Software Engineer",
+  "DevOps Engineer",
+  "Mobile App Developer",
+  "UI/UX Designer",
+  "System Administrator",
+  "Network Engineer",
+  "Cybersecurity Specialist",
+  "Cloud Architect",
+  "Database Administrator",
+  "QA Engineer",
+  "Technical Writer",
+  "IT Support Specialist",
+
+  // Business & Management
+  "Business Analyst",
+  "Project Manager",
+  "Operations Manager",
+  "General Manager",
+  "Executive Assistant",
+  "Business Development Manager",
+  "Strategy Consultant",
+  "Management Consultant",
+  "Team Lead",
+  "Department Head",
+
+  // Marketing & Sales
+  "Digital Marketing Specialist",
+  "Social Media Manager",
+  "Content Creator",
+  "Marketing Manager",
+  "Sales Representative",
+  "Account Manager",
+  "Brand Manager",
+  "SEO Specialist",
+  "Email Marketing Specialist",
+  "Growth Hacker",
+  "Sales Manager",
+  "Customer Success Manager",
+
+  // Finance & Accounting
+  "Accountant",
+  "Financial Analyst",
+  "Finance Manager",
+  "Investment Analyst",
+  "Auditor",
+  "Tax Specialist",
+  "Credit Analyst",
+  "Risk Analyst",
+  "Treasury Analyst",
+  "Controller",
+
+  // Human Resources
+  "HR Specialist",
+  "Recruiter",
+  "HR Manager",
+  "Training Specialist",
+  "Compensation Analyst",
+  "Employee Relations Specialist",
+  "HR Business Partner",
+  "Talent Acquisition Specialist",
+
+  // Customer Service
+  "Customer Service Representative",
+  "Call Center Agent",
+  "Customer Support Specialist",
+  "Help Desk Technician",
+  "Client Relations Manager",
+
+  // Healthcare
+  "Registered Nurse",
+  "Medical Assistant",
+  "Healthcare Administrator",
+  "Physical Therapist",
+  "Pharmacist",
+  "Medical Technician",
+  "Healthcare Consultant",
+
+  // Education
+  "Teacher",
+  "Professor",
+  "Training Coordinator",
+  "Curriculum Developer",
+  "Educational Consultant",
+  "Academic Advisor",
+
+  // Engineering
+  "Mechanical Engineer",
+  "Civil Engineer",
+  "Electrical Engineer",
+  "Chemical Engineer",
+  "Industrial Engineer",
+  "Environmental Engineer",
+  "Quality Engineer",
+  "Process Engineer",
+
+  // Creative & Design
+  "Graphic Designer",
+  "Creative Director",
+  "Video Editor",
+  "Photographer",
+  "Content Writer",
+  "Copywriter",
+  "Art Director",
+  "Interior Designer",
+
+  // Operations & Logistics
+  "Supply Chain Manager",
+  "Logistics Coordinator",
+  "Warehouse Manager",
+  "Procurement Specialist",
+  "Operations Analyst",
+  "Production Manager",
+
+  // Legal
+  "Legal Assistant",
+  "Paralegal",
+  "Compliance Officer",
+  "Contract Specialist",
+  "Legal Counsel",
+
+  // Others
+  "Administrative Assistant",
+  "Office Manager",
+  "Receptionist",
+  "Research Assistant",
+  "Translator",
+  "Virtual Assistant",
+  "Consultant",
+  "Freelancer",
+  "Intern",
+  "Entry Level"
 ]
 
 export default function AIJobApplyPage() {
   const [resumeList, setResumeList] = useState<Resume[] | null>(null)
+  const [hasAiJobApply, setHasAiJobApply] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     async function fetchResumeList() {
@@ -77,8 +270,8 @@ export default function AIJobApplyPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       resume: null,
-      positions: ["Business & Arts", "Collecting", "General"],
-      locations: ["Hybrid", "Onsite"],
+      positions: [],
+      locations: [],
       nationality: [],
       gender: "",
     },
@@ -105,19 +298,23 @@ export default function AIJobApplyPage() {
   }
 
   const onSubmit = async (data: FormValues) => {
+    // Check if user has AI job apply access
+    if (!hasAiJobApply) {
+      setShowPurchaseModal(true)
+      return
+    }
+
     setLoading(true)
     try {
       // Find the selected resume object
       const selectedResumeObj = resumeList?.find(r => r.id === data.resume)
       if (!selectedResumeObj) {
-        toast({
-          title: "Resume not found",
-          description: "Please select a valid resume.",
-          variant: "destructive",
-        })
+        toast.error("Please select a valid resume.")
         setLoading(false)
         return
       }
+
+      console.log("selectedResumeObj", selectedResumeObj);
 
       // Fetch the file as a Blob (using originalUrl)
       let file
@@ -129,14 +326,12 @@ export default function AIJobApplyPage() {
         const fileBlob = await fileResponse.blob()
         file = new File([fileBlob], selectedResumeObj.filename, { type: fileBlob.type })
       } catch (fetchErr: any) {
-        toast({
-          title: "File Fetch Error",
-          description: fetchErr.message || "Could not fetch the resume file.",
-          variant: "destructive",
-        })
+        toast.error(fetchErr.message || "Could not fetch the resume file.")
         setLoading(false)
         return
       }
+
+      console.log("file", file);
 
       const formData = new FormData()
       formData.append("user_id", selectedResumeObj.candidateId || "")
@@ -146,20 +341,34 @@ export default function AIJobApplyPage() {
       data.locations.forEach(loc => formData.append("locations", loc))
       data.positions.forEach(pos => formData.append("positions", pos))
 
+      console.log("formData", formData);
+
+      await submitAiJobApply(false, true)
+
       let res
       try {
         res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/apply`, {
           method: "POST",
           body: formData,
         })
+        console.log("res", res);
+
+        if (!res.ok) {
+          const errorData = await res.json()
+          console.log("errorData", errorData);
+          toast.error(errorData.error || "Failed to apply. Please try again.")
+          setLoading(false)
+          return
+        }
+
       } catch (networkErr: any) {
-        toast({
-          title: "Network Error",
-          description: networkErr.message || "Could not reach the server.",
-          variant: "destructive",
-        })
+        toast.error(networkErr.message || "Could not reach the server.")
         setLoading(false)
         return
+      } finally {
+        console.log("finally");
+        setLoading(false)
+        router.refresh()
       }
 
       if (!res.ok) {
@@ -168,28 +377,34 @@ export default function AIJobApplyPage() {
           const errorData = await res.json()
           if (errorData?.message) errorMsg = errorData.message
         } catch { }
-        toast({
-          title: "Error",
-          description: errorMsg,
-          variant: "destructive",
-        })
+        toast.error(errorMsg)
         setLoading(false)
         return
       }
 
-      toast({
-        title: "Application submitted!",
-        description: "Your application has been sent successfully.",
-      })
+      toast.success("Your AI-powered job application has been sent to multiple employers. You'll receive notifications when employers respond to your applications.")
+
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Something went wrong.",
-        variant: "destructive",
-      })
+      console.log("error", error);
+      toast.error(error.message || "Something went wrong.")
     } finally {
       setLoading(false)
     }
+  }
+
+  useEffect(() => {
+    (async () => {
+      const res = await getAiJobApplyStatus()
+      console.log("res", res);
+      if (res.data) {
+        setHasAiJobApply(res.data.aiJobApplyCount > 0)
+      }
+    })()
+  }, [])
+
+  const handleGoToServiceDetails = () => {
+    setShowPurchaseModal(false)
+    router.push("/service-details")
   }
 
   return (
@@ -313,7 +528,7 @@ export default function AIJobApplyPage() {
                           <Command>
                             <CommandInput placeholder="Search positions..." />
                             <CommandEmpty>No positions found.</CommandEmpty>
-                            <CommandGroup>
+                            <CommandGroup className="max-h-64 overflow-auto">
                               {JOB_POSITIONS.map((position) => (
                                 <CommandItem
                                   key={position}
@@ -430,7 +645,7 @@ export default function AIJobApplyPage() {
                           <Command>
                             <CommandInput placeholder="Search nationalities..." />
                             <CommandEmpty>No nationalities found.</CommandEmpty>
-                            <CommandGroup>
+                            <CommandGroup className="max-h-64 overflow-auto">
                               {NATIONALITIES.map((nat) => (
                                 <CommandItem
                                   key={nat}
@@ -510,7 +725,7 @@ export default function AIJobApplyPage() {
                           <Command>
                             <CommandInput placeholder="Search gender..." />
                             <CommandEmpty>No gender found.</CommandEmpty>
-                            <CommandGroup>
+                            <CommandGroup className="max-h-32 overflow-auto">
                               {GENDERS.map((gender) => (
                                 <CommandItem
                                   key={gender}
@@ -566,6 +781,37 @@ export default function AIJobApplyPage() {
           </form>
         </Form>
       </div>
+
+      {/* Purchase Modal */}
+      <Dialog open={showPurchaseModal} onOpenChange={setShowPurchaseModal}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-yellow-400" />
+              AI Job Apply Required
+            </DialogTitle>
+            <DialogDescription className="text-base pt-2">
+              You need to purchase the AI Job Apply service to automatically apply for jobs.
+              This feature will help you apply to multiple positions efficiently with your customized preferences.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setShowPurchaseModal(false)}
+              className="flex-1 sm:flex-none"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleGoToServiceDetails}
+              className="flex-1 sm:flex-none bg-gradient-to-r from-blue-950 to-blue-700 hover:from-blue-900 hover:to-blue-600"
+            >
+              View Service Details
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
