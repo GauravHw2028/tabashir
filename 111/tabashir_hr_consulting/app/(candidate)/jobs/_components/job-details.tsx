@@ -1,21 +1,111 @@
 "use client"
 
-import { useState } from "react"
-import { X, Globe, Building2, Briefcase, DollarSign, Calendar } from "lucide-react"
+import { useState, useEffect } from "react"
+import { X, Globe, Building2, Briefcase, DollarSign, Calendar, Loader2 } from "lucide-react"
 import type { Job } from "./types"
 import Image from "next/image"
 import { ApplicationModal } from "./application-modal"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { getUserResumes } from "@/actions/resume"
+import { Resume } from "@prisma/client"
+import { toast } from "sonner"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 
 interface JobDetailsProps {
   job: Job
   onClose: () => void
   isPreview?: boolean
+  jobApplyCount?: number
+  onJobApplied?: () => void
+  userId: string
 }
 
-export function JobDetails({ job, onClose, isPreview = false }: JobDetailsProps) {
+export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0, onJobApplied, userId }: JobDetailsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("description")
+  const [showResumeModal, setShowResumeModal] = useState(false)
+  const [resumeList, setResumeList] = useState<Resume[]>([])
+  const [selectedResume, setSelectedResume] = useState<Resume | null>(null)
+  const [isApplying, setIsApplying] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+
+  // Fetch user resumes when component mounts
+  useEffect(() => {
+    async function fetchResumes() {
+      const response = await getUserResumes()
+      if (response.data) {
+        setResumeList(response.data)
+      }
+    }
+    if (!isPreview) {
+      fetchResumes()
+    }
+  }, [isPreview])
+
+  const handleEasyApply = () => {
+    if (jobApplyCount <= 1) {
+      toast.error("You need more than one job apply count to use Easy Apply")
+      return
+    }
+    setShowResumeModal(true)
+  }
+
+  const handleApplyWithResume = async () => {
+    if (!selectedResume) {
+      toast.error("Please select a resume")
+      return
+    }
+
+    setIsApplying(true)
+    try {
+      // Fetch the file as a Blob
+      const fileResponse = await fetch(selectedResume.originalUrl)
+      if (!fileResponse.ok) {
+        throw new Error("Failed to fetch resume file")
+      }
+      const fileBlob = await fileResponse.blob()
+      const file = new File([fileBlob], selectedResume.filename, { type: fileBlob.type })
+
+      // Prepare form data
+      const formData = new FormData()
+      formData.append("user_id", userId || "")
+      formData.append("file", file)
+      formData.append("job_id", job.id)
+
+      // Make API call
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/${job.id}/apply`, {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to apply for job")
+      }
+
+      // Success
+      setShowResumeModal(false)
+      setShowSuccessModal(true)
+      toast.success("Successfully applied for the job!")
+
+      // Call the callback to refresh the page
+      if (onJobApplied) {
+        onJobApplied()
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to apply for job")
+    } finally {
+      setIsApplying(false)
+    }
+  }
 
   return (
     <div className="p-6">
@@ -28,6 +118,91 @@ export function JobDetails({ job, onClose, isPreview = false }: JobDetailsProps)
           companyName={job.company}
         />
       )}
+
+      {/* Resume Selection Modal */}
+      <Dialog open={showResumeModal} onOpenChange={setShowResumeModal}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Select Resume to Apply</DialogTitle>
+            <DialogDescription>
+              Choose which resume you'd like to use for applying to {job.title} at {job.company}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            {resumeList.map((resume) => (
+              <div
+                key={resume.id}
+                onClick={() => setSelectedResume(resume)}
+                className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${selectedResume?.id === resume.id
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-gray-200 hover:border-gray-300"
+                  }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-medium text-sm truncate">{resume.filename}</h3>
+                  {selectedResume?.id === resume.id && (
+                    <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500 mb-2">
+                  Uploaded: {new Date(resume.createdAt).toLocaleDateString()}
+                </p>
+                <div className="w-full h-32 bg-gray-100 rounded flex items-center justify-center">
+                  <span className="text-gray-500 text-xs">Resume Preview</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {resumeList.length === 0 && (
+            <div className="text-center py-8 text-gray-500">
+              No resumes found. Please upload a resume first.
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowResumeModal(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleApplyWithResume}
+              disabled={!selectedResume || isApplying}
+            >
+              {isApplying ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Applying...
+                </>
+              ) : (
+                "Apply Now"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Success Modal */}
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-green-600">Application Submitted Successfully!</DialogTitle>
+            <DialogDescription>
+              Your application for {job.title} at {job.company} has been submitted successfully.
+              You will receive notifications about the status of your application.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setShowSuccessModal(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="flex justify-between items-start mb-6">
         <div className="flex items-center gap-3">
@@ -59,21 +234,23 @@ export function JobDetails({ job, onClose, isPreview = false }: JobDetailsProps)
       <div className="space-y-4">
         {!isPreview && (
           <div className="flex flex-col gap-2">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="w-full py-2 bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white rounded-md font-medium flex items-center justify-center gap-2"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M13 10V3L4 14H11V21L20 10H13Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Easy Apply via TABASHIR
-            </button>
+            {jobApplyCount > 1 && (
+              <button
+                onClick={handleEasyApply}
+                className="w-full py-2 bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white rounded-md font-medium flex items-center justify-center gap-2"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M13 10V3L4 14H11V21L20 10H13Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Easy Apply via TABASHIR
+              </button>
+            )}
 
             <button className="w-full py-2 border border-gray-300 rounded-md font-medium flex items-center justify-center gap-2 text-gray-700">
               <Globe size={16} />

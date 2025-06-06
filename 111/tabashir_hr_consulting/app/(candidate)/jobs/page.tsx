@@ -9,8 +9,11 @@ import type { Job } from "./_components/types"
 import { getJobs } from "@/lib/api"
 import { toast } from "sonner"
 import { useSearchParams, useRouter } from "next/navigation"
+import { getAiJobApplyStatus } from "@/actions/ai-resume"
+import { useSession } from "next-auth/react"
 
 export default function JobsPage() {
+  const session = useSession();
   const searchParams = useSearchParams()
   const router = useRouter()
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
@@ -24,6 +27,7 @@ export default function JobsPage() {
   const [experience, setExperience] = useState(searchParams.get("experience") || "")
   const [attendance, setAttendance] = useState(searchParams.get("attendance") || "")
   const [query, setQuery] = useState(searchParams.get("query") || "")
+  const [jobApplyCount, setJobApplyCount] = useState(0)
   const [sort, setSort] = useState<"newest" | "oldest" | "salary_asc" | "salary_desc">(
     (searchParams.get("sort") as "newest" | "oldest" | "salary_asc" | "salary_desc") || "newest"
   )
@@ -119,6 +123,18 @@ export default function JobsPage() {
     updateURL()
   }, [location, jobType, salaryMin, salaryMax, experience, attendance, query, sort])
 
+  useEffect(() => {
+    (async () => {
+      const jobs = await getAiJobApplyStatus();
+
+      if (!jobs.error) {
+        setJobApplyCount(jobs.data?.jobCount || 0)
+      } else {
+        toast.error("Failed to fetch jobs!")
+      }
+    })()
+  }, [])
+
   return (
     <div className="h-screen flex flex-col lg:flex-row gap-6 rounded-lg max-h-[calc(100vh-35px)] relative">
       {/* {loading && (
@@ -171,7 +187,16 @@ export default function JobsPage() {
       {/* Third column: Job details (conditionally rendered) */}
       {selectedJob && (
         <div className="fixed inset-0 lg:relative lg:inset-auto lg:w-[400px] bg-white rounded-lg shadow-sm overflow-y-auto flex-shrink-0 animate-in slide-in-from-right duration-300 z-50 lg:z-auto">
-          <JobDetails job={selectedJob} onClose={() => setSelectedJob(null)} />
+          <JobDetails
+            job={selectedJob}
+            onClose={() => setSelectedJob(null)}
+            jobApplyCount={jobApplyCount}
+            onJobApplied={() => {
+              // Refresh the page after successful job application
+              // window.location.reload()
+            }}
+            userId={session.data?.user?.id || ""}
+          />
         </div>
       )}
     </div>
