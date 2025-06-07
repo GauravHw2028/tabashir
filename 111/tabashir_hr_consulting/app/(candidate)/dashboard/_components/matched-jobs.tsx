@@ -7,7 +7,10 @@ export function MatchedJobs() {
     <div>
       <div className="flex justify-between items-center pb-4">
         <h2 className="text-xl font-medium text-gray-800 mb-4">Matched Jobs</h2>
-        <UserProfileHeader />
+        <div className="w-full flex justify-end mb-4">
+
+          <UserProfileHeader />
+        </div>
       </div>
       <div className="flex flex-col lg:flex-row gap-5">
         <div className="w-full lg:w-[58%] grid grid-cols-1 md:grid-cols-3 gap-4 text-black">
