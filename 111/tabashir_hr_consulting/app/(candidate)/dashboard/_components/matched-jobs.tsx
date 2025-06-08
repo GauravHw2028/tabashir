@@ -107,8 +107,8 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
   if (loading) {
     return (
       <div>
-        <div className="flex justify-between items-center pb-4">
-          <h2 className="text-xl font-medium text-gray-800 mb-4">Matched Jobs</h2>
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-medium text-gray-800 w-full">Matched Jobs</h2>
           <div className="w-full flex justify-end mb-4">
             <UserProfileHeader />
           </div>
@@ -130,8 +130,8 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
 
   return (
     <div>
-      <div className="flex justify-between items-center pb-4">
-        <h2 className="text-xl font-medium text-gray-800 mb-4">Matched Jobs</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-medium text-gray-800 w-full">Matched Jobs</h2>
         <div className="w-full flex justify-end mb-4">
           <UserProfileHeader />
         </div>
