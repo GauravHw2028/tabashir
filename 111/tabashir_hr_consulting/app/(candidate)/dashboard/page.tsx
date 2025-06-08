@@ -13,7 +13,7 @@ export default async function Dashboard() {
       <MatchedJobs jobType={user?.jobType || ""} />
 
       <div className="bg-white rounded-lg p-6 shadow-sm">
-        <SkillTrendsChart />
+        <SkillTrendsChart jobTitle={user?.jobType || "Developer"} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
