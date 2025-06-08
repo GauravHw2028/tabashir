@@ -53,6 +53,7 @@ const CandidatePersonalInfoForm = ({
       languages: selectedLanguages,
       age: "",
       profilePicture: profilePicture || "",
+      referralCode: "",
     },
   });
 
@@ -228,6 +229,24 @@ const CandidatePersonalInfoForm = ({
               <FormControl>
                 <Input
                   placeholder="Enter your age in years"
+                  {...field}
+                  className="text-gray-900"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="referralCode"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-gray-900">Referral Code</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter your referral code (optional)"
                   {...field}
                   className="text-gray-900"
                 />

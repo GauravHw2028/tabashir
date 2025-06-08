@@ -19,9 +19,12 @@ model User {
     password        String?
     jobCount        Int       @default(0)
     aiJobApplyCount Int       @default(0)
-    accounts        Account[]
-    sessions        Session[]
-    userType        UserType?
+    referralCode    String?
+    referredBy      String?
+
+    accounts Account[]
+    sessions Session[]
+    userType UserType?
 
     candidate Candidate?
     Owner     Owner?

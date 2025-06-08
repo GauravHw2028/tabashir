@@ -152,7 +152,19 @@ export async function onCandidatePersonalInfoOnboarding(data: CandidatePersonalI
 
     const validate = candidatePersonalInfoFormSchema.parse(data)
 
-    const { phone, nationality, gender, languages, age, profilePicture } = validate
+    const { phone, nationality, gender, languages, age, profilePicture, referralCode } = validate
+
+    // Update user's referral code if provided
+    if (referralCode) {
+      await prisma.user.update({
+        where: {
+          id: session.user.id,
+        },
+        data: {
+          referralCode,
+        },
+      });
+    }
 
     // First check if candidate exists
     const existingCandidate = await prisma.candidate.findUnique({

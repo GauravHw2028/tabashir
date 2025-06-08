@@ -22,6 +22,13 @@ export const candidatePersonalInfoFormSchema = z.object({
         message: "Age must be between 18 and 100",
       }),
     profilePicture: z.string().optional(),
+    referralCode: z.string().min(3, {
+      message: "Referral code must be at least 3 characters long",
+    }).max(20, {
+      message: "Referral code must be at most 20 characters long",
+    }).regex(/^[A-Za-z0-9_-]+$/, {
+      message: "Referral code can only contain letters, numbers, underscores, and hyphens",
+    }).optional(),
   });
 
 
