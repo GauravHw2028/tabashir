@@ -106,7 +106,7 @@ export async function POST(request: Request) {
 
       if(serviceId){
         if(serviceId === "ai-job-apply"){
-          await prisma.user.update({
+          const user = await prisma.user.update({
             where: {
               id: userId || ""
             },
@@ -127,6 +127,15 @@ export async function POST(request: Request) {
               userId: userId || "",
             }
           })
+
+          await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/v1/resume/send-linkedin-email`, {
+            method: "POST",
+            body: JSON.stringify({
+              "recipient_email": user.email || "",
+              "recipient_name": user.name || "",
+            })
+          })
+          
         }
       }
     }
