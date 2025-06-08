@@ -24,8 +24,16 @@ export default async function Dashboard() {
           <GlobalDemandList />
         </div>
         <div className="bg-white rounded-lg p-6 shadow-sm space-y-6">
-          <InterviewScheduleCard />
-          <JobOffersCard />
+          <div className="relative">
+            <InterviewScheduleCard />
+            <JobOffersCard />
+            {/* Coming Soon Overlay */}
+            <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center rounded-lg pointer-events-none">
+              <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full shadow-lg">
+                <span className="text-sm font-semibold">🚀 Coming Soon</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

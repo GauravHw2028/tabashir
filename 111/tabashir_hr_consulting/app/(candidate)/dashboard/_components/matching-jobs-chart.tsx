@@ -13,45 +13,55 @@ export function MatchingJobsChart() {
   const total = data.reduce((sum, item) => sum + item.value, 0)
 
   return (
-    <div className="flex flex-col">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-medium text-gray-700">Total Matching Jobs</h2>
-        <div className="text-2xl font-bold">{total}</div>
-      </div>
-
-      <div className="flex items-center text-black" >
-        <div className="h-48 w-48">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                innerRadius={40}
-                outerRadius={60}
-                paddingAngle={2}
-                dataKey="value"
-                startAngle={90}
-                endAngle={-270}
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
+    <div className="relative flex flex-col">
+      {/* Blurred Content */}
+      <div className="filter blur-sm">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-medium text-gray-700">Total Matching Jobs</h2>
+          <div className="text-2xl font-bold">{total}</div>
         </div>
 
-        <div className="ml-4 space-y-2">
-          {data.map((item) => (
-            <div key={item.name} className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                <div className="text-sm text-gray-600">{item.name}</div>
+        <div className="flex items-center text-black" >
+          <div className="h-48 w-48">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={data}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={60}
+                  paddingAngle={2}
+                  dataKey="value"
+                  startAngle={90}
+                  endAngle={-270}
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="ml-4 space-y-2">
+            {data.map((item) => (
+              <div key={item.name} className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
+                  <div className="text-sm text-gray-600">{item.name}</div>
+                </div>
+                <div className="text-sm font-medium ml-auto">{item.value}</div>
               </div>
-              <div className="text-sm font-medium ml-auto">{item.value}</div>
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Coming Soon Overlay */}
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center rounded-lg pointer-events-none">
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full shadow-lg">
+          <span className="text-sm font-semibold">🚀 Coming Soon</span>
         </div>
       </div>
     </div>
