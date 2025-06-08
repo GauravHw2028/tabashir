@@ -26,7 +26,7 @@ export default function WhatsappCommunityPage() {
                 href={whatsappGroupLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block w-full bg-green-700 hover:bg-green-800 text-white font-medium py-3 px-4 rounded-md transition-colors"
+                className="inline-block w-full bg-gradient-to-r from-green-700 to-green-800 hover:from-green-800 hover:to-green-900 text-white font-medium py-3 px-4 rounded-md transition-colors"
               >
                 Let me Join Community
               </Link>

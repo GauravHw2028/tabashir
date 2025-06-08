@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -90,7 +89,6 @@ async function getUserSession() {
 }
 
 export default function AppliedJobsPage() {
-  const [currentTab, setCurrentTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState("10");
   const [appliedJobs, setAppliedJobs] = useState<AppliedJob[]>([]);
@@ -143,16 +141,12 @@ export default function AppliedJobsPage() {
     loadAppliedJobs();
   }, []);
 
-  // Filter jobs based on search query and selected tab
+  // Filter jobs based on search query only
   const filteredJobs = appliedJobs.filter((job) => {
-    const matchesSearch =
+    return (
       job.jobTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.location.toLowerCase().includes(searchQuery.toLowerCase());
-
-    if (currentTab === "all") return matchesSearch;
-    return (
-      matchesSearch && job.status.toLowerCase() === currentTab.toLowerCase()
+      job.location.toLowerCase().includes(searchQuery.toLowerCase())
     );
   });
 
@@ -205,52 +199,8 @@ export default function AppliedJobsPage() {
 
   return (
     <div className="container mx-auto py-6 max-w-7xl text-gray-900">
-      <div className="flex justify-between items-baseline">
-        {/* Tabs */}
-        <Tabs
-          value={currentTab}
-          onValueChange={setCurrentTab}
-          className="w-[50%]"
-        >
-          <TabsList className="grid grid-cols-6 h-10 mb-6 bg-transparent border-b">
-            <TabsTrigger
-              value="all"
-              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:font-medium data-[state=active]:shadow-none rounded-none h-10"
-            >
-              All
-            </TabsTrigger>
-            <TabsTrigger
-              value="viewed"
-              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:font-medium data-[state=active]:shadow-none rounded-none h-10"
-            >
-              Viewed
-            </TabsTrigger>
-            <TabsTrigger
-              value="interview"
-              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:font-medium data-[state=active]:shadow-none rounded-none h-10"
-            >
-              Interview
-            </TabsTrigger>
-            <TabsTrigger
-              value="offers"
-              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:font-medium data-[state=active]:shadow-none rounded-none h-10"
-            >
-              Offers
-            </TabsTrigger>
-            <TabsTrigger
-              value="rejected"
-              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:font-medium data-[state=active]:shadow-none rounded-none h-10"
-            >
-              Rejected
-            </TabsTrigger>
-            <TabsTrigger
-              value="bookmark"
-              className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:font-medium data-[state=active]:shadow-none rounded-none h-10"
-            >
-              Bookmark
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-semibold text-gray-900">Applied Jobs</h1>
         <UserProfileHeader />
       </div>
 
@@ -300,8 +250,8 @@ export default function AppliedJobsPage() {
                 {filteredJobs.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center py-8 text-gray-500">
-                      {searchQuery || currentTab !== "all"
-                        ? "No jobs found matching your criteria"
+                      {searchQuery
+                        ? "No jobs found matching your search criteria"
                         : "You haven't applied to any jobs yet"
                       }
                     </TableCell>

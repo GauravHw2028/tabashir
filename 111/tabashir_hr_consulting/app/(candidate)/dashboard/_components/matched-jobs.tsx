@@ -1,8 +1,36 @@
+"use client"
+
 import { MatchedJobCard } from "./job-card";
 import { AppliedJobsCard } from "./applied-jobs-card";
 import { UserProfileHeader } from "./user-profile-header";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 export function MatchedJobs() {
+  const [jobAppliedCount, setJobAppliedCount] = useState(0);
+  const session = useSession();
+
+  useEffect(() => {
+    if (session.data?.user?.email) {
+      (async () => {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/applied-jobs-count`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: session.data?.user?.email
+          })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          setJobAppliedCount(data.applied_jobs_count);
+        }
+      })();
+    }
+  }, [session.data?.user?.email]);
+
   return (
     <div>
       <div className="flex justify-between items-center pb-4">
@@ -43,7 +71,7 @@ export function MatchedJobs() {
           />
         </div>
         <div className="w-full lg:w-[40%] text-black">
-          <AppliedJobsCard count={46} />
+          <AppliedJobsCard count={jobAppliedCount} />
         </div>
       </div>
     </div>
