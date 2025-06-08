@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, DivideCircleIcon } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 
 interface SkillTrendsChartProps {
@@ -20,8 +20,6 @@ interface ChartData {
   name: string
   value: number
 }
-
-const skills = ["UI/UX", "Frontend", "Backend", "Full Stack", "Mobile", "DevOps"]
 
 export function SkillTrendsChart({ jobTitle }: SkillTrendsChartProps) {
   const [selectedSkill, setSelectedSkill] = useState("UI/UX")
@@ -81,17 +79,11 @@ export function SkillTrendsChart({ jobTitle }: SkillTrendsChartProps) {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-medium text-gray-800">Skill Trends</h2>
         <div className="relative">
-          <select
-            value={selectedSkill}
-            onChange={(e) => setSelectedSkill(e.target.value)}
+          <div
             className="flex items-center gap-2 border rounded-md px-3 py-1.5 text-sm cursor-pointer bg-white appearance-none pr-8"
           >
-            {skills.map((skill) => (
-              <option key={skill} value={skill}>
-                {skill}
-              </option>
-            ))}
-          </select>
+            {jobTitle}
+          </div>
           <ChevronDown size={16} className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none" />
         </div>
       </div>

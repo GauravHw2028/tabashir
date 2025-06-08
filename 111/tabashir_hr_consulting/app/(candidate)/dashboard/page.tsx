@@ -21,7 +21,7 @@ export default async function Dashboard() {
           <MatchingJobsChart />
         </div>
         <div className="bg-white rounded-lg p-6 shadow-sm text-gray-900">
-          <GlobalDemandList />
+          <GlobalDemandList jobTitle={user?.jobType || "Developer"} />
         </div>
         <div className="bg-white rounded-lg p-6 shadow-sm space-y-6">
           <div className="relative h-full">
