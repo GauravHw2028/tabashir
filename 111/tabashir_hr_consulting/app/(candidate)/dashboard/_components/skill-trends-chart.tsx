@@ -22,7 +22,7 @@ interface ChartData {
 }
 
 export function SkillTrendsChart({ jobTitle }: SkillTrendsChartProps) {
-  const [selectedSkill, setSelectedSkill] = useState("UI/UX")
+  const [selectedSkill, setSelectedSkill] = useState(jobTitle)
   const [chartData, setChartData] = useState<ChartData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
