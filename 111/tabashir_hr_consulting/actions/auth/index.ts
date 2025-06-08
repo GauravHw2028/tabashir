@@ -355,7 +355,6 @@ export async function onGetUserProfile() {
       userType:true,
       candidate: {
         select: {
-
           profile: {
             select: {
               profilePicture: true,
@@ -373,5 +372,6 @@ export async function onGetUserProfile() {
     email:user.email as string,
     userType:user.userType as string,
     profilePicture: user.image || user?.candidate?.profile?.profilePicture as string,
+    jobType: user?.candidate?.profile?.jobType as string,
   }
 }

@@ -15,7 +15,8 @@ import { useState, useEffect } from "react";
 
 const languages = [
   { code: "en", name: "English", flag: "🇺🇸" },
-  { code: "ar", name: "العربية", flag: "🇸🇦" },
+  // todo: add uae flg instead of saudi
+  { code: "ar", name: "العربية", flag: "🇦🇪" },
 ];
 
 export function UserProfileHeader() {

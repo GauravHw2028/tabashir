@@ -1,5 +1,4 @@
 import Image from "next/image"
-import Link from "next/link"
 
 interface MatchedJobCard {
   title: string
@@ -10,6 +9,7 @@ interface MatchedJobCard {
   shadow: string
   logoUrl?: string
   tags?: string[]
+  onApply?: () => void
 }
 
 export function MatchedJobCard({
@@ -21,6 +21,7 @@ export function MatchedJobCard({
   shadow,
   logoUrl,
   tags = ["Onsite", "Internship"],
+  onApply,
 }: MatchedJobCard) {
   return (
     <div
@@ -56,9 +57,12 @@ export function MatchedJobCard({
 
       <div className="flex justify-between items-center">
         <div className="text-xs">{salary}</div>
-        <Link href="#" className="text-[10px] bg-white/20 hover:bg-white/30 py-1 px-3 rounded-full text-center">
+        <button
+          onClick={onApply}
+          className="text-[10px] bg-white/20 hover:bg-white/30 py-1 px-3 rounded-full text-center cursor-pointer transition-colors"
+        >
           Apply
-        </Link>
+        </button>
       </div>
 
       <div className="text-[10px] mt-1">{location}</div>

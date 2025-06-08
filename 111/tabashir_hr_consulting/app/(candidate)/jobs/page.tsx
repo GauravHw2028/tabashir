@@ -135,6 +135,30 @@ export default function JobsPage() {
     })()
   }, [])
 
+  // Show purchase message if jobApplyCount is 0
+  if (jobApplyCount === 0 && !loading) {
+    return (
+      <div className="h-screen flex items-center justify-center rounded-lg max-h-[calc(100vh-35px)]">
+        <div className="bg-white rounded-lg shadow-lg p-8 text-center max-w-md">
+          <div className="mb-4">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Premium Jobs</h2>
+            <p className="text-gray-600 mb-6">
+              You have no AI job applications remaining. Purchase a package to access job listings and apply with AI assistance.
+            </p>
+            <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition-colors">
+              Purchase AI Job Apply Package
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="h-screen flex flex-col lg:flex-row gap-6 rounded-lg max-h-[calc(100vh-35px)] relative">
       {/* {loading && (
