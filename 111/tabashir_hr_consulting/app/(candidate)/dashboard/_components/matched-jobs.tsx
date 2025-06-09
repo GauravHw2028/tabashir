@@ -158,8 +158,8 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
         <div className="w-full lg:w-[58%] grid grid-cols-1 md:grid-cols-3 gap-4 text-black">
           {/* Show purchase prompt if jobApplyCount is 0 */}
           {jobApplyCount === 0 ? (
-            <div className="flex items-center justify-center mb-3">
-              <div className="bg-white rounded-lg shadow-lg p-4 text-center max-w-md">
+            <div className="flex items-center justify-center mb-3 col-span-3 w-full">
+              <div className="bg-white rounded-lg shadow-sm p-4 text-center w-full h-[152px]">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Access Premium Jobs</h3>
                 <p className="text-gray-600 text-sm mb-4">
                   You have no AI job applications remaining. Purchase a package to continue.
@@ -199,47 +199,6 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
                   shadow="0px 4px 4px 0px #F4A75B4F"
                   tags={getJobTags(jobs[1])}
                   onApply={() => handleJobSelect(jobs[1])}
-                />
-              )}
-
-              {/* Third job from API */}
-              {jobs[2] && (
-                <MatchedJobCard
-                  title={jobs[2].title}
-                  company={jobs[2].company}
-                  location={jobs[2].location}
-                  salary={typeof jobs[2].salary === 'object' ? `${jobs[2].salary.currency} ${jobs[2].salary.amount}/${jobs[2].salary.period}` : jobs[2].salary}
-                  gradient="linear-gradient(102.25deg, #D679ED 0.46%, #B37BEE 99.54%)"
-                  shadow="0px 4px 4px 0px #CF7AEE4A"
-                  tags={getJobTags(jobs[2])}
-                  onApply={() => handleJobSelect(jobs[2])}
-                />
-              )}
-
-              {/* Fallback cards if API doesn't have enough jobs */}
-              {!jobs[1] && (
-                <MatchedJobCard
-                  title="Data Analyst"
-                  company="Etisalat"
-                  location="Abu Dhabi, UAE"
-                  salary="AED 120,000 /y"
-                  gradient="linear-gradient(102.25deg, #F4AA53 0.46%, #F1977D 99.54%)"
-                  shadow="0px 4px 4px 0px #F4A75B4F"
-                  tags={["Hybrid", "Full-time"]}
-                  onApply={() => {/* Fallback job - no action */ }}
-                />
-              )}
-
-              {!jobs[2] && (
-                <MatchedJobCard
-                  title="Digital Marketing Specialist"
-                  company="Etisalat"
-                  location="Sharjah, UAE"
-                  salary="AED 100,000 /y"
-                  gradient="linear-gradient(102.25deg, #D679ED 0.46%, #B37BEE 99.54%)"
-                  shadow="0px 4px 4px 0px #CF7AEE4A"
-                  tags={["Onsite", "Full-time"]}
-                  onApply={() => {/* Fallback job - no action */ }}
                 />
               )}
             </>
