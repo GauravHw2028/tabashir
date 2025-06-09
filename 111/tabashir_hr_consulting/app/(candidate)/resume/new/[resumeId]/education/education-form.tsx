@@ -305,7 +305,7 @@ export default function EducationForm({
                     <FormItem className="col-span-2">
                       <div className="flex justify-between items-center w-full">
                         <FormLabel className="text-gray-700">Description</FormLabel>
-                        <Button
+                        {/* <Button
                           type="button"
                           variant="ghost"
                           size="sm"
@@ -314,7 +314,7 @@ export default function EducationForm({
                         >
                           <Sparkles size={14} className="text-yellow-500" />
                           <span className="text-xs">Generate</span>
-                        </Button>
+                        </Button> */}
                       </div>
                       <FormControl>
                         <Textarea

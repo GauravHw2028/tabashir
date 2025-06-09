@@ -38,13 +38,6 @@ const skillCategories = [
   "Technical",
   "Soft Skills",
   "Languages",
-  "Tools",
-  "Frameworks",
-  "Databases",
-  "Cloud",
-  "DevOps",
-  "Design",
-  "Other",
 ]
 
 export default function SkillsForm({
