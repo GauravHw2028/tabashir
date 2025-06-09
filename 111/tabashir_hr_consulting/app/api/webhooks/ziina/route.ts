@@ -123,8 +123,8 @@ export async function POST(request: Request) {
           })
           await prisma.payment.create({
             data: {
-              amount: 200,
-              currency: "USD",
+              amount: intent.amount,
+              currency: intent.currency_code,
               status: "COMPLETED",
               userId: userId || "",
             }

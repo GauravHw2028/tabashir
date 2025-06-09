@@ -17,8 +17,10 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useSession } from "next-auth/react"
 
 export default function ServiceDetailsPage() {
+  const session = useSession();
   const [showTermsModal, setShowTermsModal] = useState(false)
   const [selectedService, setSelectedService] = useState<{
     id: string
@@ -29,6 +31,11 @@ export default function ServiceDetailsPage() {
   } | null>(null)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [successServiceId, setSuccessServiceId] = useState<string | null>(null)
+  const [latestPayment, setLatestPayment] = useState<{
+    amount: number
+    currency: string
+    formattedDate: string
+  } | null>(null)
   const searchParams = useSearchParams()
 
   useEffect(() => {
@@ -64,6 +71,26 @@ export default function ServiceDetailsPage() {
   }) => {
     setSelectedService(service)
   }
+
+  useEffect(() => {
+    // Fetch latest payment
+    const fetchLatestPayment = async () => {
+      try {
+        if (session.data?.user?.id) {
+          const response = await fetch(`/api/payments/latest?userId=${session.data?.user?.id}`)
+          const data = await response.json()
+          if (data.payment) {
+            setLatestPayment(data.payment)
+          }
+          console.log(data.payment)
+        }
+      } catch (error) {
+        console.error('Error fetching latest payment:', error)
+      }
+    }
+
+    fetchLatestPayment()
+  }, [session.data?.user?.id])
 
   return (
     <div className="flex-1 text-gray-900">
@@ -316,10 +343,23 @@ export default function ServiceDetailsPage() {
               <span className="font-semibold w-36">Service Type :</span>
               <span>One Time Payment</span>
             </div>
-            <div className="flex">
-              <span className="font-semibold w-36">Purchasing date:</span>
-              <span>25th March, 2025</span>
-            </div>
+            {latestPayment ? (
+              <>
+                <div className="flex">
+                  <span className="font-semibold w-36">Latest Purchase:</span>
+                  <span>{latestPayment.amount} AED</span>
+                </div>
+                <div className="flex">
+                  <span className="font-semibold w-36">Purchasing date:</span>
+                  <span>{latestPayment.formattedDate}</span>
+                </div>
+              </>
+            ) : (
+              <div className="flex">
+                <span className="font-semibold w-36">Purchasing date:</span>
+                <span>No purchases yet</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
