@@ -72,7 +72,7 @@ export function ResumeSidebar({ resumeId }: ResumeSidebarProps) {
     },
     {
       id: "employment-history",
-      label: "Employment History",
+      label: "Work Experience",
       icon: Briefcase,
       href: `/resume/new/${resumeId}/employment-history`,
     },

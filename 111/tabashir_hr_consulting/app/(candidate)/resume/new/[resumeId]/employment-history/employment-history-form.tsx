@@ -7,6 +7,7 @@ import { useForm, useFieldArray } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
@@ -22,8 +23,8 @@ import { onSaveEmploymentHistory } from "@/actions/ai-resume"
 const jobSchema = z.object({
   jobTitle: z.string().min(2, { message: "Job title is required" }),
   companyName: z.string().min(2, { message: "Company name is required" }),
-  country: z.string().min(2, { message: "Country is required" }),
   city: z.string().min(2, { message: "City is required" }),
+  tasks: z.string().min(10, { message: "Please describe your key tasks and responsibilities (minimum 10 characters)" }),
   startDate: z.string().min(2, { message: "Start date is required" }),
   endDate: z.string().optional(),
   isPresent: z.boolean(),
@@ -38,7 +39,7 @@ const jobSchema = z.object({
 })
 
 const employmentHistorySchema = z.object({
-  jobs: z.array(jobSchema).min(1, { message: "At least one job is required" }),
+  jobs: z.array(jobSchema).min(1, { message: "At least one work experience is required" }),
 })
 
 type EmploymentHistoryFormValues = z.infer<typeof employmentHistorySchema>
@@ -55,16 +56,16 @@ export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHist
       jobs: aiResumeEmploymentHistory.length > 0 ? aiResumeEmploymentHistory.map((job) => ({
         jobTitle: job.position,
         companyName: job.company,
-        country: job.country,
         city: job.city,
+        tasks: job.description || "",
         startDate: job.startDate.toISOString().split('T')[0],
         endDate: job.endDate ? job.endDate.toISOString().split('T')[0] : undefined,
         isPresent: job.current,
       })) : [{
         jobTitle: "",
         companyName: "",
-        country: "",
         city: "",
+        tasks: "",
         startDate: "",
         endDate: "",
         isPresent: false,
@@ -81,10 +82,11 @@ export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHist
     setIsSubmitting(true)
 
     try {
-      // Format dates to ISO string
+      // Format dates to ISO string and add default country for backend compatibility
       const formattedData = {
         jobs: data.jobs.map(job => ({
           ...job,
+          country: "", // Default empty country for backend compatibility
           startDate: new Date(job.startDate).toISOString(),
           endDate: job.endDate ? new Date(job.endDate).toISOString() : undefined,
         }))
@@ -103,7 +105,7 @@ export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHist
       // Mark this form as completed
       setFormCompleted("employment-history")
 
-      toast.success("Your employment history has been saved successfully.")
+      toast.success("Your work experience has been saved successfully.")
 
       // Navigate to the next section
       router.push(`/resume/new/${resumeId}/education`)
@@ -117,7 +119,7 @@ export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHist
   return (
     <div className="space-y-6 rounded-[6px]">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">Employment History</h2>
+        <h2 className="text-xl font-semibold text-gray-800">Work Experience</h2>
         <Button
           type="button"
           size="sm"
@@ -126,8 +128,8 @@ export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHist
             append({
               jobTitle: "",
               companyName: "",
-              country: "",
               city: "",
+              tasks: "",
               startDate: "",
               endDate: "",
               isPresent: false,
@@ -145,7 +147,7 @@ export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHist
             <div key={field.id} className="p-6 border border-gray-200 rounded-md bg-[#FCFCFC] max-w-[680px] mx-auto">
               {index > 0 && (
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-medium text-gray-700">Job {index + 1}</h3>
+                  <h3 className="font-medium text-gray-700">Experience {index + 1}</h3>
                   <Button
                     type="button"
                     variant="ghost"
@@ -164,12 +166,12 @@ export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHist
                   name={`jobs.${index}.jobTitle`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700">Job Title</FormLabel>
+                      <FormLabel className="text-gray-700">Position/Role Title</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           className="text-gray-900 placeholder:text-gray-500 border-gray-300"
-                          placeholder="Enter job title"
+                          placeholder="e.g., Software Engineer, Marketing Intern, Training Participant"
                         />
                       </FormControl>
                       <FormMessage className="text-red-500" />
@@ -182,12 +184,12 @@ export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHist
                   name={`jobs.${index}.companyName`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700">Company Name</FormLabel>
+                      <FormLabel className="text-gray-700">Organization Name</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           className="text-gray-900 placeholder:text-gray-500 border-gray-300"
-                          placeholder="Enter company name"
+                          placeholder="e.g., ABC Company, XYZ University, Training Institute"
                         />
                       </FormControl>
                       <FormMessage className="text-red-500" />
@@ -197,15 +199,15 @@ export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHist
 
                 <FormField
                   control={form.control}
-                  name={`jobs.${index}.country`}
+                  name={`jobs.${index}.tasks`}
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-700">Country</FormLabel>
+                    <FormItem className="md:col-span-2">
+                      <FormLabel className="text-gray-700">Key Tasks & Responsibilities</FormLabel>
                       <FormControl>
-                        <Input
+                        <Textarea
                           {...field}
-                          className="text-gray-900 placeholder:text-gray-500 border-gray-300"
-                          placeholder="Enter country"
+                          className="text-gray-900 placeholder:text-gray-500 border-gray-300 min-h-[100px]"
+                          placeholder="Describe your main responsibilities, achievements, and tasks in this role..."
                         />
                       </FormControl>
                       <FormMessage className="text-red-500" />

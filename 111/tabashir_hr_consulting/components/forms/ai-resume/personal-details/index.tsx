@@ -44,10 +44,7 @@ const AiResumePersonalDetailsForm = ({
       phone: aiResumePersonalDetails?.phone || "",
       country: aiResumePersonalDetails?.country || "",
       city: aiResumePersonalDetails?.city || "",
-      socialLinks: aiResumePersonalDetails?.socialLinks || [{
-        label: "",
-        url: "",
-      }],
+      socialLinks: aiResumePersonalDetails?.socialLinks || [],
     },
   });
 
@@ -56,29 +53,18 @@ const AiResumePersonalDetailsForm = ({
     name: "socialLinks",
   });
 
-  // Add state for custom error handling
-  const [showSocialLinksError, setShowSocialLinksError] = useState(false);
-
   const addSocialLink = () => {
     if (fields.length < 2) {
       append({ label: "", url: "" });
       form.clearErrors(`socialLinks.${fields.length}`);
-      setShowSocialLinksError(false);
     }
   };
 
   const removeSocialLink = (index: number) => {
     remove(index);
-    if (fields.length === 1) {
-      setShowSocialLinksError(true);
-    }
   };
 
   const onSubmit = async (data: AiResumePersonalDetailsSchemaType) => {
-    if (fields.length === 0) {
-      setShowSocialLinksError(true);
-      return;
-    }
     setIsSubmitting(true);
 
     try {
@@ -204,7 +190,7 @@ const AiResumePersonalDetailsForm = ({
           <div className="col-span-2 space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-medium text-gray-700">
-                Social Links
+                Social Links <span className="text-sm text-gray-500 font-normal">(Optional)</span>
               </h3>
               {fields.length < 2 && (
                 <Button
@@ -217,6 +203,20 @@ const AiResumePersonalDetailsForm = ({
                 </Button>
               )}
             </div>
+
+            {fields.length === 0 && (
+              <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-lg">
+                <p className="text-gray-500 mb-4">No social links added yet</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={addSocialLink}
+                  className="text-sm text-black"
+                >
+                  Add Your First Social Link
+                </Button>
+              </div>
+            )}
 
             {fields.map((field, index) => (
               <div
@@ -270,25 +270,6 @@ const AiResumePersonalDetailsForm = ({
                 </Button>
               </div>
             ))}
-            {showSocialLinksError && (
-              <div className="text-red-500 text-sm mt-2 flex items-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                Please add at least one social link to continue
-              </div>
-            )}
           </div>
         </div>
 

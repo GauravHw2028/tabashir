@@ -116,7 +116,7 @@ const NATIONALITIES = [
   "Other"
 ]
 
-const GENDERS = ["Male", "Female", "Other"]
+const GENDERS = ["Male", "Female"]
 
 const JOB_POSITIONS = [
   // Technology & IT

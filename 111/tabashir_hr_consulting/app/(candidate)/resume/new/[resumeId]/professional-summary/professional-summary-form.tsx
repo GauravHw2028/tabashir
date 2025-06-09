@@ -104,14 +104,14 @@ export default function ProfessionalSummaryForm({ resumeId, aiResumeProfessional
                 <FormDescription className="text-gray-600">
                   <div className="flex items-center justify-between">
                     <p>Write 2-4 short, energetic sentences about your professional experience, skills, and achievements.</p>
-                    <button
+                    {/* <button
                       type="button"
                       className="flex items-center gap-2 bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white px-6 py-1 text-[13px] rounded-full"
                       onClick={generateSummary}
                     >
                       <Sparkles size={16} className="text-yellow-500" />
                       Get help with writing
-                    </button>
+                    </button> */}
                   </div>
                 </FormDescription>
                 <FormControl>
