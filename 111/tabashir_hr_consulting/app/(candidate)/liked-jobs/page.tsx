@@ -10,6 +10,7 @@ import { getJobById } from "@/lib/api";
 import { toast } from "sonner";
 import type { Job } from "../jobs/_components/types";
 import { JobDetails } from "../jobs/_components/job-details";
+import { useSession } from "next-auth/react";
 
 // Custom JobCard wrapper for liked jobs that handles unlike callbacks
 function LikedJobCard({ job, onClick, isSelected, onUnlike }: {
@@ -138,7 +139,7 @@ export default function LikedJobsPage() {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-
+  const session = useSession();
   const fetchLikedJobs = async () => {
     setLoading(true);
     try {
@@ -322,7 +323,7 @@ export default function LikedJobsPage() {
       {/* Job details (conditionally rendered) */}
       {selectedJob && (
         <div className="fixed inset-0 lg:relative lg:inset-auto lg:w-[400px] bg-white rounded-lg shadow-sm overflow-y-auto flex-shrink-0 animate-in slide-in-from-right duration-300 z-50 lg:z-auto">
-          <JobDetails job={selectedJob} onClose={() => setSelectedJob(null)} />
+          <JobDetails job={selectedJob} onClose={() => setSelectedJob(null)} userId={session.data?.user?.id as string} />
         </div>
       )}
     </div>
