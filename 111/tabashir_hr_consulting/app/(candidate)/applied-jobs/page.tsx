@@ -204,17 +204,6 @@ export default function AppliedJobsPage() {
         <UserProfileHeader />
       </div>
 
-      {/* Search */}
-      <div className="relative mb-6 w-[50%]">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-        <Input
-          placeholder="Search job"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 bg-gray-50 border-gray-200"
-        />
-      </div>
-
       <div className="bg-white rounded-lg shadow-sm">
         <div className="p-4">
           {/* Table */}

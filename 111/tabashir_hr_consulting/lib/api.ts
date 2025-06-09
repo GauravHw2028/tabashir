@@ -22,7 +22,7 @@ export const getJobs = async (
     if (sort) params.append("sort", sort)
 
     // Add default limit
-    params.append("limit", "10")
+    params.append("limit", "60")
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs?${params.toString()}`,
