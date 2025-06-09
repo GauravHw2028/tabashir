@@ -94,6 +94,8 @@ export async function POST(request: Request) {
       }
     }
 
+
+
     // If it's the service payment success url
     if(event.data.success_url.startsWith(`${process.env.NEXT_PUBLIC_APP_URL}/service-details`)){
       // Getting search params from the url params from the url params from the url
@@ -136,6 +138,26 @@ export async function POST(request: Request) {
             })
           })
           
+        } else if(serviceId === "enhanced-resume") {
+          console.log("Enhanced resume payment completed");
+          
+          const enhancedResumeId = url.searchParams.get('enhanced_resume_id')
+          const resumeUrl = url.searchParams.get('resume_url')
+          
+          // Create payment record for enhanced resume
+          await prisma.payment.create({
+            data: {
+              amount: intent.amount,
+              currency: intent.currency_code,
+              status: "COMPLETED",
+              userId: userId || "",
+            }
+          })
+          
+          console.log("Enhanced resume payment created");
+          
+          // Optional: Store enhanced resume download permission
+          // You can add this to a separate table if needed
         }
       }
     }

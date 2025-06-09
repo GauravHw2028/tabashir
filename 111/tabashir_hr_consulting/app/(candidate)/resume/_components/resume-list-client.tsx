@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Plus, Download, Trash2, FileText, Loader2 } from "lucide-react"
+import { Plus, Download, Trash2, FileText, Loader2, Sparkles, Upload } from "lucide-react"
 import { ResumeUploadModal } from "./resume-upload-modal"
+import { AiEnhanceUploadModal } from "./ai-enhance-upload-modal"
 import { DeleteConfirmationModal } from "./delete-confirmation-modal"
 import { toast } from "sonner"
 import { deleteResume, downloadResume } from "@/actions/resume"
@@ -31,6 +32,7 @@ export function ResumeListClient({
   initialResumes,
 }: ResumeListClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAiEnhanceModalOpen, setIsAiEnhanceModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedResume, setSelectedResume] = useState<Resume | null>(null)
   const [resumes, setResumes] = useState<Resume[]>(initialResumes)
@@ -118,6 +120,12 @@ export function ResumeListClient({
         onUploadSuccess={handleUploadSuccess}
       />
 
+      {/* AI Enhance Upload Modal */}
+      <AiEnhanceUploadModal
+        isOpen={isAiEnhanceModalOpen}
+        onClose={() => setIsAiEnhanceModalOpen(false)}
+      />
+
       {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
@@ -135,13 +143,22 @@ export function ResumeListClient({
       </div>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-semibold text-gray-900">My Resume</h1>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white py-2 px-4 rounded-md flex items-center gap-2 hover:opacity-90"
-        >
-          <Plus size={20} />
-          <span>New Resume</span>
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white py-2 px-4 rounded-md flex items-center gap-2 hover:opacity-90"
+          >
+            <Plus size={20} />
+            <span>New Resume</span>
+          </button>
+          <button
+            onClick={() => setIsAiEnhanceModalOpen(true)}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 px-4 rounded-md flex items-center gap-2 hover:opacity-90"
+          >
+            <Sparkles size={20} />
+            <span>Upload & Enhance</span>
+          </button>
+        </div>
       </div>
 
       {resumes.length === 0 ? (
@@ -153,13 +170,22 @@ export function ResumeListClient({
           <p className="text-gray-500 mb-6 max-w-md">
             Upload your first resume to get started. We'll help you optimize it for better job opportunities.
           </p>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white py-2 px-6 rounded-md flex items-center gap-2 hover:opacity-90"
-          >
-            <Plus size={20} />
-            <span>Upload Resume</span>
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white py-2 px-6 rounded-md flex items-center gap-2 hover:opacity-90"
+            >
+              <Plus size={20} />
+              <span>New Resume</span>
+            </button>
+            <button
+              onClick={() => setIsAiEnhanceModalOpen(true)}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 px-6 rounded-md flex items-center gap-2 hover:opacity-90"
+            >
+              <Sparkles size={20} />
+              <span>Upload & Enhance</span>
+            </button>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
