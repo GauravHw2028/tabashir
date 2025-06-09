@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { Sparkles, X, Check, ChevronsUpDown, Loader2 } from "lucide-react"
+import { Sparkles, X, Check, ChevronsUpDown, Loader2, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
@@ -10,8 +10,18 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { UserProfileHeader } from "../dashboard/_components/user-profile-header"
 import { getUserResumes } from "@/actions/resume"
-import { Resume } from "@prisma/client"
+import { Resume as PrismaResume } from "@prisma/client"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
+
+// Local Resume interface to match what's expected by the upload modal
+interface Resume {
+  id: string
+  filename: string
+  createdAt: Date
+  formatedUrl: string | null
+  originalUrl: string
+  formatedContent: string | null
+}
 import { toast } from "sonner"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
@@ -25,6 +35,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { CITIES } from "@/data/cities"
+import { useSession } from "next-auth/react"
+import { ResumeUploadModal } from "../resume/_components/resume-upload-modal"
 
 // Define the form schema with Zod
 const formSchema = z.object({
@@ -253,17 +266,36 @@ export default function AIJobApplyPage() {
   const [hasAiJobApply, setHasAiJobApply] = useState(false)
   const [loading, setLoading] = useState(false)
   const [showPurchaseModal, setShowPurchaseModal] = useState(false)
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+  const session = useSession()
   const router = useRouter()
 
   useEffect(() => {
     async function fetchResumeList() {
       const response = await getUserResumes()
       if (response.data) {
-        setResumeList(response.data)
+        // Convert PrismaResume to local Resume interface
+        const convertedResumes: Resume[] = response.data.map((resume: PrismaResume) => ({
+          id: resume.id,
+          filename: resume.filename,
+          createdAt: resume.createdAt,
+          formatedUrl: resume.formatedUrl,
+          originalUrl: resume.originalUrl,
+          formatedContent: resume.formatedContent
+        }))
+        setResumeList(convertedResumes)
       }
     }
     fetchResumeList()
   }, [])
+
+  const handleUploadSuccess = (newResume: Resume) => {
+    // Add the new resume to the list and sort by creation date (most recent first)
+    setResumeList(prevResumes => {
+      const updatedList = prevResumes ? [newResume, ...prevResumes] : [newResume]
+      return updatedList.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    })
+  }
 
   // Initialize the form
   const form = useForm<FormValues>({
@@ -280,21 +312,10 @@ export default function AIJobApplyPage() {
   const { setValue, watch, formState } = form
   const selectedResume = watch("resume")
   const selectedPositions = watch("positions")
-  const selectedLocations = watch("locations")
 
   const handleRemovePosition = (position: string) => {
     const updatedPositions = selectedPositions.filter((p) => p !== position)
     setValue("positions", updatedPositions, { shouldValidate: true })
-  }
-
-  const handleLocationToggle = (location: string) => {
-    let updatedLocations
-    if (selectedLocations.includes(location)) {
-      updatedLocations = selectedLocations.filter((l) => l !== location)
-    } else {
-      updatedLocations = [...selectedLocations, location]
-    }
-    setValue("locations", updatedLocations, { shouldValidate: true })
   }
 
   const onSubmit = async (data: FormValues) => {
@@ -334,7 +355,7 @@ export default function AIJobApplyPage() {
       console.log("file", file);
 
       const formData = new FormData()
-      formData.append("user_id", selectedResumeObj.candidateId || "")
+      formData.append("email", session.data?.user?.email || "")
       formData.append("file", file)
       formData.append("gender", data.gender)
       data.nationality.forEach(nat => formData.append("nationality", nat))
@@ -422,11 +443,21 @@ export default function AIJobApplyPage() {
 
             {/* Step 1: Select Resume */}
             <div className="mb-10">
-              <div className="flex items-center mb-6">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3">
-                  1
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3">
+                    1
+                  </div>
+                  <h2 className="text-xl font-semibold">Select Your Resume</h2>
                 </div>
-                <h2 className="text-xl font-semibold">Select Your Resume</h2>
+                <button
+                  type="button"
+                  onClick={() => setIsUploadModalOpen(true)}
+                  className="bg-gradient-to-r from-blue-950 to-blue-700 text-white py-2 px-4 rounded-md flex items-center gap-2 hover:from-blue-900 hover:to-blue-600 text-sm"
+                >
+                  <Plus size={16} />
+                  <span>New Resume</span>
+                </button>
               </div>
 
               <FormField
@@ -582,32 +613,77 @@ export default function AIJobApplyPage() {
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3">
                   3
                 </div>
-                <h2 className="text-xl font-semibold">Location you Prefer</h2>
+                <h2 className="text-xl font-semibold">Cities you Prefer</h2>
               </div>
 
               <FormField
                 control={form.control}
                 name="locations"
-                render={() => (
+                render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <div className="flex gap-3">
-                        {["Hybrid", "Onsite", "Remote"].map((location) => (
+                      <Popover>
+                        <PopoverTrigger asChild>
                           <Button
-                            key={location}
-                            type="button"
                             variant="outline"
-                            className={`rounded-full px-6 ${selectedLocations.includes(location)
-                              ? "bg-gradient-to-r from-blue-950 to-blue-700 text-white border-transparent hover:from-blue-900 hover:to-blue-600"
-                              : "bg-gray-200 text-gray-700 border-gray-200 hover:bg-gray-300"
-                              }`}
-                            onClick={() => handleLocationToggle(location)}
+                            role="combobox"
+                            className="w-full justify-between"
                           >
-                            {location}
+                            {field.value.length > 0
+                              ? `${field.value.length} cities selected`
+                              : "Select cities..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
-                        ))}
-                      </div>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0">
+                          <Command>
+                            <CommandInput placeholder="Search cities..." />
+                            <CommandEmpty>No cities found.</CommandEmpty>
+                            <CommandGroup className="max-h-64 overflow-auto">
+                              {CITIES.map((city) => (
+                                <CommandItem
+                                  key={city}
+                                  onSelect={() => {
+                                    const updatedLocations = field.value.includes(city)
+                                      ? field.value.filter((l) => l !== city)
+                                      : [...field.value, city]
+                                    field.onChange(updatedLocations)
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      field.value.includes(city) ? "opacity-100" : "opacity-0"
+                                    )}
+                                  />
+                                  {city}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                     </FormControl>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {field.value.map((city) => (
+                        <div
+                          key={city}
+                          className="flex items-center bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
+                        >
+                          {city}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updatedLocations = field.value.filter((l) => l !== city)
+                              field.onChange(updatedLocations)
+                            }}
+                            className="ml-1 text-blue-600 hover:text-blue-800"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                     <FormMessage className="text-red-500 mt-2" />
                   </FormItem>
                 )}
@@ -781,6 +857,13 @@ export default function AIJobApplyPage() {
           </form>
         </Form>
       </div>
+
+      {/* Resume Upload Modal */}
+      <ResumeUploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onUploadSuccess={handleUploadSuccess}
+      />
 
       {/* Purchase Modal */}
       <Dialog open={showPurchaseModal} onOpenChange={setShowPurchaseModal}>
