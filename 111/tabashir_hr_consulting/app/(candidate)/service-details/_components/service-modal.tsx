@@ -58,7 +58,7 @@ export function ServiceModal({ isOpen, onClose, service }: ServiceModalProps) {
           {service.features && (
             <div className="space-y-3">
               <h3 className="font-semibold text-lg">What's included:</h3>
-              <ul className="space-y-2">
+              <ul className="space-y-2 !text-gray-600">
                 {service.features.map((feature, index) => (
                   <li key={index} className="flex items-start">
                     <div className="h-5 w-5 rounded-full bg-green-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
