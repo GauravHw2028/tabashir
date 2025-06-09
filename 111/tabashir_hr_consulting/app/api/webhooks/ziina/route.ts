@@ -158,6 +158,65 @@ export async function POST(request: Request) {
           
           // Optional: Store enhanced resume download permission
           // You can add this to a separate table if needed
+        } else if(serviceId === "linkedin-optimization") {
+          console.log("LinkedIn optimization payment completed");
+          
+          const user = await prisma.user.findUnique({
+            where: {
+              id: userId || ""
+            },
+            select: {
+              email: true,
+              name: true
+            }
+          })
+          
+          // Create payment record for LinkedIn optimization
+          await prisma.payment.create({
+            data: {
+              amount: intent.amount,
+              currency: intent.currency_code,
+              status: "COMPLETED",
+              userId: userId || "",
+            }
+          })
+          
+          console.log("LinkedIn optimization payment created");
+          
+          // Optional: Send confirmation email or trigger LinkedIn optimization process
+          if (user) {
+            // You can add email notification or other processes here
+            console.log(`LinkedIn optimization purchased by ${user.name} (${user.email})`);
+          }
+        } else if(serviceId === "interview-training") {
+          console.log("Interview training payment completed");
+          
+          const user = await prisma.user.findUnique({
+            where: {
+              id: userId || ""
+            },
+            select: {
+              email: true,
+              name: true
+            }
+          })
+          
+          // Create payment record for interview training
+          await prisma.payment.create({
+            data: {
+              amount: intent.amount,
+              currency: intent.currency_code,
+              status: "COMPLETED",
+              userId: userId || "",
+            }
+          })
+          
+          console.log("Interview training payment created");
+          
+          // Optional: Send confirmation email or trigger interview training process
+          if (user) {
+            console.log(`Interview training purchased by ${user.name} (${user.email})`);
+          }
         }
       }
     }

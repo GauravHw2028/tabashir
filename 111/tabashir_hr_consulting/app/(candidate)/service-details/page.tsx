@@ -230,7 +230,7 @@ export default function ServiceDetailsPage() {
           <h2 className="text-xl font-bold mb-4">Services</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* LinkedIn Optimization */}
-            {/* <Card className="shadow-md hover:shadow-lg">
+            <Card className="shadow-md hover:shadow-lg">
               <CardHeader>
                 <CardTitle className="text-xl">LinkedIn Optimization</CardTitle>
                 <CardDescription className="text-lg font-semibold">70AED</CardDescription>
@@ -252,7 +252,7 @@ export default function ServiceDetailsPage() {
                   Get Service
                 </Button>
               </CardFooter>
-            </Card> */}
+            </Card>
 
             {/* ATS CV */}
             <Card className="shadow-md hover:shadow-lg">
@@ -277,7 +277,7 @@ export default function ServiceDetailsPage() {
             </Card>
 
             {/* Interview Training */}
-            {/* <Card className="shadow-md hover:shadow-lg">
+            <Card className="shadow-md hover:shadow-lg">
               <CardHeader>
                 <CardTitle className="text-xl">Interview Training</CardTitle>
                 <CardDescription className="text-lg font-semibold">150AED</CardDescription>
@@ -299,7 +299,7 @@ export default function ServiceDetailsPage() {
                   Get Service
                 </Button>
               </CardFooter>
-            </Card> */}
+            </Card>
           </div>
         </div>
 
