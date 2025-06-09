@@ -37,37 +37,41 @@ export function JobListings({
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="p-6 border-b">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+      <div className="p-4 sm:p-6 border-b">
+        <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+          <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:gap-4 sm:space-y-0">
             <button
               onClick={setShowFilter}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+              className="flex items-center justify-center sm:justify-start gap-2 text-gray-600 hover:text-gray-900 py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <Filter className="w-4 h-4" />
-              {showFilters ? "Hide Filters" : "Show Filters"}
+              <span className="text-sm font-medium">
+                {showFilters ? "Hide Filters" : "Show Filters"}
+              </span>
             </button>
-            <div className="relative">
+            <div className="relative flex-1 sm:flex-initial">
               <input
                 type="text"
                 placeholder="Search jobs..."
-                className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 value={query}
                 onChange={(e) => onQueryChange(e.target.value)}
               />
               <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
           </div>
-          <select
-            className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={sort}
-            onChange={(e) => onSortChange(e.target.value as "newest" | "oldest" | "salary_asc" | "salary_desc")}
-          >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="salary_asc">Salary: Low to High</option>
-            <option value="salary_desc">Salary: High to Low</option>
-          </select>
+          <div className="flex justify-end lg:justify-start">
+            <select
+              className="w-full sm:w-auto border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white"
+              value={sort}
+              onChange={(e) => onSortChange(e.target.value as "newest" | "oldest" | "salary_asc" | "salary_desc")}
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="salary_asc">Salary: Low to High</option>
+              <option value="salary_desc">Salary: High to Low</option>
+            </select>
+          </div>
         </div>
       </div>
 

@@ -43,29 +43,73 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
   }, [job.id])
   return (
     <Card
-      className={`bg-white rounded-lg p-4  cursor-pointer transition-all shadow-md hover:shadow-lg  ${isSelected ? "bg-[#E9F5FF]" : ""
+      className={`bg-white rounded-lg p-3 sm:p-4 cursor-pointer transition-all shadow-md hover:shadow-lg ${isSelected ? "bg-[#E9F5FF]" : ""
         }`}
       onClick={onClick}
     >
-      <div className="flex gap-4">
-        <div className="w-16 h-16 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
-          <Image
-            src={job.logo || "/placeholder.svg"}
-            alt={job.company}
-            width={74}
-            height={74}
-            className="w-full h-full object-contain p-2"
-          />
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+        {/* Mobile: Image and title row */}
+        <div className="flex gap-3 sm:contents">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
+            <Image
+              src={job.logo || "/placeholder.svg"}
+              alt={job.company}
+              width={74}
+              height={74}
+              className="w-full h-full object-contain p-1 sm:p-2"
+            />
+          </div>
+
+          <div className="flex-1 sm:hidden">
+            <div className="flex justify-between items-start">
+              <div className="flex-1 pr-2">
+                <h3 className="font-medium text-base text-gray-900 line-clamp-2">{job.title}</h3>
+                <p className="text-sm text-gray-600">{job.company}</p>
+              </div>
+              <div className="flex items-start gap-1 flex-shrink-0">
+                {job.match && (
+                  <div
+                    className={`px-2 py-1 rounded-full text-xs text-white ${job.match.type === "top"
+                      ? "bg-orange-500"
+                      : job.match.type === "best"
+                        ? "bg-blue-500"
+                        : "bg-pink-500"
+                      }`}
+                  >
+                    {job.match.type === "top"
+                      ? "Top"
+                      : job.match.type === "best"
+                        ? "Best"
+                        : `${job.match.value}%`}
+                  </div>
+                )}
+                <button
+                  className={cn("text-gray-400 hover:text-red-500 p-1", isLiked && "text-red-500")}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (isLiked) {
+                      handleUnlike()
+                    } else {
+                      handleLike()
+                    }
+                  }}
+                >
+                  <Heart size={18} fill={isLiked ? "currentColor" : "none"} />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="flex-1">
+        {/* Desktop layout */}
+        <div className="flex-1 hidden sm:block">
           <div className="flex justify-between">
-            <div>
+            <div className="flex-1 pr-4">
               <h3 className="font-medium text-lg text-gray-900">{job.title}</h3>
               <p className="text-base text-gray-600">{job.company}</p>
             </div>
 
-            <div className="flex items-start gap-2">
+            <div className="flex items-start gap-2 flex-shrink-0">
               {job.match && (
                 <div
                   className={`px-3 py-1 rounded-full text-xs text-white ${job.match.type === "top"
@@ -83,45 +127,65 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
                 </div>
               )}
 
-              <button className={cn("text-gray-400 hover:text-red-500", isLiked && "text-red-500")} onClick={() => {
-                if (isLiked) {
-                  handleUnlike()
-                } else {
-                  handleLike()
-                }
-              }}>
+              <button
+                className={cn("text-gray-400 hover:text-red-500", isLiked && "text-red-500")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (isLiked) {
+                    handleUnlike()
+                  } else {
+                    handleLike()
+                  }
+                }}
+              >
                 <Heart size={20} fill={isLiked ? "currentColor" : "none"} />
               </button>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div className="mt-2 flex items-center text-xs text-gray-500 gap-4">
-            <div className="flex items-center gap-1">
-              <MapPin size={14} />
-              <span>{job.location}</span>
+      {/* Job details - responsive layout */}
+      <div className="mt-3 space-y-3">
+        {/* Location and basic info */}
+        <div className="flex flex-wrap items-center text-xs text-gray-500 gap-x-3 gap-y-1">
+          <div className="flex items-center gap-1">
+            <MapPin size={12} />
+            <span>{job.location}</span>
+          </div>
+          <div className="hidden sm:block">{job.views} views</div>
+          <div>{job.postedTime}</div>
+          <div className="hidden sm:block">{job.jobType}</div>
+          <div className="sm:hidden text-xs">{job.applicationsCount} applied</div>
+        </div>
+
+        {/* Mobile: Additional details */}
+        <div className="flex flex-wrap items-center text-xs text-gray-500 gap-x-3 gap-y-1 sm:hidden">
+          <div>{job.views} views</div>
+          <div>{job.jobType}</div>
+        </div>
+
+        {/* Tags and salary */}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <div className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">
+              Team
             </div>
-            <div>{job.views} views</div>
-            <div>{job.postedTime}</div>
-            <div>{job.jobType}</div>
-            <div>{job.applicationsCount} applied</div>
+            <div className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">
+              {job.department}
+            </div>
           </div>
 
-          <div className="mt-2 flex justify-between items-center">
-            <div className="flex gap-2">
-              <div className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">
-                Team
-              </div>
-              <div className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">
-                {job.department}
-              </div>
-            </div>
-
-            <div className="text-sm font-medium text-blue-500">
+          <div className="text-sm font-medium text-blue-500 flex justify-between sm:justify-end items-center">
+            <span className="sm:hidden text-xs text-gray-500">
+              {job.applicationsCount} applied
+            </span>
+            <span>
               {job.salary.amount}
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-gray-500 ml-1">
                 {/* {job.salary && job.salary.period ? `/${job.salary.period}` : ''} */}
               </span>
-            </div>
+            </span>
           </div>
         </div>
       </div>

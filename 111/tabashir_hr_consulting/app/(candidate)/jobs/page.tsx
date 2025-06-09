@@ -168,7 +168,7 @@ export default function JobsPage() {
       )}
 
       {/* Second column: Job listings */}
-      <div className={`flex-1 overflow-y-scroll rounded-lg bg-white ${selectedJob ? 'hidden lg:block lg:flex-1' : ''}`}>
+      <div className={`flex-1 rounded-lg bg-white ${selectedJob ? 'hidden lg:block lg:flex-1' : ''}`}>
         <JobListings
           onSelectJob={setSelectedJob}
           jobs={jobs}
