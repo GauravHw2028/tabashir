@@ -19,7 +19,7 @@ export default async function CandidateLayout({
       <div className="flex bg-[#F0F0F0] p-4 relative min-h-screen">
         <SidebarLayout />
         <div className="flex-1 flex flex-col">
-          <main className="pl-4 lg:pl-4 lg:pt-0 flex-1">{children}</main>
+          <main className="pl-0 lg:pl-4 lg:pt-0 flex-1">{children}</main>
         </div>
       </div>
     </SessionProvider>

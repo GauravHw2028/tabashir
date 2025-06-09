@@ -120,19 +120,17 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
     router.push(`/job/${job.id}`);
   };
 
-
-
   if (loading) {
     return (
       <div>
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-medium text-gray-800 w-full">Matched Jobs</h2>
-          <div className="w-full flex justify-end mb-4">
+        <div className="flex justify-between items-center gap-4 mb-6 pl-12">
+          <h2 className="text-xl font-medium max-md:text-lg text-gray-800">Matched Jobs</h2>
+          <div className="flex justify-end">
             <UserProfileHeader />
           </div>
         </div>
-        <div className="flex flex-col lg:flex-row gap-5">
-          <div className="w-full lg:w-[58%] grid grid-cols-1 md:grid-cols-3 gap-4 text-black">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+          <div className="w-full lg:w-[58%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-black">
             {/* Loading skeletons */}
             <div className="h-48 bg-gray-200 animate-pulse rounded-lg"></div>
             <div className="h-48 bg-gray-200 animate-pulse rounded-lg"></div>
@@ -148,17 +146,17 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-medium text-gray-800 w-full">Matched Jobs</h2>
-        <div className="w-full flex justify-end mb-4">
+      <div className="flex justify-between items-center gap-4 mb-6 pl-12">
+        <h2 className="text-xl font-medium max-md:text-lg text-gray-800">Matched Jobs</h2>
+        <div className="flex justify-end">
           <UserProfileHeader />
         </div>
       </div>
-      <div className="flex flex-col lg:flex-row gap-5">
-        <div className="w-full lg:w-[58%] grid grid-cols-1 md:grid-cols-3 gap-4 text-black">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 mb-5">
+        <div className="w-full lg:w-[58%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-black">
           {/* Show purchase prompt if jobApplyCount is 0 */}
-          {jobApplyCount === 0 ? (
-            <div className="flex items-center justify-center mb-3 col-span-3 w-full">
+          {/* {jobApplyCount === 0 ? (
+            <div className="flex items-center justify-center mb-3 col-span-full w-full">
               <div className="bg-white rounded-lg shadow-sm p-4 text-center w-full h-[152px]">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Access Premium Jobs</h3>
                 <p className="text-gray-600 text-sm mb-4">
@@ -173,36 +171,50 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
               </div>
             </div>
           ) : (
-            <>
-              {/* First job from API */}
-              {jobs[0] && (
-                <MatchedJobCard
-                  title={jobs[0].title}
-                  company={jobs[0].company}
-                  location={jobs[0].location}
-                  salary={typeof jobs[0].salary === 'object' ? `${jobs[0].salary.currency} ${jobs[0].salary.amount}/${jobs[0].salary.period}` : jobs[0].salary}
-                  gradient="linear-gradient(100.95deg, #276EFE 1.25%, #5F92F9 98.75%)"
-                  shadow="0px 4px 4px 0px #4682FB47"
-                  tags={getJobTags(jobs[0])}
-                  onApply={() => handleJobSelect(jobs[0])}
-                />
-              )}
-
-              {/* Second job from API */}
-              {jobs[1] && (
-                <MatchedJobCard
-                  title={jobs[1].title}
-                  company={jobs[1].company}
-                  location={jobs[1].location}
-                  salary={typeof jobs[1].salary === 'object' ? `${jobs[1].salary.currency} ${jobs[1].salary.amount}/${jobs[1].salary.period}` : jobs[1].salary}
-                  gradient="linear-gradient(102.25deg, #F4AA53 0.46%, #F1977D 99.54%)"
-                  shadow="0px 4px 4px 0px #F4A75B4F"
-                  tags={getJobTags(jobs[1])}
-                  onApply={() => handleJobSelect(jobs[1])}
-                />
-              )}
-            </>
+            <> */}
+          {/* First job from API */}
+          {jobs[0] && (
+            <MatchedJobCard
+              title={jobs[0].title}
+              company={jobs[0].company}
+              location={jobs[0].location}
+              salary={typeof jobs[0].salary === 'object' ? `${jobs[0].salary.currency} ${jobs[0].salary.amount}/${jobs[0].salary.period}` : jobs[0].salary}
+              gradient="linear-gradient(100.95deg, #276EFE 1.25%, #5F92F9 98.75%)"
+              shadow="0px 4px 4px 0px #4682FB47"
+              tags={getJobTags(jobs[0])}
+              onApply={() => handleJobSelect(jobs[0])}
+            />
           )}
+
+          {/* Second job from API */}
+          {jobs[1] && (
+            <MatchedJobCard
+              title={jobs[1].title}
+              company={jobs[1].company}
+              location={jobs[1].location}
+              salary={typeof jobs[1].salary === 'object' ? `${jobs[1].salary.currency} ${jobs[1].salary.amount}/${jobs[1].salary.period}` : jobs[1].salary}
+              gradient="linear-gradient(102.25deg, #F4AA53 0.46%, #F1977D 99.54%)"
+              shadow="0px 4px 4px 0px #F4A75B4F"
+              tags={getJobTags(jobs[1])}
+              onApply={() => handleJobSelect(jobs[1])}
+            />
+          )}
+
+          {/* Third job from API */}
+          {jobs[2] && (
+            <MatchedJobCard
+              title={jobs[2].title}
+              company={jobs[2].company}
+              location={jobs[2].location}
+              salary={typeof jobs[2].salary === 'object' ? `${jobs[2].salary.currency} ${jobs[2].salary.amount}/${jobs[2].salary.period}` : jobs[2].salary}
+              gradient="linear-gradient(102.25deg, #F4AA53 0.46%, #F1977D 99.54%)"
+              shadow="0px 4px 4px 0px #F4A75B4F"
+              tags={getJobTags(jobs[2])}
+              onApply={() => handleJobSelect(jobs[2])}
+            />
+          )}
+          {/* </>
+          )} */}
         </div>
 
         {/* Applied Jobs Card */}
