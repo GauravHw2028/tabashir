@@ -317,7 +317,7 @@ export default function AppliedJobsPage() {
           </div>
 
           {/* Pagination */}
-          <div className="flex items-center justify-between mt-4">
+          {/* <div className="flex items-center justify-between mt-4">
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <span>Showing</span>
               <Select value={itemsPerPage} onValueChange={setItemsPerPage}>
@@ -361,7 +361,7 @@ export default function AppliedJobsPage() {
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
