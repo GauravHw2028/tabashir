@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function ResumePayment({ resumeId, isOpened }: { resumeId: string, isOpened: boolean }) {
   const [loading, setLoading] = useState(false)
-
+  const router = useRouter()
   async function handlePay() {
     setLoading(true)
     const res = await fetch('/api/payment-intent', {
@@ -31,7 +32,14 @@ export default function ResumePayment({ resumeId, isOpened }: { resumeId: string
         <p className="text-gray-600 mb-6">
           You have to pay 40 AED in order to create your ATS CV.
         </p>
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-4">
+          <button
+            onClick={() => router.push('/resume')}
+            disabled={loading}
+            className="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Go Back to Dashboard
+          </button>
           <button
             onClick={handlePay}
             disabled={loading}
