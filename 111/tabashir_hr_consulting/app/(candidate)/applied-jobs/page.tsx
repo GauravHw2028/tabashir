@@ -198,9 +198,9 @@ export default function AppliedJobsPage() {
   }
 
   return (
-    <div className="container mx-auto py-6 max-w-7xl text-gray-900">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Applied Jobs</h1>
+    <div className="container mx-auto py-6 max-lg:py-1 max-w-7xl text-gray-900">
+      <div className="flex justify-between items-center mb-6 max-lg:pl-12">
+        <h1 className="text-2xl max-lg:text-lg font-semibold text-gray-900">Applied Jobs</h1>
         <UserProfileHeader />
       </div>
 
