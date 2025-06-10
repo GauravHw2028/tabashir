@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 
 interface GlobalDemandListProps {
   jobTitle: string
+  skills: string[]
 }
 
 interface ApiResponse {
@@ -44,17 +45,18 @@ const getCityMapping = (city: string): { country: string; flag: string } => {
   return { country: "Other", flag: "🌍" }
 }
 
-export function GlobalDemandList({ jobTitle }: GlobalDemandListProps) {
+export function GlobalDemandList({ jobTitle, skills }: GlobalDemandListProps) {
   const [countries, setCountries] = useState<CountryDemand[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedSkill, setSelectedSkill] = useState(skills[0])
 
   const fetchData = async () => {
     try {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`https://backend.tabashir.ae/api/v1/resume/jobs/count-by-city?job_title=${encodeURIComponent(jobTitle)}`)
+      const response = await fetch(`https://backend.tabashir.ae/api/v1/resume/jobs/count-by-city?job_title=${encodeURIComponent(selectedSkill)}`)
 
       if (!response.ok) {
         throw new Error('Failed to fetch data')
@@ -102,15 +104,20 @@ export function GlobalDemandList({ jobTitle }: GlobalDemandListProps) {
   }
 
   useEffect(() => {
-    if (jobTitle) {
+    if (selectedSkill) {
       fetchData()
     }
-  }, [jobTitle])
+  }, [selectedSkill])
 
   return (
     <div>
       <h2 className="text-xl font-medium text-gray-800 mb-6">
-        Global Demand for {jobTitle}
+        Global Demand for
+        <select name="" id="" className="border rounded-md px-3 py-1.5 text-sm cursor-pointer bg-white appearance-none pr-8 ml-3" onChange={(e) => setSelectedSkill(e.target.value)}>
+          {skills.map((skill) => (
+            <option key={skill} value={skill}>{skill}</option>
+          ))}
+        </select>
       </h2>
 
       <div className="space-y-4">

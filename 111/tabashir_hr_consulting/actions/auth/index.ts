@@ -89,12 +89,19 @@ export async function onCandidateRegistration(data: RegistrationFormSchemaType) 
 
   const { email, username, password } = validate
   try {
-
-    const isUserExist = await prisma.user.findUnique({
+    let isUserExist = await prisma.user.findUnique({
       where: {
         email
       }
     })
+
+    if(!isUserExist){
+      isUserExist = await prisma.user.findUnique({
+        where: {
+          email: username
+        }
+      })
+    }
 
     if (isUserExist) {
       return {

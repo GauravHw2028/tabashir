@@ -35,19 +35,26 @@ const RegistrationForm = () => {
   });
 
   async function onSubmit(values: RegistrationFormSchemaType) {
-     try {
-        setIsLoading(true)
-        const response = await onCandidateRegistration(values)
-        toast.success("Successfully logged in");
-      router.push(response.redirectTo as string);
-     } catch (error:any) {
-        console.error(error)
-        toast.error("Registration Error", {
-            description:error.message
+    try {
+      setIsLoading(true)
+      const response = await onCandidateRegistration(values)
+
+      if (response?.error) {
+        return toast.error("Registration Error", {
+          description: response.message
         })
-     } finally {
-        setIsLoading(false)
-     }
+      } else {
+        toast.success("Successfully logged in");
+        router.push(response.redirectTo as string);
+      }
+    } catch (error: any) {
+      console.error(error)
+      toast.error("Registration Error", {
+        description: error.message
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
   return (
     <Form {...form}>
@@ -127,7 +134,7 @@ const RegistrationForm = () => {
           className="w-full bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white hover:opacity-90"
           disabled={isLoading}
         >
-          {isLoading ?"Please wait...":"Create Account"}
+          {isLoading ? "Please wait..." : "Create Account"}
         </Button>
       </form>
     </Form>
