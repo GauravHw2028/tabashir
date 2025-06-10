@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { X, Globe, Building2, Briefcase, DollarSign, Calendar, Loader2 } from "lucide-react"
+import { X, Globe, Building2, Briefcase, DollarSign, Calendar, Loader2, User } from "lucide-react"
 import type { Job } from "./types"
 import Image from "next/image"
 import { ApplicationModal } from "./application-modal"
@@ -288,6 +288,15 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
             <div>
               <p className="text-sm text-gray-500">Posted</p>
               <p className="font-medium text-gray-900">{job.postedTime || "-"}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+            <User size={20} className="text-gray-500" />
+            <div>
+              <p className="text-sm text-gray-500">Gender</p>
+              <p className="font-medium text-gray-900">
+                {job.gender === "Male" ? "For Male" : job.gender === "Female" ? "For Female" : "For all"}
+              </p>
             </div>
           </div>
         </div>

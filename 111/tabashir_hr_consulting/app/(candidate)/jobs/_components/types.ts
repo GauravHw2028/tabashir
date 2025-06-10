@@ -7,6 +7,7 @@ export interface Job {
   logo: string
   location: string
   country?: string
+  gender?: string
   views?: number
   postedTime: string
   jobType: string

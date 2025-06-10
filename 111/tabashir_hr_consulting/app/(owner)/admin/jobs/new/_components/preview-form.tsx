@@ -9,6 +9,7 @@ import { JobDetails } from "@/app/(candidate)/jobs/_components/job-details"
 import { createJob } from "@/app/actions/admin"
 import { useToast } from "@/components/ui/use-toast"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 interface PreviewFormProps {
   form: UseFormReturn<any>
@@ -21,6 +22,7 @@ export default function PreviewForm({ form, onPrev }: PreviewFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const router = useRouter()
+  const session = useSession()
 
   const formValues = form.getValues()
 
@@ -32,7 +34,7 @@ export default function PreviewForm({ form, onPrev }: PreviewFormProps) {
     try {
       setIsLoading(true)
       const result = await createJob(formValues)
-      
+
       if (result.success) {
         toast({
           title: "Success",
@@ -66,6 +68,7 @@ export default function PreviewForm({ form, onPrev }: PreviewFormProps) {
     location: formValues.location || "Location",
     country: "Country",
     jobType: formValues.jobType || "Full-time",
+    gender: formValues.gender || "For all",
     salary: {
       amount: parseInt(formValues.salaryMin?.replace(/,/g, '') || "0"),
       currency: "AED",
@@ -110,18 +113,19 @@ export default function PreviewForm({ form, onPrev }: PreviewFormProps) {
 
         {activeView === "social" ? (
           <div className="max-w-2xl mx-auto">
-            <JobCard 
+            <JobCard
               job={previewJob}
-              onClick={() => {}}
+              onClick={() => { }}
               isSelected={false}
             />
           </div>
         ) : (
           <div className="max-w-4xl mx-auto">
-            <JobDetails 
+            <JobDetails
               job={previewJob}
-              onClose={() => {}}
+              onClose={() => { }}
               isPreview={true}
+              userId={session.data?.user?.id || ""}
             />
           </div>
         )}
@@ -131,9 +135,9 @@ export default function PreviewForm({ form, onPrev }: PreviewFormProps) {
         <Button type="button" variant="outline" onClick={onPrev}>
           Previous
         </Button>
-        <Button 
-          type="button" 
-          onClick={handleUpload} 
+        <Button
+          type="button"
+          onClick={handleUpload}
           className="bg-blue-950 hover:bg-blue-900 text-white"
           disabled={isLoading}
         >
