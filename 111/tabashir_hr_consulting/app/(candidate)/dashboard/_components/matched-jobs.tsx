@@ -35,7 +35,7 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
 
   const fetchJobs = async () => {
     try {
-      const response = await getJobs(undefined, undefined, undefined, undefined, undefined, jobType, undefined);
+      const response = await getJobs(session.data?.user?.email || "", undefined, undefined, undefined, undefined, undefined, jobType, undefined);
       if (response.success) {
         // Transform API data to match Job interface
         const transformedJobs = response.data.map((apiJob: ApiJob) => ({

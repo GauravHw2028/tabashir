@@ -115,7 +115,7 @@ export default function AppliedJobsPage() {
 
         // Transform API response to match our interface
         // Adjust this transformation based on the actual API response structure
-        const transformedJobs = response.data?.map((job: any, index: number) => ({
+        const transformedJobs = response.jobs?.map((job: any, index: number) => ({
           id: job.id || index,
           jobTitle: job.jobTitle || job.job_title || job.title || "Unknown Job",
           position: job.position || job.level || "Not specified",
@@ -127,6 +127,8 @@ export default function AppliedJobsPage() {
           location: job.location || job.city || job.vacancy_city || "Not specified",
           status: job.status || "Pending",
         })) || [];
+
+        console.log(transformedJobs)
 
         setAppliedJobs(transformedJobs);
         setTotalJobs(transformedJobs.length);

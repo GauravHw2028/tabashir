@@ -18,6 +18,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { useSession } from "next-auth/react"
 
 interface JobDetailsProps {
   job: Job
@@ -36,6 +37,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
   const [selectedResume, setSelectedResume] = useState<Resume | null>(null)
   const [isApplying, setIsApplying] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const session = useSession()
 
   // Fetch user resumes when component mounts
   useEffect(() => {
@@ -76,6 +78,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
 
       // Prepare form data
       const formData = new FormData()
+      formData.append("email", session.data?.user?.email || "")
       formData.append("user_id", userId || "")
       formData.append("file", file)
       formData.append("job_id", job.id)

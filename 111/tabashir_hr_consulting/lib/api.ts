@@ -1,4 +1,7 @@
+import { useSession } from "next-auth/react"
+
 export const getJobs = async (
+  email?: string,
   location?: string,
   jobType?: string,
   salaryMin?: string,
@@ -10,8 +13,8 @@ export const getJobs = async (
 ) => {
   try {
     const params = new URLSearchParams()
-
     // Add filters only if they have values
+    if (email) params.append("email", email)
     if (location) params.append("location", location)
     if (jobType) params.append("jobType", jobType)
     if (salaryMin) params.append("salaryMin", salaryMin)
