@@ -387,3 +387,26 @@ export async function onGetUserProfile() {
     jobType: user?.candidate?.profile?.jobType as string,
   }
 }
+
+export async function getUsersSkills() {
+  const session = await auth();
+  const userId = session?.user.id;
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      candidate: {
+        select: {
+          profile: {
+            select: {
+              skills: true
+            }
+          }
+        }
+      }
+    }
+  });
+  if(!user || !user.candidate) return null
+  return user.candidate.profile?.skills || [];
+}

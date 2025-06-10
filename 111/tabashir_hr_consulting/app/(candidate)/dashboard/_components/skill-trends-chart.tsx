@@ -6,6 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 interface SkillTrendsChartProps {
   jobTitle: string
+  skills: string[]
 }
 
 interface ApiResponse {
@@ -21,7 +22,7 @@ interface ChartData {
   value: number
 }
 
-export function SkillTrendsChart({ jobTitle }: SkillTrendsChartProps) {
+export function SkillTrendsChart({ jobTitle, skills }: SkillTrendsChartProps) {
   const [selectedSkill, setSelectedSkill] = useState(jobTitle)
   const [chartData, setChartData] = useState<ChartData[]>([])
   const [loading, setLoading] = useState(true)
@@ -78,14 +79,11 @@ export function SkillTrendsChart({ jobTitle }: SkillTrendsChartProps) {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-medium text-gray-800">Skill Trends</h2>
-        <div className="relative">
-          <div
-            className="flex items-center gap-2 border rounded-md px-3 py-1.5 text-sm cursor-pointer bg-white appearance-none pr-8"
-          >
-            {jobTitle}
-          </div>
-          <ChevronDown size={16} className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none" />
-        </div>
+        <select name="" id="" className="border rounded-md px-3 py-1.5 text-sm cursor-pointer bg-white appearance-none pr-8" onChange={(e) => setSelectedSkill(e.target.value)}>
+          {skills.map((skill) => (
+            <option value={skill}>{skill}</option>
+          ))}
+        </select>
       </div>
 
       <div className="h-64">

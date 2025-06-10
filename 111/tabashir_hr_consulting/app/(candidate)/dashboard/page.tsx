@@ -4,16 +4,17 @@ import { MatchingJobsChart } from "./_components/matching-jobs-chart"
 import { GlobalDemandList } from "./_components/global-demand-list"
 import { InterviewScheduleCard } from "./_components/interview-schedule-card"
 import { JobOffersCard } from "./_components/job-offers-card"
-import { onGetUserProfile } from "@/actions/auth"
+import { getUsersSkills, onGetUserProfile } from "@/actions/auth"
 
 export default async function Dashboard() {
   const user = await onGetUserProfile()
+  const skills = await getUsersSkills()
   return (
     <div className="space-y-2  overflow-y-scroll max-h-[calc(100vh-35px)] ">
       <MatchedJobs jobType={user?.jobType || ""} />
 
       <div className="bg-white rounded-lg p-6 shadow-sm">
-        <SkillTrendsChart jobTitle={user?.jobType || "Developer"} />
+        <SkillTrendsChart jobTitle={user?.jobType || "Developer"} skills={skills || []} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
