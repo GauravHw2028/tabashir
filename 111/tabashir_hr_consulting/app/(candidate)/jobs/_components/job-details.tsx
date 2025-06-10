@@ -302,7 +302,8 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
             <div>
               <h3 className="font-medium mb-3 text-gray-900">Job Description</h3>
               <div className="prose prose-sm max-w-none text-gray-700">
-                {job.description ? job.description : <span className="text-gray-400">No description provided.</span>}
+                {/* Removing all the links https or http from description */}
+                {job.description ? job.description.replace(/https?:\/\/[^\s]+/g, '') : <span className="text-gray-400">No description provided.</span>}
               </div>
             </div>
 
@@ -345,7 +346,8 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
               <div>
                 <h3 className="font-medium mb-3 text-gray-900">About the Company</h3>
                 <p className="text-sm text-gray-700">
-                  {job.companyDescription || <span className="text-gray-400">No company description provided.</span>}
+                  {/* Removing all the links https or http from companyDescription */}
+                  {job.companyDescription ? job.companyDescription.replace(/https?:\/\/[^\s]+/g, '') : <span className="text-gray-400">No company description provided.</span>}
                 </p>
               </div>
             </div>
