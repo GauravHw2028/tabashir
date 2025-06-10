@@ -38,6 +38,7 @@ export default function JobDetailsPage() {
             location: response.data.vacancy_city,
             gender: response.data.gender,
             postedTime: new Date(response.data.job_date).toLocaleDateString(),
+            experience: response.data.experience,
             jobType: Array.isArray(response.data.working_days)
               ? response.data.working_days.join(", ")
               : response.data.working_days,

@@ -299,6 +299,15 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
               </p>
             </div>
           </div>
+          <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+            <User size={20} className="text-gray-500" />
+            <div>
+              <p className="text-sm text-gray-500">Experience</p>
+              <p className="font-medium text-gray-900">
+                {job.experience || "No experience required"}
+              </p>
+            </div>
+          </div>
         </div>
 
         <Tabs defaultValue="description" className="w-full">

@@ -69,6 +69,7 @@ export default function PreviewForm({ form, onPrev }: PreviewFormProps) {
     country: "Country",
     jobType: formValues.jobType || "Full-time",
     gender: formValues.gender || "For all",
+    experience: formValues.experience || "No experience required",
     salary: {
       amount: parseInt(formValues.salaryMin?.replace(/,/g, '') || "0"),
       currency: "AED",
@@ -85,7 +86,6 @@ export default function PreviewForm({ form, onPrev }: PreviewFormProps) {
     description: formValues.description || "",
     requirements: formValues.requirements || "",
     qualifications: [],
-    experience: [],
     locationDetails: {
       type: "onsite",
       place: formValues.location || "Location"

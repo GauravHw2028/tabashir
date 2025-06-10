@@ -47,6 +47,7 @@ export default function JobsPage() {
         logo: job.logo,
         location: job.vacancy_city,
         gender: job.gender,
+        experience: job.experience,
         postedTime: new Date(job.job_date).toLocaleDateString(),
         jobType: job.working_days,
         salary: {
