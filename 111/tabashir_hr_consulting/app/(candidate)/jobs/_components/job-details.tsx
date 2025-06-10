@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { X, Globe, Building2, Briefcase, DollarSign, Calendar, Loader2, User } from "lucide-react"
+import { X, Globe, Building2, Briefcase, DollarSign, Calendar, Loader2, User, Mail } from "lucide-react"
 import type { Job } from "./types"
 import Image from "next/image"
 import { ApplicationModal } from "./application-modal"
@@ -259,6 +259,10 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
               <Globe size={16} />
               Apply through Company Website
             </button>
+            <div className="w-full py-2 border border-gray-300 rounded-md font-medium flex items-center justify-center gap-2 text-gray-700">
+              <Mail size={16} />
+              {job.email}
+            </div>
           </div>
         )}
 

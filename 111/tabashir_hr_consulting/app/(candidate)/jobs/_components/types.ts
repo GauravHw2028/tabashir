@@ -6,6 +6,7 @@ export interface Job {
   company: string
   logo: string
   location: string
+  email: string
   country?: string
   gender?: string
   views?: number

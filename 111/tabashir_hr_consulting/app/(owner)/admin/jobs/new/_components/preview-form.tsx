@@ -66,6 +66,7 @@ export default function PreviewForm({ form, onPrev }: PreviewFormProps) {
     company: formValues.company || "Company Name",
     logo: formValues.companyLogo || "/placeholder.svg",
     location: formValues.location || "Location",
+    email: formValues.application_email || "Email",
     country: "Country",
     jobType: formValues.jobType || "Full-time",
     gender: formValues.gender || "For all",

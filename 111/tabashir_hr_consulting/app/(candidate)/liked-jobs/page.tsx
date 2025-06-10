@@ -230,6 +230,7 @@ export default function LikedJobsPage() {
             logo: jobResult.data.logo || "",
             location: jobResult.data.vacancy_city,
             gender: jobResult.data.gender,
+            email: jobResult.data.application_email,
             experience: jobResult.data.experience,
             postedTime: new Date(jobResult.data.job_date).toLocaleDateString(),
             jobType: jobResult.data.working_days,
