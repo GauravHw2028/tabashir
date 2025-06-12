@@ -338,49 +338,46 @@ export default function ServiceDetailsPage() {
             recruiter, our AI-powered resume generator is designed to help you stand out in a competitive job market.
           </p>
 
-          <div className="space-y-4 max-w-xl">
+          {latestPayment ? (<div className="space-y-4 max-w-xl">
             <div className="flex">
               <span className="font-semibold w-36">Service Type :</span>
               <span>One Time Payment</span>
             </div>
-            {latestPayment ? (
-              <>
-                <div className="flex">
-                  <span className="font-semibold w-36">Latest Purchase:</span>
-                  <span>{latestPayment.amount} AED</span>
-                </div>
-                <div className="flex">
-                  <span className="font-semibold w-36">Purchasing date:</span>
-                  <span>{latestPayment.formattedDate}</span>
-                </div>
-              </>
-            ) : (
-              <div className="flex">
-                <span className="font-semibold w-36">Purchasing date:</span>
-                <span>No purchases yet</span>
-              </div>
-            )}
+            <div className="flex">
+              <span className="font-semibold w-36">Latest Purchase:</span>
+              <span>{latestPayment.amount} AED</span>
+            </div>
+            <div className="flex">
+              <span className="font-semibold w-36">Purchasing date:</span>
+              <span>{latestPayment.formattedDate}</span>
+            </div>
           </div>
+          ) : (
+            <div className="flex">
+              <span className="font-semibold w-36">Purchasing date:</span>
+              <span>No purchases yet</span>
+            </div>
+          )}
+          <TermsModal isOpen={showTermsModal} onClose={handleCloseTermsModal} />
+          {selectedService && (
+            <ServiceModal
+              isOpen={!!selectedService}
+              onClose={() => setSelectedService(null)}
+              service={selectedService}
+            />
+          )}
+          {successServiceId && (
+            <PaymentSuccessModal
+              isOpen={showSuccessModal}
+              onClose={() => {
+                setShowSuccessModal(false)
+                setSuccessServiceId(null)
+              }}
+              serviceId={successServiceId}
+            />
+          )}
         </div>
       </div>
-      <TermsModal isOpen={showTermsModal} onClose={handleCloseTermsModal} />
-      {selectedService && (
-        <ServiceModal
-          isOpen={!!selectedService}
-          onClose={() => setSelectedService(null)}
-          service={selectedService}
-        />
-      )}
-      {successServiceId && (
-        <PaymentSuccessModal
-          isOpen={showSuccessModal}
-          onClose={() => {
-            setShowSuccessModal(false)
-            setSuccessServiceId(null)
-          }}
-          serviceId={successServiceId}
-        />
-      )}
     </div>
   )
 }
