@@ -228,6 +228,8 @@ export default function LikedJobsPage() {
             title: jobResult.data.job_title,
             company: jobResult.data.entity,
             logo: jobResult.data.logo || "",
+            nationality: jobResult.data.nationality,
+            entity: jobResult.data.entity,
             location: jobResult.data.vacancy_city,
             gender: jobResult.data.gender,
             email: jobResult.data.application_email,

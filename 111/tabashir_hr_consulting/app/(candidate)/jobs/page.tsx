@@ -45,6 +45,7 @@ export default function JobsPage() {
         title: job.job_title,
         company: job.entity,
         logo: job.logo,
+        entity: job.entity,
         location: job.vacancy_city,
         email: job.application_email,
         gender: job.gender,

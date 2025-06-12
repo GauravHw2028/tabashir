@@ -286,7 +286,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
             <div>
               <p className="text-sm text-gray-500">Salary</p>
               <p className="font-medium text-gray-900">
-                {job.salary.amount}
+                {job.salary.amount ? job.salary.amount : "TBD"}
               </p>
             </div>
           </div>
@@ -307,11 +307,11 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
             </div>
           </div>
           <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
-            <User size={20} className="text-gray-500" />
+            <DollarSign size={20} className="text-gray-500" />
             <div>
-              <p className="text-sm text-gray-500">Experience</p>
+              <p className="text-sm text-gray-500">Entity</p>
               <p className="font-medium text-gray-900">
-                {job.experience || "No experience required"}
+                {getJobEntity(job.entity || "")}
               </p>
             </div>
           </div>
@@ -329,6 +329,20 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
               <div className="prose prose-sm max-w-none text-gray-700">
                 {/* Removing all the links https or http from description */}
                 {job.description ? job.description.replace(/https?:\/\/[^\s]+/g, '') : <span className="text-gray-400">No description provided.</span>}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="font-medium mb-3 text-gray-900">Nationality</h3>
+              <div className="prose prose-sm max-w-none text-gray-700">
+                {job.nationality || "No nationality required"}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="font-medium mb-3 text-gray-900">Experience</h3>
+              <div className="prose prose-sm max-w-none text-gray-700">
+                {job.experience || "No experience required"}
               </div>
             </div>
 
@@ -381,4 +395,15 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
       </div>
     </div>
   )
+}
+
+
+function getJobEntity(entity: string) {
+  if (entity.toLowerCase().includes("government") || entity.toLowerCase().includes("govt") || entity.toLowerCase().includes("gov") || entity.toLowerCase().includes("governmental")) {
+    return "Government"
+  } else if (entity.toLowerCase().includes("semi-government") || entity.toLowerCase().includes("semi-govt") || entity.toLowerCase().includes("semi-gov") || entity.toLowerCase().includes("semi governmental")) {
+    return "Semi-Government"
+  } else {
+    return "Private"
+  }
 }

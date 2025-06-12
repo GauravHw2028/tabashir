@@ -181,6 +181,8 @@ const CandidateProfessionalInfoForm = () => {
   const router = useRouter();
   const [skills, setSkills] = useState<string[]>([]);
   const [currentSkill, setCurrentSkill] = useState("");
+  const [isCustomJobType, setIsCustomJobType] = useState(false);
+  const [customJobType, setCustomJobType] = useState("");
 
   const form = useForm<CandidateProfessionalInfoFormSchemaType>({
     resolver: zodResolver(candidateProfessionalInfoFormSchema),
@@ -247,40 +249,117 @@ const CandidateProfessionalInfoForm = () => {
                 What kind of job are you looking for?
               </FormLabel>
               <FormControl>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className="w-full justify-between text-gray-900"
-                    >
-                      {field.value || "Select job position..."}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-full p-0">
-                    <Command>
-                      <CommandInput placeholder="Search job positions..." />
-                      <CommandEmpty>No job position found.</CommandEmpty>
-                      <CommandGroup className="max-h-64 overflow-auto">
-                        {JOB_POSITIONS.map((position) => (
-                          <CommandItem
-                            key={position}
-                            onSelect={() => field.onChange(position)}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                field.value === position ? "opacity-100" : "opacity-0"
-                              )}
-                            />
-                            {position}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                <div className="space-y-3">
+                  {!isCustomJobType ? (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className="w-full justify-between text-gray-900"
+                        >
+                          {field.value || "Select job position..."}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0">
+                        <Command>
+                          <CommandInput placeholder="Search job positions..." />
+                          <CommandEmpty>
+                            <div className="p-2 text-center">
+                              <p className="text-sm text-gray-500 mb-2">No job position found.</p>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setIsCustomJobType(true);
+                                  setCustomJobType("");
+                                  field.onChange("");
+                                }}
+                              >
+                                <Plus className="mr-2 h-4 w-4" />
+                                Add Custom Position
+                              </Button>
+                            </div>
+                          </CommandEmpty>
+                          <CommandGroup className="max-h-64 overflow-auto">
+                            {JOB_POSITIONS.map((position) => (
+                              <CommandItem
+                                key={position}
+                                onSelect={() => {
+                                  field.onChange(position);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    field.value === position ? "opacity-100" : "opacity-0"
+                                  )}
+                                />
+                                {position}
+                              </CommandItem>
+                            ))}
+                            <CommandItem
+                              onSelect={() => {
+                                setIsCustomJobType(true);
+                                setCustomJobType("");
+                                field.onChange("");
+                              }}
+                            >
+                              <Plus className="mr-2 h-4 w-4" />
+                              <span className="text-blue-600 font-medium">Add Custom Position</span>
+                            </CommandItem>
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  ) : (
+                    <div className="relative">
+                      <Input
+                        placeholder="Enter your custom job position"
+                        value={customJobType}
+                        onChange={(e) => {
+                          setCustomJobType(e.target.value);
+                          field.onChange(e.target.value);
+                        }}
+                        className="text-gray-900 pr-20"
+                        autoFocus
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setIsCustomJobType(false);
+                          setCustomJobType("");
+                          field.onChange("");
+                        }}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+
+                  {!isCustomJobType && (
+                    <div className="text-center">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setIsCustomJobType(true);
+                          setCustomJobType("");
+                          field.onChange("");
+                        }}
+                        className="text-blue-600 hover:text-blue-700"
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Can't find your position? Add custom
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
