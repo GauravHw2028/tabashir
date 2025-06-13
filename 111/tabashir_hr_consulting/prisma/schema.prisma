@@ -11,31 +11,31 @@ datasource db {
 }
 
 model User {
-    id              String    @id @default(cuid())
-    name            String?
-    email           String    @unique
-    emailVerified   DateTime?
-    image           String?
-    password        String?
-    jobCount        Int       @default(0)
-    aiJobApplyCount Int       @default(0)
-    referralCode    String?
-    referredBy      String?
+    id               String         @id @default(cuid())
+    name             String?
+    email            String?        @unique
+    emailVerified    DateTime?
+    image            String?
+    password         String?
+    jobCount         Int            @default(0)
+    aiJobApplyCount  Int            @default(0)
+    userType         UserType?
+    createdAt        DateTime       @default(now())
+    updatedAt        DateTime       @updatedAt
+    accounts         Account[]
+    sessions         Session[]
+    candidate        Candidate?
+    Owner            Owner?
+    subscriptions    Subscription[]
+    SavedJobPost     SavedJobPost[]
+    Payment          Payment[]
+    referralCode     String?
+    referredBy       String?
+    resetToken       String?
+    resetTokenExpiry DateTime?
+    JobLike          JobLike[]
 
-    accounts Account[]
-    sessions Session[]
-    userType UserType?
-
-    candidate Candidate?
-    Owner     Owner?
-
-    subscriptions Subscription[]
-
-    createdAt    DateTime       @default(now())
-    updatedAt    DateTime       @updatedAt
-    SavedJobPost SavedJobPost[]
-    Payment      Payment[]
-    JobLike      JobLike[]
+    @@map("users")
 }
 
 enum UserType {

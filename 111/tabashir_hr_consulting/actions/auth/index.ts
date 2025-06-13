@@ -2,14 +2,28 @@
 
 import { loginFormSchema } from "@/app/utils/schemas";
 import { z } from "zod";
-import { prisma } from '@/app/utils/db'
 import { signIn, signOut } from "@/app/utils/auth";
 import { redirect } from "next/dist/server/api-utils";
 import { registrationFormSchema, RegistrationFormSchemaType } from "@/components/forms/registration/candidate/schema";
-import bcrypt from "bcryptjs";
+import nodemailer from "nodemailer";
+import crypto from "crypto";
+import { prisma } from '@/app/utils/db'
+import bcrypt from "bcrypt";
 import { auth } from "@/app/utils/auth";
 import { candidatePersonalInfoFormSchema, CandidatePersonalInfoFormSchemaType } from "@/components/forms/onboarding/candidate/personal-info/schema";
 import { candidateProfessionalInfoFormSchema, CandidateProfessionalInfoFormSchemaType } from "@/components/forms/onboarding/candidate/professional-info/schema";
+
+
+// Create a transporter for sending emails
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_SERVER,
+  port: Number(process.env.SMTP_PORT),
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_ADDRESS,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 
 export async function onLogin(data: z.infer<typeof loginFormSchema>) {
   const validate = loginFormSchema.parse(data)
@@ -417,3 +431,105 @@ export async function getUsersSkills() {
   if(!user || !user.candidate) return null
   return user.candidate.profile?.skills || [];
 }
+
+
+export async function onForgotPassword(email: string) {
+  try {
+    // Check if user exists
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return {
+        error: true,
+        message: "No account found with this email address",
+      };
+    }
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+
+    // Save reset token to database
+    await prisma.user.update({
+      where: { email },
+      data: {
+        resetToken,
+        resetTokenExpiry,
+      },
+    });
+
+    // Create reset URL
+    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${resetToken}`;
+
+    // Send email
+    await transporter.sendMail({
+      from: process.env.EMAIL_ADDRESS,
+      to: email,
+      subject: "Password Reset Request",
+      html: `
+        <p>You requested a password reset</p>
+        <p>Click this <a href="${resetUrl}">link</a> to reset your password.</p>
+        <p>This link will expire in 1 hour.</p>
+        <p>If you didn't request this, please ignore this email.</p>
+      `,
+    });
+
+    return {
+      error: false,
+      message: "Password reset link sent to your email",
+    };
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    return {
+      error: true,
+      message: "Something went wrong. Please try again later.",
+    };
+  }
+}
+
+export async function onResetPassword(token: string, newPassword: string) {
+  try {
+    // Find user with valid reset token
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken: token,
+        resetTokenExpiry: {
+          gt: new Date(),
+        },
+      },
+    });
+
+    if (!user) {
+      return {
+        error: true,
+        message: "Invalid or expired reset token",
+      };
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user's password and clear reset token
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetToken: null,
+        resetTokenExpiry: null,
+      },
+    });
+
+    return {
+      error: false,
+      message: "Password has been reset successfully",
+    };
+  } catch (error) {
+    console.error("Reset password error:", error);
+    return {
+      error: true,
+      message: "Something went wrong. Please try again later.",
+    };
+  }
+} 

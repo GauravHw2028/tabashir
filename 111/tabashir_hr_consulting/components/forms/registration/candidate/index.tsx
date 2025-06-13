@@ -3,9 +3,7 @@
 import React from "react";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -25,8 +23,7 @@ const RegistrationForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter()
 
-  const form = useForm<z.infer<typeof registrationFormSchema>>({
-    resolver: zodResolver(registrationFormSchema),
+  const form = useForm<RegistrationFormSchemaType>({
     defaultValues: {
       email: "",
       username: "",
