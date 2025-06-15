@@ -50,7 +50,7 @@ const ForgotPasswordForm = () => {
       toast.success("Password reset link sent", {
         description: "Please check your email for the reset link",
       });
-      router.push("/login");
+      // router.push("/candidate/login");
     } catch (error) {
       console.error("Forgot password error:", error);
       toast.error("Something went wrong", {

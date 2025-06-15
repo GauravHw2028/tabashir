@@ -1,5 +1,0 @@
-# This is an empty migration.
-
-migration_name = "20240313_add_reset_token_fields"
-migration_id = "20240313_add_reset_token_fields"
-checksum = "1234567890" 
