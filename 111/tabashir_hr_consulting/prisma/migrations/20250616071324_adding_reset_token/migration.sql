@@ -35,28 +35,25 @@ DROP TABLE "User";
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "name" TEXT,
-    "email" TEXT NOT NULL,
+    "email" TEXT,
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
     "password" TEXT,
     "jobCount" INTEGER NOT NULL DEFAULT 0,
     "aiJobApplyCount" INTEGER NOT NULL DEFAULT 0,
+    "userType" "UserType",
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     "referralCode" TEXT,
     "referredBy" TEXT,
     "resetToken" TEXT,
     "resetTokenExpiry" TIMESTAMP(3),
-    "userType" "UserType",
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_resetToken_key" ON "users"("resetToken");
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
