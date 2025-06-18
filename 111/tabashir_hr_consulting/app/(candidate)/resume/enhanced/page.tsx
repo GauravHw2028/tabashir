@@ -6,20 +6,20 @@ import EnhancedResumeDisplay from "./enhanced-resume-display"
 
 function EnhancedResumeContent() {
   const searchParams = useSearchParams()
-  const resumeUrl = searchParams.get('url')
+  const resumeId = searchParams.get('id')
 
-  if (!resumeUrl) {
+  if (!resumeId) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Resume URL Not Found</h1>
-          <p className="text-gray-600">Please go back and try uploading your resume again.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Resume ID Not Found</h1>
+          <p className="text-gray-600">Please go back and try viewing your resume again.</p>
         </div>
       </div>
     )
   }
 
-  return <EnhancedResumeDisplay resumeUrl={decodeURIComponent(resumeUrl)} />
+  return <EnhancedResumeDisplay resumeId={resumeId} />
 }
 
 export default function EnhancedResumePage() {

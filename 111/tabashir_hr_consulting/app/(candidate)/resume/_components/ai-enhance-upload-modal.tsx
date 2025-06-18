@@ -6,6 +6,7 @@ import { X, Upload, Sparkles, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
+import { uploadCVFile } from "@/actions/ai-resume"
 
 interface AiEnhanceUploadModalProps {
   isOpen: boolean
@@ -59,11 +60,29 @@ export function AiEnhanceUploadModal({ isOpen, onClose }: AiEnhanceUploadModalPr
         throw new Error("User session not found")
       }
 
+      // First, create an AI resume record
+      const createResumeResponse = await fetch('/api/ai-resume/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: session.user.id,
+        }),
+      });
+
+      if (!createResumeResponse.ok) {
+        throw new Error("Failed to create AI resume record")
+      }
+
+      const { resumeId } = await createResumeResponse.json();
+
       // Create FormData for the API call
       const formData = new FormData()
       formData.append("file", file)
       formData.append("output_language", "regular")
       formData.append("user_id", session.user.id)
+      formData.append("resume_id", resumeId)
 
       // Call the backend API
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/format`, {
@@ -85,18 +104,26 @@ export function AiEnhanceUploadModal({ isOpen, onClose }: AiEnhanceUploadModalPr
       // Convert arrayBuffer to Blob
       const blob = new Blob([fileArrayBuffer], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
 
-      // Create a temporary URL for the blob
-      const blobUrl = URL.createObjectURL(blob)
+      // Create a File object from the blob
+      const enhancedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + "_enhanced.docx", {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      })
+
+      // Upload the enhanced file to the database
+      const uploadResult = await uploadCVFile(enhancedFile, resumeId)
+      if (uploadResult.error || !uploadResult.data) {
+        throw new Error(uploadResult.message || "Failed to upload enhanced resume")
+      }
 
       setUploadStatus("success")
 
-      // Navigate to display page with the enhanced resume
+      // Navigate to display page with the enhanced resume ID
       setTimeout(() => {
         onClose()
         setUploadStatus("idle")
 
-        // Navigate to a page to display the enhanced resume
-        router.push(`/resume/enhanced?url=${encodeURIComponent(blobUrl)}`)
+        // Navigate to a page to display the enhanced resume using the ID
+        router.push(`/resume/enhanced?id=${resumeId}`)
       }, 1500)
 
     } catch (error) {

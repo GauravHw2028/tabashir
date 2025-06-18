@@ -5,7 +5,7 @@ import {prisma} from '@/lib/prisma'
 export const config = { api: { bodyParser: false } }
 
 export async function POST(request: Request) {
-  // 1) Read raw body (we turn off Next’s auto JSON parsing, because we may need the raw to verify HMAC)
+  // 1) Read raw body (we turn off Next's auto JSON parsing, because we may need the raw to verify HMAC)
   const payload = await request.text()
   const signature = request.headers.get('x-hmac-signature')   // if you set up a secret
 
@@ -94,7 +94,49 @@ export async function POST(request: Request) {
       }
     }
 
+    // If it's the enhanced resume payment success url
+    if(event.data.success_url.startsWith(`${process.env.NEXT_PUBLIC_APP_URL}/resume/enhanced`)){
+      console.log("Enhanced resume payment success url");
+      const url = new URL(event.data.success_url);
+      const resumeId = url.searchParams.get('id');
 
+      if (intent.status === 'completed' && resumeId) {
+        const resume = await prisma.aiResume.findUnique({
+          where: {
+            id: resumeId
+          },
+          select: {
+            id: true,
+            candidate: {
+              select: {
+                userId: true,
+              },
+            },
+          },
+        })
+
+        console.log("Enhanced resume found:", resume);
+        
+        if (resume) {
+          console.log("Updating enhanced resume payment status");
+          await prisma.aiResume.update({
+            where: { id: resume.id },
+            data: { paymentStatus: true, paymentAmount: intent.amount, paymentDate: new Date() }
+          })
+
+          await prisma.payment.create({
+            data: {
+              amount: intent.amount,
+              currency: intent.currency_code,
+              status: intent.status === 'completed' ? 'COMPLETED' : 'FAILED',
+              userId: resume.candidate.userId,
+            }
+          })
+
+          console.log("Enhanced resume payment created");
+        }
+      }
+    }
 
     // If it's the service payment success url
     if(event.data.success_url.startsWith(`${process.env.NEXT_PUBLIC_APP_URL}/service-details`)){

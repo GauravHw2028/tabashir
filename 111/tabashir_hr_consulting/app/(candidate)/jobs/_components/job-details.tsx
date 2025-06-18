@@ -255,10 +255,10 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
               </button>
             )}
 
-            <button className="w-full py-2 border border-gray-300 rounded-md font-medium flex items-center justify-center gap-2 text-gray-700">
+            {/* <button className="w-full py-2 border border-gray-300 rounded-md font-medium flex items-center justify-center gap-2 text-gray-700">
               <Globe size={16} />
               Apply through Company Website
-            </button>
+            </button> */}
             <div className="w-full py-2 border border-gray-300 rounded-md font-medium flex items-center justify-center gap-2 text-gray-700">
               <Mail size={16} />
               {job.email}

@@ -5,6 +5,7 @@ import { prisma } from "@/app/utils/db";
 import { aiResumePersonalDetailsSchema, AiResumePersonalDetailsSchemaType } from "@/components/forms/ai-resume/personal-details/schema";
 import { AiResumeStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { UTApi } from "uploadthing/server";
 
 export async function onSetupResume() {
   const session = await auth();
@@ -90,7 +91,7 @@ export async function onSavePersonalDetails(aiResumeId: string, data: AiResumePe
       country: validateData.country,
       city: validateData.city,
       socialLinks: {
-        create: validateData.socialLinks.map((link) => ({
+        create: validateData.socialLinks?.map((link) => ({
           label: link.label,
           url: link.url,
         })),
@@ -104,7 +105,7 @@ export async function onSavePersonalDetails(aiResumeId: string, data: AiResumePe
       country: validateData.country,
       city: validateData.city,
       socialLinks: {
-        create: validateData.socialLinks.map((link) => ({
+        create: validateData.socialLinks?.map((link) => ({
           label: link.label,
           url: link.url,
         })),
@@ -773,4 +774,64 @@ export async function submitAiJobApply(jobCount: boolean, aiJobApplyCount: boole
     error: false,
     message: "User updated successfully!",
   };
+}
+
+export async function uploadCVFile(file: File, resumeId: string) {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return {
+        error: true,
+        message: "Unauthorized access",
+      }
+    }
+
+    const candidate = await prisma.candidate.findUnique({
+      where: {
+        userId: session.user.id,
+      },
+    })
+
+    if (!candidate) {
+      return {
+        error: true,
+        message: "Candidate profile not found",
+      }
+    }
+
+    const utapi = new UTApi();
+    const uploadedFiles = await utapi.uploadFiles([file]);
+    const uploadedFile = uploadedFiles[0];
+
+    if (!uploadedFile || !uploadedFile.data?.ufsUrl) {
+      return {
+        error: true,
+        message: "Failed to upload file to UploadThing",
+      }
+    }
+
+    // Update the AI resume record with the formatted URL
+    const updateResult = await prisma.aiResume.update({
+      where: { id: resumeId },
+      data: {
+        formatedUrl: uploadedFile.data.ufsUrl,
+        originalUrl: uploadedFile.data.ufsUrl,
+        progress: 100 // Mark as complete
+      },
+    });
+
+    return {
+      error: false,
+      message: "CV file uploaded successfully",
+      data: updateResult,
+    }
+    
+  } catch (error) {
+    console.error("[UPLOAD_CV_FILE_ERROR]", error)
+    return {
+      error: true,
+      message: "Failed to upload CV file",
+    }
+  }
 }

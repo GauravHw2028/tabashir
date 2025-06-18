@@ -3,9 +3,18 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function ResumePayment({ resumeId, isOpened }: { resumeId: string, isOpened: boolean }) {
+export default function ResumePayment({
+  resumeId,
+  isOpened,
+  successUrl
+}: {
+  resumeId: string,
+  isOpened: boolean,
+  successUrl?: string
+}) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+
   async function handlePay() {
     setLoading(true)
     const res = await fetch('/api/payment-intent', {
@@ -14,7 +23,7 @@ export default function ResumePayment({ resumeId, isOpened }: { resumeId: string
       body: JSON.stringify({
         amount: 4000,  // AED 50 → 5000 fils
         currency: 'AED',
-        successUrl: `${window.location.origin}/resume/new/${resumeId}/skills?intent_id={PAYMENT_INTENT_ID}&payment_completed=true`,
+        successUrl: successUrl || `${window.location.origin}/resume/new/${resumeId}/skills?intent_id={PAYMENT_INTENT_ID}&payment_completed=true`,
         cancelUrl: `${window.location.origin}/canceled`,
       }),
     })

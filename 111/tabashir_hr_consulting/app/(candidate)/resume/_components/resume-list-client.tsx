@@ -7,6 +7,7 @@ import { AiEnhanceUploadModal } from "./ai-enhance-upload-modal"
 import { DeleteConfirmationModal } from "./delete-confirmation-modal"
 import { toast } from "sonner"
 import { deleteResume, downloadResume } from "@/actions/resume"
+import { uploadCVFile } from "@/actions/ai-resume"
 import { UserProfileHeader } from "../../dashboard/_components/user-profile-header"
 
 interface Resume {
@@ -88,13 +89,23 @@ export function ResumeListClient({
         }
         const blob = await response.blob();
 
+        // Create a File object from the blob
+        const file = new File([blob], result.data.filename, { type: 'application/pdf' });
+
+        // Upload the file to the database
+        const uploadResult = await uploadCVFile(file, resume.id);
+        if (uploadResult.error) {
+          toast.error(uploadResult.message);
+          return;
+        }
+
         // Create a temporary URL for the blob
         const blobUrl = URL.createObjectURL(blob);
 
         // Create a temporary link and trigger download
         const link = document.createElement('a');
         link.href = blobUrl;
-        link.download = result.data.filename; // Use the filename from the server action result
+        link.download = result.data.filename;
         document.body.appendChild(link);
         link.click();
 
