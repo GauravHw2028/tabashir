@@ -149,12 +149,12 @@ export function ResumeListClient({
         description="Are you sure you want to delete this resume? This action cannot be undone."
       />
 
-      <div className="w-full flex justify-end py-3">
+      <div className="w-full flex py-3 justify-end">
         <UserProfileHeader />
       </div>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-semibold text-gray-900">My Resume</h1>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <button
             onClick={() => setIsModalOpen(true)}
             className="bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white py-2 px-4 rounded-md flex items-center gap-2 hover:opacity-90"

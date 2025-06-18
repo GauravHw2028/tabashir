@@ -11,7 +11,6 @@ import { useSearchParams } from "next/navigation"
 
 // A4 dimensions in pixels at 96 DPI
 const A4_WIDTH_PX = 794 // 210mm at 96 DPI
-const A4_HEIGHT_PX = 1123 // 297mm at 96 DPI
 
 interface EnhancedResumeDisplayProps {
   resumeId: string
@@ -226,14 +225,14 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
   }
 
   return (
-    <div className="w-full min-h-screen bg-gray-50">
+    <div className="w-full max-w-[calc(100vw-50px)] overflow-hidden min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-xl font-semibold text-gray-900">Enhanced Resume</h1>
+          <h1 className="text-xl font-semibold text-gray-900 max-md:ml-6 max-md:text-lg">Enhanced Resume</h1>
           <Button
             onClick={handleDownload}
-            className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:opacity-90 text-white"
+            className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:opacity-90 text-white max-md:py-2 max-md:px-4 max-md:text-sm"
           >
             <Download className="mr-2 h-4 w-4" />
             Download Resume
@@ -246,7 +245,7 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
         <div className="w-full">
           <div className="overflow-hidden relative bg-white rounded-lg shadow-sm border border-gray-200">
             {/* Zoom controls */}
-            <div className="absolute right-4 top-4 flex gap-2 z-10">
+            <div className="absolute right-8 top-4 flex gap-2 z-10">
               <Button
                 variant="outline"
                 size="icon"
@@ -291,26 +290,28 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
             </div>
 
             {/* Resume content */}
-            <div className="p-8">
+            <div className="p-3">
               <div
                 ref={resumeContainerRef}
                 className="max-h-[calc(100vh-150px)] overflow-auto"
                 style={{
-                  transform: `scale(${zoomLevel})`,
-                  transformOrigin: "top center",
-                  padding: "2rem",
+                  paddingTop: "3rem",
+                  paddingBottom: "2rem",
                 }}
               >
                 {/* DOCX Content */}
                 <div
                   ref={docxContainerRef}
-                  className="docx-container"
+                  className="docx-container mx-auto overflow-x-auto"
                   style={{
-                    width: `${A4_WIDTH_PX}px`,
-                    margin: "0 auto",
+                    width: "100%",
+                    maxWidth: `${A4_WIDTH_PX}px`,
                     minHeight: "100px",
+                    height: "100%",
                     border: "1px solid #eee",
                     backgroundColor: "#fff",
+                    transform: `scale(${zoomLevel})`,
+                    transformOrigin: "top center",
                   }}
                 />
               </div>
