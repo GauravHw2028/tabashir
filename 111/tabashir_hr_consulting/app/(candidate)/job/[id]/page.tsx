@@ -50,6 +50,7 @@ export default function JobDetailsPage() {
               currency: "AED",
               period: "year"
             },
+            link: response.data.link,
             description: response.data.job_description,
             requirements: response.data.academic_qualification,
             department: response.data.job_title,

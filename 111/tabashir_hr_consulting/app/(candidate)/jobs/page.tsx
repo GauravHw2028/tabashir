@@ -35,8 +35,6 @@ export default function JobsPage() {
     setLoading(true)
     const jobs = await getJobs(session.data?.user?.email || "", location, jobType, salaryMin, salaryMax, experience, attendance, query, sort)
 
-    console.log(jobs)
-
     if (jobs.success) {
       // Transform the API data to match the frontend's Job type
       const transformedJobs = jobs.data.map((job: any) => ({
@@ -56,6 +54,7 @@ export default function JobsPage() {
           currency: "AED",
           period: "month"
         },
+        link: job.link,
         description: job.job_description,
         requirements: job.academic_qualification,
         department: job.job_title,
@@ -65,6 +64,8 @@ export default function JobsPage() {
           value: 85 // Default match percentage
         },
       }))
+      console.log(transformedJobs);
+
       setJobs(transformedJobs)
     } else {
       toast.error("Failed to fetch jobs!")

@@ -3,6 +3,7 @@ import { JSONContent } from "@tiptap/react"
 export interface Job {
   id: string
   title: string
+  link?: string
   company: string
   logo: string
   entity: string

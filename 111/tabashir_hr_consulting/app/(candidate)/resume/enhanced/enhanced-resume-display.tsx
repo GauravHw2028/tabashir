@@ -30,6 +30,87 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
   const docxContainerRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
 
+  // Effect to inject custom CSS for DOCX styling
+  useEffect(() => {
+    const customStyles = `
+      <style id="docx-custom-styles">
+        /* Remove borders from paragraphs and elements */
+        .docx-wrapper p,
+        .docx-wrapper div,
+        .docx-wrapper span,
+        .docx-wrapper table,
+        .docx-wrapper td,
+        .docx-wrapper tr {
+          border: none !important;
+          border-left: none !important;
+          border-right: none !important;
+          border-top: none !important;
+          border-bottom: none !important;
+        }
+        
+        /* Specific fixes for common DOCX elements */
+        .docx-wrapper .docx-paragraph {
+          border: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        
+        .docx-wrapper .docx-run {
+          border: none !important;
+        }
+        
+        /* Remove any pseudo-element borders */
+        .docx-wrapper *::before,
+        .docx-wrapper *::after {
+          border: none !important;
+          content: none !important;
+        }
+        
+        /* Clean table styling */
+        .docx-wrapper table {
+          border-collapse: collapse !important;
+          width: 100% !important;
+        }
+        
+        .docx-wrapper table td,
+        .docx-wrapper table th {
+          border: none !important;
+          padding: 4px 8px !important;
+        }
+        
+        /* Remove any default browser styling */
+        .docx-wrapper * {
+          box-sizing: border-box;
+          outline: none !important;
+        }
+        
+        /* Ensure clean document appearance */
+        .docx-wrapper {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          line-height: 1.4;
+          color: #333;
+        }
+      </style>
+    `;
+
+    // Remove existing custom styles if any
+    const existingStyles = document.getElementById('docx-custom-styles');
+    if (existingStyles) {
+      existingStyles.remove();
+    }
+
+    // Add new custom styles to head
+    document.head.insertAdjacentHTML('beforeend', customStyles);
+
+    // Cleanup on unmount
+    return () => {
+      const stylesToRemove = document.getElementById('docx-custom-styles');
+      if (stylesToRemove) {
+        stylesToRemove.remove();
+      }
+    };
+  }, []);
+
   // Effect to fetch CV data
   useEffect(() => {
     const fetchCV = async () => {
@@ -78,7 +159,7 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
           docxContainerRef.current.innerHTML = '';
         }
 
-        // Render the DOCX file
+        // Render the DOCX file with updated options
         await renderAsync(blob, docxContainerRef.current, undefined, {
           className: 'docx-wrapper',
           inWrapper: true,
@@ -91,7 +172,27 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
           renderFootnotes: true,
           renderFooters: true,
           renderHeaders: true,
+          // Additional options to prevent unwanted styling
+          experimental: true,
+          trimXmlDeclaration: true,
         });
+
+        // Apply additional cleanup after rendering
+        setTimeout(() => {
+          if (docxContainerRef.current) {
+            // Remove any remaining borders using JavaScript
+            const allElements = docxContainerRef.current.querySelectorAll('*');
+            allElements.forEach(element => {
+              const htmlElement = element as HTMLElement;
+              htmlElement.style.border = 'none';
+              htmlElement.style.borderLeft = 'none';
+              htmlElement.style.borderRight = 'none';
+              htmlElement.style.borderTop = 'none';
+              htmlElement.style.borderBottom = 'none';
+            });
+          }
+        }, 100);
+
       } catch (error) {
         console.error('Error loading DOCX:', error);
         setError(error instanceof Error ? error.message : 'Failed to render DOCX')
@@ -338,4 +439,4 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
       )}
     </div>
   )
-} 
+}
