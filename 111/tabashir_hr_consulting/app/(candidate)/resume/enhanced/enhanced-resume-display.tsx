@@ -10,7 +10,7 @@ import { Loader2 } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 
 // A4 dimensions in pixels at 96 DPI
-const A4_WIDTH_PX = 794 // 210mm at 96 DPI
+const A4_WIDTH_PX = 850 // 210mm at 96 DPI
 
 interface EnhancedResumeDisplayProps {
   resumeId: string
@@ -29,87 +29,6 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
   const resumeContainerRef = useRef<HTMLDivElement>(null)
   const docxContainerRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
-
-  // Effect to inject custom CSS for DOCX styling
-  useEffect(() => {
-    const customStyles = `
-      <style id="docx-custom-styles">
-        /* Remove borders from paragraphs and elements */
-        .docx-wrapper p,
-        .docx-wrapper div,
-        .docx-wrapper span,
-        .docx-wrapper table,
-        .docx-wrapper td,
-        .docx-wrapper tr {
-          border: none !important;
-          border-left: none !important;
-          border-right: none !important;
-          border-top: none !important;
-          border-bottom: none !important;
-        }
-        
-        /* Specific fixes for common DOCX elements */
-        .docx-wrapper .docx-paragraph {
-          border: none !important;
-          margin: 0 !important;
-          padding: 0 !important;
-        }
-        
-        .docx-wrapper .docx-run {
-          border: none !important;
-        }
-        
-        /* Remove any pseudo-element borders */
-        .docx-wrapper *::before,
-        .docx-wrapper *::after {
-          border: none !important;
-          content: none !important;
-        }
-        
-        /* Clean table styling */
-        .docx-wrapper table {
-          border-collapse: collapse !important;
-          width: 100% !important;
-        }
-        
-        .docx-wrapper table td,
-        .docx-wrapper table th {
-          border: none !important;
-          padding: 4px 8px !important;
-        }
-        
-        /* Remove any default browser styling */
-        .docx-wrapper * {
-          box-sizing: border-box;
-          outline: none !important;
-        }
-        
-        /* Ensure clean document appearance */
-        .docx-wrapper {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          line-height: 1.4;
-          color: #333;
-        }
-      </style>
-    `;
-
-    // Remove existing custom styles if any
-    const existingStyles = document.getElementById('docx-custom-styles');
-    if (existingStyles) {
-      existingStyles.remove();
-    }
-
-    // Add new custom styles to head
-    document.head.insertAdjacentHTML('beforeend', customStyles);
-
-    // Cleanup on unmount
-    return () => {
-      const stylesToRemove = document.getElementById('docx-custom-styles');
-      if (stylesToRemove) {
-        stylesToRemove.remove();
-      }
-    };
-  }, []);
 
   // Effect to fetch CV data
   useEffect(() => {
@@ -159,36 +78,36 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
           docxContainerRef.current.innerHTML = '';
         }
 
-        // Render the DOCX file with updated options
-        await renderAsync(blob, docxContainerRef.current, undefined, {
-          className: 'docx-wrapper',
-          inWrapper: true,
-          ignoreWidth: false,
-          ignoreHeight: false,
-          ignoreFonts: false,
-          breakPages: true,
-          useBase64URL: true,
-          renderEndnotes: true,
-          renderFootnotes: true,
-          renderFooters: true,
-          renderHeaders: true,
-          // Additional options to prevent unwanted styling
-          experimental: true,
-          trimXmlDeclaration: true,
-        });
+        // Render the DOCX file
+        await renderAsync(blob, docxContainerRef.current);
 
-        // Apply additional cleanup after rendering
+        // Remove unwanted borders after rendering
         setTimeout(() => {
           if (docxContainerRef.current) {
-            // Remove any remaining borders using JavaScript
-            const allElements = docxContainerRef.current.querySelectorAll('*');
-            allElements.forEach(element => {
-              const htmlElement = element as HTMLElement;
-              htmlElement.style.border = 'none';
-              htmlElement.style.borderLeft = 'none';
-              htmlElement.style.borderRight = 'none';
-              htmlElement.style.borderTop = 'none';
-              htmlElement.style.borderBottom = 'none';
+            const container = docxContainerRef.current;
+
+            // Remove borders from all paragraphs and divs
+            const paragraphs = container.querySelectorAll('p');
+            paragraphs.forEach(p => {
+              p.style.border = 'none';
+              p.style.borderBottom = 'none';
+              p.style.borderTop = 'none';
+            });
+
+            const divs = container.querySelectorAll('div');
+            divs.forEach(div => {
+              div.style.border = 'none';
+              div.style.borderBottom = 'none';
+              div.style.borderTop = 'none';
+            });
+
+            // Preserve legitimate HR elements
+            const hrs = container.querySelectorAll('hr');
+            hrs.forEach(hr => {
+              hr.style.borderTop = '1px solid #000';
+              hr.style.borderBottom = 'none';
+              hr.style.borderLeft = 'none';
+              hr.style.borderRight = 'none';
             });
           }
         }, 100);
@@ -415,6 +334,51 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
                     transformOrigin: "top center",
                   }}
                 />
+
+                {/* Global styles to prevent unwanted borders */}
+                <style dangerouslySetInnerHTML={{
+                  __html: `
+                    .docx-container p {
+                      border: none !important;
+                      border-bottom: none !important;
+                      border-top: none !important;
+                    }
+                    
+                    .docx-container div {
+                      border: none !important;
+                      border-bottom: none !important;
+                      border-top: none !important;
+                    }
+                    
+                    .docx-container .docx-wrapper {
+                      border: none !important;
+                    }
+                    
+                    .docx-container .docx-wrapper > div {
+                      border: none !important;
+                    }
+                    
+                    /* Preserve legitimate HR/divider elements */
+                    .docx-container hr {
+                      border-top: 1px solid #000 !important;
+                      border-bottom: none !important;
+                      border-left: none !important;
+                      border-right: none !important;
+                    }
+                    
+                    /* Preserve table borders if they exist */
+                    .docx-container table {
+                      border-collapse: collapse !important;
+                    }
+                    
+                    .docx-container td,
+                    .docx-container th {
+                      border: 1px solid #000 !important;
+                    }
+                  `
+                }} />
+
+
               </div>
             </div>
           </div>
@@ -439,4 +403,4 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
       )}
     </div>
   )
-}
+} 
