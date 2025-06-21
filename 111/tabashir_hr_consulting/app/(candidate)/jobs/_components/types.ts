@@ -3,7 +3,8 @@ import { JSONContent } from "@tiptap/react"
 export interface Job {
   id: string
   title: string
-  link?: string
+  website?: string
+  applyUrl?: string
   company: string
   logo: string
   entity: string
@@ -22,7 +23,7 @@ export interface Job {
     period: string
   }
   match?: {
-    type: "top" | "best" | "percentage"
+    type: string
     value?: number
   }
   team?: string

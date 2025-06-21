@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react"
 import { getAiJobApplyStatus } from "@/actions/ai-resume"
 import { toast } from "sonner"
 import { ArrowLeft, Loader2 } from "lucide-react"
+import { transformJob } from "@/lib/transformJobs"
 
 export default function JobDetailsPage() {
   const params = useParams()
@@ -30,36 +31,7 @@ export default function JobDetailsPage() {
 
         if (response.success && response.data) {
           // Transform API data to match Job interface
-          const transformedJob: Job = {
-            id: response.data.id.toString(),
-            title: response.data.job_title,
-            company: response.data.entity,
-            logo: response.data.logo || "",
-            entity: response.data.entity,
-            location: response.data.vacancy_city,
-            nationality: response.data.nationality,
-            gender: response.data.gender,
-            email: response.data.application_email,
-            postedTime: new Date(response.data.job_date).toLocaleDateString(),
-            experience: response.data.experience,
-            jobType: Array.isArray(response.data.working_days)
-              ? response.data.working_days.join(", ")
-              : response.data.working_days,
-            salary: {
-              amount: response.data.salary || "Not specified",
-              currency: "AED",
-              period: "year"
-            },
-            link: response.data.link,
-            description: response.data.job_description,
-            requirements: response.data.academic_qualification,
-            department: response.data.job_title,
-            team: response.data.entity,
-            match: {
-              type: "percentage" as const,
-              value: 85 // Default match percentage
-            },
-          }
+          const transformedJob: Job = transformJob(response.data)
           setJob(transformedJob)
         } else {
           toast.error("Job not found")

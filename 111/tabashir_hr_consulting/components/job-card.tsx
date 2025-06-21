@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { getIsLiked, onLikeJob, onUnlikeJob } from "@/actions/job";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import { getJobEntity } from "@/app/(candidate)/jobs/_components/job-details";
 
 interface JobCardProps {
   job: Job;
@@ -64,7 +65,7 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
             <div className="flex justify-between items-start">
               <div className="flex-1 pr-2">
                 <h3 className="font-medium text-base text-gray-900 line-clamp-2">{job.title}</h3>
-                <p className="text-sm text-gray-600">{job.company}</p>
+                <p className="text-sm text-gray-600 line-clamp-2">{job.description?.slice(0, 100)}...</p>
               </div>
               <div className="flex items-start gap-1 flex-shrink-0">
                 {job.match && (
@@ -106,7 +107,7 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
           <div className="flex justify-between">
             <div className="flex-1 pr-4">
               <h3 className="font-medium text-lg text-gray-900">{job.title}</h3>
-              <p className="text-base text-gray-600">{job.company}</p>
+              <p className="text-base text-gray-600 line-clamp-2">{job.description?.slice(0, 130)}...</p>
             </div>
 
             <div className="flex items-start gap-2 flex-shrink-0">
@@ -153,23 +154,20 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
             <MapPin size={12} />
             <span>{job.location}</span>
           </div>
-          <div className="hidden sm:block">{job.views} views</div>
           <div>{job.postedTime}</div>
-          <div className="hidden sm:block">{job.jobType}</div>
-          <div className="sm:hidden text-xs">{job.applicationsCount} applied</div>
         </div>
 
         {/* Mobile: Additional details */}
         <div className="flex flex-wrap items-center text-xs text-gray-500 gap-x-3 gap-y-1 sm:hidden">
-          <div>{job.views} views</div>
           <div>{job.jobType}</div>
         </div>
 
         {/* Tags and salary */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-          <div className="flex gap-2 flex-wrap">
-            <div className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">
-              Team
+          <div className="flex gap-3 flex-wrap">
+            <div className="flex items-center gap-1">
+              <Image src={getJobEntity(job.entity) === "Government" ? "/government_image.png" : "/private_image.png"} width={15} height={15} className="w-[15px] h-[15px]" alt="government" />
+              <span className="text-sm font-medium text-gray-500">{getJobEntity(job.entity)}</span>
             </div>
             <div className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">
               {job.department}
@@ -177,9 +175,6 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
           </div>
 
           <div className="text-sm font-medium text-blue-500 flex justify-between sm:justify-end items-center">
-            <span className="sm:hidden text-xs text-gray-500">
-              {job.applicationsCount} applied
-            </span>
             <span>
               {job.salary.amount}
               <span className="text-xs text-gray-500 ml-1">

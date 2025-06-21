@@ -255,16 +255,18 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
               </button>
             )}
 
-            {job.link && (
-              <button onClick={() => window.open(job.link, '_blank')} className="w-full py-2 border border-gray-300 rounded-md font-medium flex items-center justify-center gap-2 text-gray-700">
+            {job.applyUrl && (
+              <button onClick={() => window.open(job.applyUrl, '_blank')} className="w-full py-2 border border-gray-300 rounded-md font-medium flex items-center justify-center gap-2 text-gray-700">
                 <Globe size={16} />
                 Apply through Company Website
               </button>
             )}
-            <div className="w-full py-2 border border-gray-300 rounded-md font-medium flex items-center justify-center gap-2 text-gray-700">
-              <Mail size={16} />
-              {job.email}
-            </div>
+            {job.email && (
+              <div className="w-full py-2 border border-gray-300 rounded-md font-medium flex items-center justify-center gap-2 text-gray-700">
+                <Mail size={16} />
+                {job.email}
+              </div>
+            )}
           </div>
         )}
 
@@ -400,7 +402,8 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
 }
 
 
-function getJobEntity(entity: string) {
+export function getJobEntity(entity: string | null) {
+  if (!entity) return "Private"
   if (entity.toLowerCase().includes("government") || entity.toLowerCase().includes("govt") || entity.toLowerCase().includes("gov") || entity.toLowerCase().includes("governmental")) {
     return "Government"
   } else if (entity.toLowerCase().includes("semi-government") || entity.toLowerCase().includes("semi-govt") || entity.toLowerCase().includes("semi-gov") || entity.toLowerCase().includes("semi governmental")) {

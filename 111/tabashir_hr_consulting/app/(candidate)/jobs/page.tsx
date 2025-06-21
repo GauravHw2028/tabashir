@@ -10,6 +10,7 @@ import { toast } from "sonner"
 import { useSearchParams, useRouter } from "next/navigation"
 import { getAiJobApplyStatus } from "@/actions/ai-resume"
 import { useSession } from "next-auth/react"
+import { transformJobs } from "@/lib/transformJobs"
 
 export default function JobsPage() {
   const session = useSession();
@@ -37,33 +38,7 @@ export default function JobsPage() {
 
     if (jobs.success) {
       // Transform the API data to match the frontend's Job type
-      const transformedJobs = jobs.data.map((job: any) => ({
-        id: job.id.toString(),
-        title: job.job_title,
-        company: job.entity,
-        logo: job.logo,
-        entity: job.entity,
-        location: job.vacancy_city,
-        email: job.application_email,
-        gender: job.gender,
-        experience: job.experience,
-        postedTime: new Date(job.job_date).toLocaleDateString(),
-        jobType: job.working_days,
-        salary: {
-          amount: job.salary,
-          currency: "AED",
-          period: "month"
-        },
-        link: job.link,
-        description: job.job_description,
-        requirements: job.academic_qualification,
-        department: job.job_title,
-        team: job.entity,
-        match: {
-          type: "percentage",
-          value: 85 // Default match percentage
-        },
-      }))
+      const transformedJobs = transformJobs(jobs.data)
       console.log(transformedJobs);
 
       setJobs(transformedJobs)
