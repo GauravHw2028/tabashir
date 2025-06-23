@@ -1,4 +1,3 @@
-
 "use client"
 import React from "react";
 import { useState } from "react";
@@ -18,9 +17,11 @@ import { registrationFormSchema, RegistrationFormSchemaType } from "./schema";
 import { onCandidateRegistration } from "@/actions/auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+
 const RegistrationForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const router = useRouter()
 
   const form = useForm<RegistrationFormSchemaType>({
@@ -34,25 +35,82 @@ const RegistrationForm = () => {
   async function onSubmit(values: RegistrationFormSchemaType) {
     try {
       setIsLoading(true)
+      setShowSuccessMessage(false)
+
       const response = await onCandidateRegistration(values)
 
       if (response?.error) {
         return toast.error("Registration Error", {
-          description: response.message
+          description: response.message,
+          className: "bg-red-500 text-white",
         })
       } else {
-        toast.success("Successfully logged in");
-        router.push(response.redirectTo as string);
+        setShowSuccessMessage(true)
+        toast.success("Registration Successful", {
+          description: response.message,
+        });
+
+        // Reset form after successful registration
+        form.reset()
+
+        // Redirect after a short delay to allow user to read the message
+        setTimeout(() => {
+          router.push(response.redirectTo as string);
+        }, 2000);
       }
     } catch (error: any) {
       console.error(error)
       toast.error("Registration Error", {
-        description: error.message
+        description: error.message,
+        className: "bg-red-500 text-white",
       })
     } finally {
       setIsLoading(false)
     }
   }
+
+  if (showSuccessMessage) {
+    return (
+      <div className="space-y-6 text-center">
+        <div className="p-6 bg-green-50 border border-green-200 rounded-lg">
+          <div className="flex justify-center mb-4">
+            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+              <svg
+                className="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+          </div>
+          <h3 className="text-lg font-semibold text-green-800 mb-2">
+            Registration Successful!
+          </h3>
+          <p className="text-green-700 mb-4">
+            We've sent a verification email to your address. Please check your inbox and click the verification link to complete your registration.
+          </p>
+          <p className="text-sm text-green-600">
+            You'll be redirected to the login page shortly...
+          </p>
+        </div>
+
+        <Button
+          onClick={() => router.push("/candidate/login")}
+          className="w-full bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white hover:opacity-90"
+        >
+          Go to Login
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

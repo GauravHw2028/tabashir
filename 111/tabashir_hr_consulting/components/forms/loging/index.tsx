@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -19,15 +19,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { onLogin } from "@/actions/auth";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   candidateLoginFormSchema,
   CandidateLoginFormSchemaType,
 } from "./schema";
+import { resendVerificationEmail } from "@/actions/auth";
+
 const CandidateLoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showResendVerification, setShowResendVerification] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const form = useForm<CandidateLoginFormSchemaType>({
     resolver: zodResolver(candidateLoginFormSchema),
@@ -37,17 +42,52 @@ const CandidateLoginForm = () => {
     },
   });
 
+  useEffect(() => {
+    // Check for success/error messages from email verification
+    const success = searchParams.get("success");
+    const error = searchParams.get("error");
+
+    if (success) {
+      toast.success("Email Verified", {
+        description: decodeURIComponent(success),
+      });
+    }
+
+    if (error) {
+      let errorMessage = "An error occurred";
+      if (error === "missing-token") {
+        errorMessage = "Invalid verification link";
+      } else if (error === "verification-failed") {
+        errorMessage = "Email verification failed";
+      } else {
+        errorMessage = decodeURIComponent(error);
+      }
+
+      toast.error("Verification Error", {
+        description: errorMessage,
+        className: "bg-red-500 text-white",
+      });
+    }
+  }, [searchParams]);
+
   async function onSubmit(values: CandidateLoginFormSchemaType) {
     try {
       setIsLoading(true);
-      // TODO: Implement admin login logic
-      console.log(values);
+      setShowResendVerification(false);
+
       const response = await onLogin({
         email: values.email,
         password: values.password,
       });
+
       console.log("Reponse: ", response);
+
       if (response?.error) {
+        if (response.needsVerification) {
+          setShowResendVerification(true);
+          setUserEmail(response.email);
+        }
+
         return toast.error("Authentication Error", {
           description: response.message,
           className: "bg-red-500 text-white",
@@ -56,13 +96,40 @@ const CandidateLoginForm = () => {
 
       toast.success(response.message);
       router.push(response.redirectTo as string);
-      // console.log("Signin Response: ", signinResponse);
     } catch (error) {
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);
     }
   }
+
+  async function handleResendVerification() {
+    try {
+      setIsLoading(true);
+      const response = await resendVerificationEmail(userEmail);
+
+      if (response.error) {
+        toast.error("Error", {
+          description: response.message,
+          className: "bg-red-500 text-white",
+        });
+      } else {
+        toast.success("Email Sent", {
+          description: response.message,
+        });
+        setShowResendVerification(false);
+      }
+    } catch (error) {
+      console.error("Resend verification error:", error);
+      toast.error("Error", {
+        description: "Failed to resend verification email",
+        className: "bg-red-500 text-white",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -125,6 +192,35 @@ const CandidateLoginForm = () => {
             </FormItem>
           )}
         />
+
+        {showResendVerification && (
+          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+            <p className="text-sm text-yellow-800 mb-3">
+              Your email address is not verified. Please verify your email before logging in.
+            </p>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleResendVerification}
+                disabled={isLoading}
+              >
+                {isLoading ? "Sending..." : "Resend Email"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                asChild
+              >
+                <Link href="/candidate/verify-email">
+                  Verification Page
+                </Link>
+              </Button>
+            </div>
+          </div>
+        )}
 
         <div className="flex justify-between items-baseline space-y-4 gap-4">
           <Button

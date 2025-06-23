@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { X, Globe, Building2, Briefcase, DollarSign, Calendar, Loader2, User, Mail } from "lucide-react"
+import { X, Globe, Building2, Briefcase, DollarSign, Calendar, Loader2, User, Mail, Contact } from "lucide-react"
 import type { Job } from "./types"
 import Image from "next/image"
 import { ApplicationModal } from "./application-modal"
@@ -311,7 +311,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
             </div>
           </div>
           <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
-            <DollarSign size={20} className="text-gray-500" />
+            <Contact size={20} className="text-gray-500" />
             <div>
               <p className="text-sm text-gray-500">Entity</p>
               <p className="font-medium text-gray-900">

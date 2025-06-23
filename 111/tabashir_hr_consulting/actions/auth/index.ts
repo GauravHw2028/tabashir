@@ -45,6 +45,15 @@ export async function onLogin(data: z.infer<typeof loginFormSchema>) {
     }
   }
 
+  // Check if email is verified for credential-based users
+  if (!isUserExist.emailVerified) {
+    return {
+      error: true,
+      message: "Please verify your email address before logging in. Check your inbox for the verification link.",
+      needsVerification: true,
+      email: isUserExist.email
+    }
+  }
 
   try {
     await signIn("credentials", {
@@ -56,7 +65,6 @@ export async function onLogin(data: z.infer<typeof loginFormSchema>) {
     return {
       error: false,
       message: "Successfully logged in!",
-
       redirectTo
     }
   } catch (error) {
@@ -132,6 +140,7 @@ export async function onCandidateRegistration(data: RegistrationFormSchemaType) 
         name: username,
         password: hashedPassword,
         userType: "CANDIDATE",
+        // Don't set emailVerified - will be set when user clicks verification link
       },
     })
 
@@ -142,17 +151,21 @@ export async function onCandidateRegistration(data: RegistrationFormSchemaType) 
       }
     }
 
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: false
-    })
+    // Send verification email instead of signing in immediately
+    const verificationResult = await sendVerificationEmail(email)
+    
+    if (verificationResult.error) {
+      // If email sending fails, delete the user and return error
+      await prisma.user.delete({
+        where: { id: newUser.id }
+      })
+      return verificationResult
+    }
 
     return {
       error: false,
-      message: "Successfully registered",
-      redirectTo: `/candidate/${newUser.id}/callback`
-
+      message: "Registration successful! Please check your email to verify your account before logging in.",
+      redirectTo: `/candidate/login`
     }
   } catch (error: any) {
     console.error(error)
@@ -432,6 +445,176 @@ export async function getUsersSkills() {
   return user.candidate.profile?.skills || [];
 }
 
+export async function sendVerificationEmail(email: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return {
+        error: true,
+        message: "User not found",
+      };
+    }
+
+    if (user.emailVerified) {
+      return {
+        error: true,
+        message: "Email is already verified",
+      };
+    }
+
+    // Generate verification token
+    const token = crypto.randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    // Store verification token
+    await prisma.verificationToken.create({
+      data: {
+        identifier: email,
+        token,
+        expires,
+      },
+    });
+
+    // Create verification URL
+    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-email?token=${token}`;
+
+    // Send verification email
+    await transporter.sendMail({
+      from: process.env.EMAIL_ADDRESS,
+      to: email,
+      subject: "Verify Your Email Address",
+      html: `
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
+          <h2 style="color: #042052; text-align: center;">Welcome to Tabashir HR Consulting!</h2>
+          <p>Thank you for registering with us. To complete your registration, please verify your email address.</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${verificationUrl}" style="background: linear-gradient(to right, #042052, #0D57E1); color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+              Verify Email Address
+            </a>
+          </div>
+          <p>Or copy and paste this link in your browser:</p>
+          <p style="word-break: break-all; color: #666;">${verificationUrl}</p>
+          <p>This link will expire in 24 hours.</p>
+          <p>If you didn't create an account with us, please ignore this email.</p>
+          <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+          <p style="color: #666; font-size: 12px; text-align: center;">© 2024 Tabashir HR Consulting. All rights reserved.</p>
+        </div>
+      `,
+    });
+
+    return {
+      error: false,
+      message: "Verification email sent successfully",
+    };
+  } catch (error) {
+    console.error("Send verification email error:", error);
+    return {
+      error: true,
+      message: "Failed to send verification email. Please try again later.",
+    };
+  }
+}
+
+export async function resendVerificationEmail(email: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return {
+        error: true,
+        message: "User not found",
+      };
+    }
+
+    if (user.emailVerified) {
+      return {
+        error: true,
+        message: "Email is already verified",
+      };
+    }
+
+    // Delete any existing verification tokens for this email
+    await prisma.verificationToken.deleteMany({
+      where: { identifier: email },
+    });
+
+    // Send new verification email
+    return await sendVerificationEmail(email);
+  } catch (error) {
+    console.error("Resend verification email error:", error);
+    return {
+      error: true,
+      message: "Failed to resend verification email. Please try again later.",
+    };
+  }
+}
+
+export async function verifyEmail(token: string) {
+  try {
+    // Find valid verification token
+    const verificationToken = await prisma.verificationToken.findFirst({
+      where: {
+        token,
+        expires: {
+          gt: new Date(),
+        },
+      },
+    });
+
+    if (!verificationToken) {
+      return {
+        error: true,
+        message: "Invalid or expired verification token",
+      };
+    }
+
+    // Find user and update email verification status
+    const user = await prisma.user.findUnique({
+      where: { email: verificationToken.identifier },
+    });
+
+    if (!user) {
+      return {
+        error: true,
+        message: "User not found",
+      };
+    }
+
+    // Update user's email verification status
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerified: new Date(),
+      },
+    });
+
+    // Delete the verification token
+    await prisma.verificationToken.delete({
+      where: {
+        identifier_token: {
+          identifier: verificationToken.identifier,
+          token: verificationToken.token,
+        },
+      },
+    });
+
+    return {
+      error: false,
+      message: "Email verified successfully! You can now log in.",
+    };
+  } catch (error) {
+    console.error("Verify email error:", error);
+    return {
+      error: true,
+      message: "Failed to verify email. Please try again later.",
+    };
+  }
+}
 
 export async function onForgotPassword(email: string) {
   try {

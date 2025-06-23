@@ -32,7 +32,7 @@ export function MatchedJobCard({
       }}
     >
       <div className="flex items-start justify-between">
-        <div className="w-10 h-10 bg-white rounded-md flex items-center justify-center">
+        {/* <div className="w-10 h-10 bg-white rounded-md flex items-center justify-center">
           {logoUrl ? (
             <Image src={logoUrl || "/placeholder.svg"} alt={company} width={24} height={24} />
           ) : (
@@ -40,12 +40,15 @@ export function MatchedJobCard({
               <span className="text-xs text-gray-500">@</span>
             </div>
           )}
+        </div> */}
+        <div className="space-y-[6px]">
+          <h3 className="font-medium text-md leading-none">{title}</h3>
+          <div className="text-xs opacity-80">{company}</div>
         </div>
-        <div className="text-xs opacity-80">{company}</div>
+
       </div>
 
-      <div>
-        <h3 className="font-medium text-sm">{title}</h3>
+      <div className="flex justify-between items-center">
         <div className="flex gap-1 mt-2">
           {tags.map((tag, index) => (
             <span key={index} className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full">
@@ -53,19 +56,20 @@ export function MatchedJobCard({
             </span>
           ))}
         </div>
-      </div>
-
-      <div className="flex justify-between items-center">
-        <div className="text-xs">{salary}</div>
         <button
           onClick={onApply}
-          className="text-[10px] bg-white/20 hover:bg-white/30 py-1 px-3 rounded-full text-center cursor-pointer transition-colors"
+          className="text-[11px] font-semibold bg-white py-[5px] leading-none px-[12px] text-[#5C5C5C] rounded-full text-center cursor-pointer transition-colors"
         >
           Apply
         </button>
       </div>
 
-      <div className="text-[10px] mt-1">{location}</div>
+      <div className="flex justify-between items-center">
+        <div className="text-xs">{salary}</div>
+
+        <div className="text-[10px] mt-1">{location}</div>
+      </div>
+
     </div>
   )
 }

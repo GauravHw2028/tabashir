@@ -39,8 +39,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        // If user is a candidate, verify password
+        // Check if email is verified for credential-based users
+        if (!user.emailVerified) {
+          console.log("Email not verified for user:", user.email);
+          return null;
+        }
 
+        // If user is a candidate, verify password
         if (
           !credentials.password ||
           typeof credentials.password !== "string" ||
@@ -56,11 +61,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         console.log("Pasword matched: ", isPasswordValid)
         if (!isPasswordValid) {
-
           return null;
         }
-
-
 
         return {
           id: user.id,
@@ -73,11 +75,45 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async signIn({ user, account, profile }) {
+      // For OAuth providers (like Google), automatically verify email
+      if (account?.provider === "google" && user.email) {
+        try {
+          await prisma.user.update({
+            where: { email: user.email },
+            data: { 
+              emailVerified: new Date(),
+              // Set default userType if not set
+              userType: (user.userType as UserType) || UserType.CANDIDATE
+            },
+          });
+        } catch (error) {
+          console.error("Error updating user verification status:", error);
+        }
+      }
+      return true;
+    },
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id; // Add id
         token.userType = user.userType; // Add role
       }
+      
+      // For Google OAuth, ensure user type is set
+      if (account?.provider === "google" && token.email) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { email: token.email },
+            select: { userType: true }
+          });
+          if (dbUser) {
+            token.userType = dbUser.userType || UserType.CANDIDATE;
+          }
+        } catch (error) {
+          console.error("Error fetching user type:", error);
+        }
+      }
+      
       return token;
     },
     async session({ session, token }) {
@@ -92,4 +128,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/candidate/login", // Redirect to login page for auth errors
+  },
 });
