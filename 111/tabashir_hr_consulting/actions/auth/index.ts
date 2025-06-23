@@ -13,17 +13,31 @@ import { auth } from "@/app/utils/auth";
 import { candidatePersonalInfoFormSchema, CandidatePersonalInfoFormSchemaType } from "@/components/forms/onboarding/candidate/personal-info/schema";
 import { candidateProfessionalInfoFormSchema, CandidateProfessionalInfoFormSchemaType } from "@/components/forms/onboarding/candidate/professional-info/schema";
 
+// Create a more robust transporter with better error handling
+function createEmailTransporter() {
+  try {
+    if (!process.env.SMTP_SERVER || !process.env.SMTP_PORT || !process.env.EMAIL_ADDRESS || !process.env.EMAIL_PASSWORD) {
+      console.error("Missing email configuration environment variables");
+      return null;
+    }
 
-// Create a transporter for sending emails
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_SERVER,
-  port: Number(process.env.SMTP_PORT),
-  secure: true,
-  auth: {
-    user: process.env.EMAIL_ADDRESS,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
+    return nodemailer.createTransport({
+      host: process.env.SMTP_SERVER,
+      port: Number(process.env.SMTP_PORT),
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_ADDRESS,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+      pool: false, // Disable connection pooling for serverless
+      maxConnections: 1,
+      maxMessages: 1,
+    } as nodemailer.TransportOptions);
+  } catch (error) {
+    console.error("Failed to create email transporter:", error);
+    return null;
+  }
+}
 
 export async function onLogin(data: z.infer<typeof loginFormSchema>) {
   const validate = loginFormSchema.parse(data)
@@ -152,14 +166,26 @@ export async function onCandidateRegistration(data: RegistrationFormSchemaType) 
     }
 
     // Send verification email instead of signing in immediately
-    const verificationResult = await sendVerificationEmail(email)
-    
-    if (verificationResult.error) {
-      // If email sending fails, delete the user and return error
-      await prisma.user.delete({
-        where: { id: newUser.id }
-      })
-      return verificationResult
+    try {
+      const verificationResult = await sendVerificationEmail(email)
+      
+      if (verificationResult.error) {
+        console.error("Failed to send verification email:", verificationResult.message)
+        // Don't delete user, just continue without email verification for now
+        return {
+          error: false,
+          message: "Registration successful! However, we couldn't send the verification email. You can request a new one from the login page.",
+          redirectTo: `/candidate/login`
+        }
+      }
+    } catch (emailError) {
+      console.error("Email sending error:", emailError)
+      // Continue without email verification
+      return {
+        error: false,
+        message: "Registration successful! However, we couldn't send the verification email. You can request a new one from the login page.",
+        redirectTo: `/candidate/login`
+      }
     }
 
     return {
@@ -482,6 +508,11 @@ export async function sendVerificationEmail(email: string) {
     const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-email?token=${token}`;
 
     // Send verification email
+    const transporter = createEmailTransporter();
+    if (!transporter) {
+      throw new Error("Email service is not available");
+    }
+
     await transporter.sendMail({
       from: process.env.EMAIL_ADDRESS,
       to: email,
@@ -647,6 +678,11 @@ export async function onForgotPassword(email: string) {
     const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${resetToken}`;
 
     // Send email
+    const transporter = createEmailTransporter();
+    if (!transporter) {
+      throw new Error("Email service is not available");
+    }
+
     await transporter.sendMail({
       from: process.env.EMAIL_ADDRESS,
       to: email,
