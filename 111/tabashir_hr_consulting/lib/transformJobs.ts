@@ -27,7 +27,7 @@ export const transformJobs = (jobs: any) => {
       type: "percentage",
       value: 85 // Default match percentage
     },
-  }))
+  })).filter((job: any) => job.title !== "Nan" && job.title !== "nan")
 }
 
 

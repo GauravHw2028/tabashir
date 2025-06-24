@@ -52,13 +52,14 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
         {/* Mobile: Image and title row */}
         <div className="flex gap-3 sm:contents">
           <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
-            <Image
+            <Image src={getJobEntity(job.entity) === "Government" ? "/government_image.png" : "/private_image.png"} width={74} height={74} className="w-full h-full object-contain p-1 sm:p-2" alt="government" />
+            {/* <Image
               src={job.logo || "/placeholder.svg"}
               alt={job.company}
               width={74}
               height={74}
               className="w-full h-full object-contain p-1 sm:p-2"
-            />
+            /> */}
           </div>
 
           <div className="flex-1 sm:hidden">
@@ -165,10 +166,10 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
         {/* Tags and salary */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
           <div className="flex gap-3 flex-wrap">
-            <div className="flex items-center gap-1">
-              <Image src={getJobEntity(job.entity) === "Government" ? "/government_image.png" : "/private_image.png"} width={15} height={15} className="w-[15px] h-[15px]" alt="government" />
+            {/* <div className="flex items-center gap-1">
+              
               <span className="text-sm font-medium text-gray-500">{getJobEntity(job.entity)}</span>
-            </div>
+            </div> */}
             <div className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">
               {job.department}
             </div>

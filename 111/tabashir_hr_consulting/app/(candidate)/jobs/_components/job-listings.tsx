@@ -1,11 +1,8 @@
 "use client";
 
-import { ChevronDown, Sparkles, Filter, Search } from "lucide-react";
+import { Filter, Search } from "lucide-react";
 import type { Job } from "./types";
-import { cn } from "@/lib/utils";
-import { UserProfileHeader } from "../../dashboard/_components/user-profile-header";
 import JobCard from "@/components/job-card";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface JobListingsProps {
   jobs: Job[]
