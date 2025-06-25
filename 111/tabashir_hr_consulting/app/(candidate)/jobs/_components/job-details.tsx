@@ -211,7 +211,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100">
             <Image
-              src={job.logo || "/placeholder.svg"}
+              src={getJobEntity(job.entity) === "Government" ? "/government_image.png" : "/private_image.png"}
               alt={job.company ? job.company + ' logo' : 'Company logo'}
               width={48}
               height={48}
@@ -221,8 +221,8 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
           <div>
             <h2 className="font-semibold text-lg text-gray-900">{job.title}</h2>
             <p className="text-sm text-gray-600">
-              {job.company}
-              {job.location ? ` • ${job.location}` : ""}
+              {job.company === "Nan" ? "Private" : job.company}
+              {job.location === "Nan" ? ' • Not Specified' : ` • ${job.location}`}
             </p>
           </div>
         </div>
