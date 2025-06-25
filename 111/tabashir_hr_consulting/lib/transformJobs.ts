@@ -1,4 +1,5 @@
 export const transformJobs = (jobs: any) => {
+  console.log(jobs)
   return jobs.map((job: any) => ({
     id: job.id.toString(),
     title: job.job_title,
@@ -9,7 +10,7 @@ export const transformJobs = (jobs: any) => {
     email: job.application_email,
     gender: job.gender,
     experience: job.experience,
-    postedTime: new Date(job.job_date).toLocaleDateString(),
+    postedTime: job.job_date,
     jobType: job.working_days,
     salary: {
       amount: job.salary,
@@ -42,7 +43,7 @@ export const transformJob = (job: any) => {
     email: job.application_email,
     gender: job.gender,
     experience: job.experience,
-    postedTime: new Date(job.job_date).toLocaleDateString(),
+    postedTime: job.job_date,
     jobType: job.working_days,
     salary: {
       amount: job.salary,
