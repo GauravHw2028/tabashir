@@ -275,7 +275,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
             <Building2 size={20} className="text-gray-500" />
             <div>
               <p className="text-sm text-gray-500">Company</p>
-              <p className="font-medium text-gray-900">{job.company}</p>
+              <p className="font-medium text-gray-900">{job.company === "Nan" ? "Private" : job.company}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
