@@ -32,14 +32,22 @@ export default function JobsPage() {
     (searchParams.get("sort") as "newest" | "oldest" | "salary_asc" | "salary_desc") || "newest"
   )
 
+  // Pagination
+  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
+  const [limit, setLimit] = useState(60)
+  const [totalPages, setTotalPages] = useState(0)
+
   const fetchJobs = async () => {
     setLoading(true)
-    const jobs = await getJobs(session.data?.user?.email || "", location, jobType, salaryMin, salaryMax, experience, attendance, query, sort)
+    const jobs = await getJobs(session.data?.user?.email || "", location, jobType, salaryMin, salaryMax, experience, attendance, query, sort, page, limit)
 
     if (jobs.success) {
+      if (jobs.pagination) {
+        setTotalPages(jobs.pagination.pages)
+      }
+
       // Transform the API data to match the frontend's Job type
       const transformedJobs = transformJobs(jobs.data)
-      console.log(transformedJobs);
 
       setJobs(transformedJobs)
     } else {
@@ -59,6 +67,7 @@ export default function JobsPage() {
     if (attendance) params.set("attendance", attendance)
     if (query) params.set("query", query)
     if (sort) params.set("sort", sort)
+    if (page > 1) params.set("page", page.toString())
 
     router.push(`/jobs?${params.toString()}`)
   }
@@ -68,6 +77,9 @@ export default function JobsPage() {
     type: "location" | "jobType" | "salaryMin" | "salaryMax" | "experience" | "attendance" | "query" | "sort",
     value: string
   ) => {
+    // Reset to page 1 when filters change
+    setPage(1)
+
     switch (type) {
       case "location":
         setLocation(value)
@@ -96,11 +108,16 @@ export default function JobsPage() {
     }
   }
 
+  // Handle page changes
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage)
+  }
+
   // Fetch jobs when filters change
   useEffect(() => {
     fetchJobs()
     updateURL()
-  }, [location, jobType, salaryMin, salaryMax, experience, attendance, query, sort])
+  }, [location, jobType, salaryMin, salaryMax, experience, attendance, query, sort, page])
 
   useEffect(() => {
     (async () => {
@@ -160,6 +177,9 @@ export default function JobsPage() {
           onQueryChange={(value) => handleFilterChange("query", value)}
           sort={sort}
           onSortChange={(value) => handleFilterChange("sort", value)}
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
         />
       </div>
 

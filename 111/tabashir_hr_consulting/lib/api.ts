@@ -9,7 +9,9 @@ export const getJobs = async (
   experience?: string,
   attendance?: string,
   query?: string,
-  sort?: "newest" | "oldest" | "salary_asc" | "salary_desc"
+  sort?: "newest" | "oldest" | "salary_asc" | "salary_desc",
+  page: number = 1,
+  limit: number = 60
 ) => {
   try {
     const params = new URLSearchParams()
@@ -24,8 +26,9 @@ export const getJobs = async (
     if (query) params.append("search", query)
     if (sort) params.append("sort", sort)
 
-    // Add default limit
-    params.append("limit", "60")
+    // Add pagination parameters
+    params.append("page", page.toString())
+    params.append("limit", limit.toString())
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs?${params.toString()}`,
@@ -37,7 +40,7 @@ export const getJobs = async (
       },
     )
     const data = await response.json()
-    return { success: data.success, data: data.jobs }
+    return { success: data.success, data: data.jobs, pagination: data.pagination }
   } catch (error) {
     console.error(error)
     return { success: false, error: error }
