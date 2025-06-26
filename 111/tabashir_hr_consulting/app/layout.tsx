@@ -2,10 +2,18 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { Toaster } from 'sonner'
 
+import { Work_Sans } from 'next/font/google'
+
 export const metadata: Metadata = {
   title: 'Tabashir',
   description: 'Joabboard platform',
 }
+
+const workSans = Work_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-work-sans',
+})
 
 export default function RootLayout({
   children,
@@ -14,10 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={workSans.className}>
         <Toaster />
         {children}
-        </body>
+      </body>
     </html>
   )
 }

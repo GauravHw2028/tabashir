@@ -8,7 +8,7 @@ import { signIn } from "@/app/utils/auth";
 export default function CandidateRegistration() {
   return (
     <div className="grid lg:grid-cols-2 min-h-screen w-full">
-      <div className="flex flex-col justify-center px-8 py-12 sm:px-16 max-w-full w-full">
+      <div className="flex flex-col justify-center px-8 py-12 sm:px-3 mx-auto w-[500px] max-w-full max-sm:w-full">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900">Create Account</h1>
           <p className="mt-2 text-sm text-gray-600">
@@ -38,7 +38,7 @@ export default function CandidateRegistration() {
           action={async () => {
             "use server";
             await signIn("google", {
-              redirectTo:"/candidate/social/callback"
+              redirectTo: "/candidate/social/callback"
             });
           }}
         >
