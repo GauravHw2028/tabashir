@@ -8,6 +8,7 @@ interface MatchedJobCard {
   gradient: string
   shadow: string
   logoUrl?: string
+  image?: string
   tags?: string[]
   onApply?: () => void
 }
@@ -20,35 +21,28 @@ export function MatchedJobCard({
   gradient,
   shadow,
   logoUrl,
+  image,
   tags = ["Onsite", "Internship"],
   onApply,
 }: MatchedJobCard) {
   return (
     <div
-      className="rounded-[29.63px] p-4 text-white flex flex-col justify-between h-[155px]"
+      className="rounded-[29.63px] px-5 py-8 text-white flex flex-col justify-between relative overflow-hidden"
       style={{
         background: gradient,
         boxShadow: shadow,
       }}
     >
-      <div className="flex items-start justify-between">
-        {/* <div className="w-10 h-10 bg-white rounded-md flex items-center justify-center">
-          {logoUrl ? (
-            <Image src={logoUrl || "/placeholder.svg"} alt={company} width={24} height={24} />
-          ) : (
-            <div className="w-6 h-6 bg-gray-200 rounded-sm flex items-center justify-center">
-              <span className="text-xs text-gray-500">@</span>
-            </div>
-          )}
-        </div> */}
+      <img src={image || "/placeholder.svg"} className="absolute left-0 bottom-0" />
+      <div className="flex items-start justify-between relative z-10 mb-4">
         <div className="space-y-[6px]">
-          <h3 className="font-medium text-md leading-none">{title}</h3>
+          <h3 className="font-medium text-md leading-none">{title.slice(0, 32) + (title.length > 32 ? "..." : "")}</h3>
           <div className="text-xs opacity-80">{company}</div>
         </div>
 
       </div>
 
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center relative z-10">
         <div className="flex gap-1 mt-2">
           {tags.map((tag, index) => (
             <span key={index} className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full">
@@ -64,10 +58,10 @@ export function MatchedJobCard({
         </button>
       </div>
 
-      <div className="flex justify-between items-center">
-        <div className="text-xs">{salary}</div>
+      <div className="flex justify-between items-center relative z-10">
+        <div className="text-xs">{salary.slice(0, 24) + (salary.length > 24 ? "..." : "")}</div>
 
-        <div className="text-[10px] mt-1">{location}</div>
+        <div className="text-[10px] mt-1">{location.slice(0, 18) + (location.length > 18 ? "..." : "")}</div>
       </div>
 
     </div>

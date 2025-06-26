@@ -184,6 +184,7 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
                 salary={typeof jobs[0].salary === 'object' ? `${jobs[0].salary.currency} ${jobs[0].salary.amount}/${jobs[0].salary.period}` : jobs[0].salary}
                 gradient="linear-gradient(100.95deg, #276EFE 1.25%, #5F92F9 98.75%)"
                 shadow="0px 4px 4px 0px #4682FB47"
+                image="/images/dashboard_card_1.png"
                 tags={getJobTags(jobs[0])}
                 onApply={() => handleJobSelect(jobs[0])}
               />
@@ -198,6 +199,7 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
                 salary={typeof jobs[1].salary === 'object' ? `${jobs[1].salary.currency} ${jobs[1].salary.amount}/${jobs[1].salary.period}` : jobs[1].salary}
                 gradient="linear-gradient(102.25deg, #F4AA53 0.46%, #F1977D 99.54%)"
                 shadow="0px 4px 4px 0px #F4A75B4F"
+                image="/images/dashboard_card_2.png"
                 tags={getJobTags(jobs[1])}
                 onApply={() => handleJobSelect(jobs[1])}
               />
@@ -211,7 +213,8 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
                   company={jobs[2].company}
                   location={jobs[2].location}
                   salary={typeof jobs[2].salary === 'object' ? `${jobs[2].salary.currency} ${jobs[2].salary.amount}/${jobs[2].salary.period}` : jobs[2].salary}
-                  gradient="linear-gradient(102.25deg, #F4AA53 0.46%, #F1977D 99.54%)"
+                  gradient="linear-gradient(102.25deg, #D679ED 0.46%, #B37BEE 99.54%)"
+                  image="/images/dashboard_card_3.png"
                   shadow="0px 4px 4px 0px #F4A75B4F"
                   tags={getJobTags(jobs[2])}
                   onApply={() => handleJobSelect(jobs[2])}
