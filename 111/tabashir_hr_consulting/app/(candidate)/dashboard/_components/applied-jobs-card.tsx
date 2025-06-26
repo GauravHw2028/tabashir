@@ -1,4 +1,4 @@
-import { Briefcase, ArrowRight } from "lucide-react"
+import { ArrowRight, BriefcaseBusiness } from "lucide-react"
 import Link from "next/link"
 
 interface AppliedJobsCardProps {
@@ -7,10 +7,10 @@ interface AppliedJobsCardProps {
 
 export function AppliedJobsCard({ count }: AppliedJobsCardProps) {
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm w-full">
+    <div className="bg-white rounded-2xl p-6 shadow-sm w-full">
       <div className="flex items-center gap-4 mb-4">
-        <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
-          <Briefcase className="text-amber-500" size={20} />
+        <div className="w-12 h-12 bg-gradient-to-b from-[#FFA509] to-[#F0BF62] rounded-lg flex items-center justify-center">
+          <BriefcaseBusiness className="text-white" size={24} />
         </div>
         <div>
           <h3 className="text-2xl font-bold">{count}</h3>

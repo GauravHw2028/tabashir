@@ -124,7 +124,7 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
     return (
       <div className="px-4 sm:px-6 lg:px-0">
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center sm:space-y-0 mb-6">
-          <h2 className="text-lg sm:text-xl font-medium text-gray-800">Matched Jobs</h2>
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Matched Jobs</h2>
           <div className="flex justify-end">
             <UserProfileHeader />
           </div>
