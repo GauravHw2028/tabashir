@@ -27,7 +27,7 @@ export function MatchedJobCard({
 }: MatchedJobCard) {
   return (
     <div
-      className="rounded-[29.63px] px-5 py-8 text-white flex flex-col justify-between relative overflow-hidden"
+      className="rounded-[29.63px] px-5 py-7 text-white flex flex-col justify-between relative overflow-hidden"
       style={{
         background: gradient,
         boxShadow: shadow,
@@ -36,7 +36,7 @@ export function MatchedJobCard({
       <img src={image || "/placeholder.svg"} className="absolute left-0 bottom-0" />
       <div className="flex items-start justify-between relative z-10 mb-4">
         <div className="space-y-[6px]">
-          <h3 className="font-medium text-md leading-none">{title.slice(0, 32) + (title.length > 32 ? "..." : "")}</h3>
+          <h3 className="font-medium text-md leading-none">{title.slice(0, 28) + (title.length > 28 ? "..." : "")}</h3>
           <div className="text-xs opacity-80">{company}</div>
         </div>
 
@@ -58,8 +58,8 @@ export function MatchedJobCard({
         </button>
       </div>
 
-      <div className="flex justify-between items-center relative z-10">
-        <div className="text-xs">{salary.slice(0, 24) + (salary.length > 24 ? "..." : "")}</div>
+      <div className="flex justify-between items-center relative z-10 mt-1">
+        <div className="text-xs">{salary.slice(0, 20) + (salary.length > 20 ? "..." : "")}</div>
 
         <div className="text-[10px] mt-1">{location.slice(0, 18) + (location.length > 18 ? "..." : "")}</div>
       </div>

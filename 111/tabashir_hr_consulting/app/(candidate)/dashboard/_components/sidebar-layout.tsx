@@ -37,7 +37,7 @@ export default function SidebarLayout() {
 
 
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block sticky top-0 h-[calc(100vh-35px)]">
+      <div className="hidden lg:block sticky top-[16px] h-[calc(100vh-35px)]">
         <Sidebar />
       </div>
 

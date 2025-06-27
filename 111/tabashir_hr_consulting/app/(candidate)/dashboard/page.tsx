@@ -10,7 +10,7 @@ export default async function Dashboard() {
   const user = await onGetUserProfile()
   const skills = await getUsersSkills()
   return (
-    <div className="space-y-2  overflow-y-scroll max-h-[calc(100vh-35px)] ">
+    <div className="space-y-6 max-w-7xl mx-auto">
       <MatchedJobs jobType={user?.jobType || ""} />
 
       <div className="bg-white rounded-lg p-6 shadow-sm">

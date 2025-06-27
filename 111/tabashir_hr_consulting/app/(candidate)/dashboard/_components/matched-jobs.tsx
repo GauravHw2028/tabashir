@@ -149,13 +149,13 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
   return (
     <div className="px-4 sm:px-6 lg:px-0">
       <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center sm:space-y-0 mb-6">
-        <h2 className="text-lg sm:text-xl font-medium text-gray-800">Matched Jobs</h2>
+        <h2 className="text-lg sm:text-2xl font-semibold text-gray-800 px-3">Matched Jobs</h2>
         <div className="flex justify-end">
-          <UserProfileHeader />
+          {/* <UserProfileHeader /> */}
         </div>
       </div>
       <div className="flex flex-col xl:flex-row gap-6 mb-5">
-        <div className="w-full xl:w-[60%] 2xl:w-[58%]">
+        <div className="w-full xl:w-[72%] 2xl:w-[70%]">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6 text-black">
             {/* Show purchase prompt if jobApplyCount is 0 */}
             {/* {jobApplyCount === 0 ? (
@@ -227,7 +227,7 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
         </div>
 
         {/* Applied Jobs Card */}
-        <div className="w-full xl:w-[38%] 2xl:w-[40%] text-black">
+        <div className="w-full xl:w-[28%] 2xl:w-[30%] text-black">
           <AppliedJobsCard count={jobAppliedCount} />
         </div>
       </div>

@@ -253,7 +253,7 @@ export default function AccountPage() {
   )
 
   return (
-    <div className="flex-1 p-6 text-gray-900 max-h-[calc(100vh-35px)] rounded-lg overflow-y-scroll">
+    <div className="flex-1 p-6 text-gray-900 rounded-lg max-w-3xl">
       <div className="space-y-6">
         {/* Personal Information */}
         <Card>
