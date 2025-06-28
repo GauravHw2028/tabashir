@@ -122,12 +122,9 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
 
   if (loading) {
     return (
-      <div className="px-4 sm:px-6 lg:px-0">
+      <div className="px-0 max-sm:pt-5">
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center sm:space-y-0 mb-6">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Matched Jobs</h2>
-          <div className="flex justify-end">
-            <UserProfileHeader />
-          </div>
         </div>
         <div className="flex flex-col xl:flex-row gap-6">
           <div className="w-full xl:w-[60%] 2xl:w-[58%]">
@@ -147,34 +144,13 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-0">
+    <div className="px-0 max-sm:pt-5">
       <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center sm:space-y-0 mb-6">
         <h2 className="text-lg sm:text-2xl font-semibold text-gray-800 px-3">Matched Jobs</h2>
-        <div className="flex justify-end">
-          {/* <UserProfileHeader /> */}
-        </div>
       </div>
       <div className="flex flex-col xl:flex-row gap-6 mb-5">
         <div className="w-full xl:w-[72%] 2xl:w-[70%]">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6 text-black">
-            {/* Show purchase prompt if jobApplyCount is 0 */}
-            {/* {jobApplyCount === 0 ? (
-              <div className="col-span-full">
-                <div className="bg-white rounded-lg shadow-sm p-6 text-center h-[152px] flex flex-col justify-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Access Premium Jobs</h3>
-                  <p className="text-gray-600 text-sm mb-4">
-                    You have no AI job applications remaining. Purchase a package to continue.
-                  </p>
-                  <button
-                    onClick={() => router.push('/ai-job-apply')}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm mx-auto"
-                  >
-                    Purchase Package
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <> */}
             {/* First job from API */}
             {jobs[0] && (
               <MatchedJobCard

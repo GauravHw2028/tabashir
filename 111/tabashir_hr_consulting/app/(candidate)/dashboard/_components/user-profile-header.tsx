@@ -46,12 +46,11 @@ export function UserProfileHeader() {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 border-gray-200"
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 rounded-full cursor-pointer py-5"
         >
-          <Globe className="h-4 w-4" />
           <span className="text-lg">{currentLanguage?.flag}</span>
-          <span className="text-sm font-medium hidden sm:inline">{currentLanguage?.name}</span>
-          <ChevronDown className="h-3 w-3 opacity-50" />
+          {/* <span className="text-sm font-medium hidden sm:inline">{currentLanguage?.name}</span> */}
+          <ChevronDown className="h-4 w-4 opacity-50" />
         </Button>
       </DialogTrigger>
 

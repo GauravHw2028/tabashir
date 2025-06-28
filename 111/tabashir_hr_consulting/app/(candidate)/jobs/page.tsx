@@ -132,7 +132,7 @@ export default function JobsPage() {
   }, [])
 
   return (
-    <div className="h-screen flex flex-col lg:flex-row gap-6 rounded-lg max-h-[calc(100vh-35px)] relative">
+    <div className="flex flex-col lg:flex-row gap-6 rounded-lg relative">
       {/* {loading && (
         <div className="absolute inset-0 bg-white/80 flex flex-col items-center justify-center rounded-lg z-50">
           <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin mb-4"></div>
@@ -185,7 +185,7 @@ export default function JobsPage() {
 
       {/* Third column: Job details (conditionally rendered) */}
       {selectedJob && (
-        <div className="fixed inset-0 lg:relative lg:inset-auto lg:w-[400px] bg-white rounded-lg shadow-sm overflow-y-auto flex-shrink-0 animate-in slide-in-from-right duration-300 z-50 lg:z-auto">
+        <div className="!sticky !top-[5px] inset-0 lg:relative lg:inset-auto lg:w-[400px] bg-white rounded-lg shadow-sm overflow-y-auto flex-shrink-0 animate-in slide-in-from-right duration-300 z-50 lg:z-auto max-h-[calc(100vh-35px)]">
           <JobDetails
             job={selectedJob}
             onClose={() => setSelectedJob(null)}
