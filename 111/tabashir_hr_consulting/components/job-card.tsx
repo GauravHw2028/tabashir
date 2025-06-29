@@ -112,7 +112,7 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
             </div>
 
             <div className="flex items-start gap-2 flex-shrink-0">
-              {job.match && (
+              {/* {job.match && (
                 <div
                   className={`px-3 py-1 rounded-full text-xs text-white ${job.match.type === "top"
                     ? "bg-orange-500"
@@ -127,7 +127,7 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
                       ? "Best For You"
                       : `${job.match.value}% Match`}
                 </div>
-              )}
+              )} */}
 
               <button
                 className={cn("text-gray-400 hover:text-red-500", isLiked && "text-red-500")}
