@@ -134,9 +134,10 @@ interface JobPaginationProps {
 }
 
 function JobPagination({ currentPage, totalPages, onPageChange }: JobPaginationProps) {
-  const getPageNumbers = () => {
+  const getPageNumbers = (isMobile: boolean = false) => {
     const pages = []
-    const maxVisiblePages = 5
+    // Reduce visible pages on mobile
+    const maxVisiblePages = isMobile ? 3 : 5
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
 
@@ -151,17 +152,24 @@ function JobPagination({ currentPage, totalPages, onPageChange }: JobPaginationP
   }
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="text-sm text-gray-700">
+    <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+      {/* Page info - hidden on mobile, shown on larger screens */}
+      <div className="hidden sm:block text-sm text-gray-700">
         Page {currentPage} of {totalPages}
       </div>
 
-      <div className="flex items-center space-x-2">
+      {/* Mobile: Simple page info */}
+      <div className="sm:hidden text-center text-sm text-gray-700">
+        {currentPage} / {totalPages}
+      </div>
+
+      {/* Desktop Navigation */}
+      <div className="hidden sm:flex items-center space-x-2">
         {/* Previous Button */}
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
-          className="px-3 py-2 text-sm rounded-md border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+          className="px-3 py-2 text-sm rounded-md border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
         >
           Previous
         </button>
@@ -172,11 +180,11 @@ function JobPagination({ currentPage, totalPages, onPageChange }: JobPaginationP
             <>
               <button
                 onClick={() => onPageChange(1)}
-                className="px-3 py-2 text-sm rounded-md border hover:bg-gray-50"
+                className="px-3 py-2 text-sm rounded-md border hover:bg-gray-50 transition-colors"
               >
                 1
               </button>
-              {currentPage > 4 && <span className="px-2 py-2 text-sm">...</span>}
+              {currentPage > 4 && <span className="px-2 py-2 text-sm text-gray-500">...</span>}
             </>
           )}
 
@@ -184,7 +192,7 @@ function JobPagination({ currentPage, totalPages, onPageChange }: JobPaginationP
             <button
               key={page}
               onClick={() => onPageChange(page)}
-              className={`px-3 py-2 text-sm rounded-md border ${page === currentPage
+              className={`px-3 py-2 text-sm rounded-md border transition-colors ${page === currentPage
                 ? "bg-blue-500 text-white border-blue-500"
                 : "hover:bg-gray-50"
                 }`}
@@ -195,10 +203,10 @@ function JobPagination({ currentPage, totalPages, onPageChange }: JobPaginationP
 
           {currentPage < totalPages - 2 && (
             <>
-              {currentPage < totalPages - 3 && <span className="px-2 py-2 text-sm">...</span>}
+              {currentPage < totalPages - 3 && <span className="px-2 py-2 text-sm text-gray-500">...</span>}
               <button
                 onClick={() => onPageChange(totalPages)}
-                className="px-3 py-2 text-sm rounded-md border hover:bg-gray-50"
+                className="px-3 py-2 text-sm rounded-md border hover:bg-gray-50 transition-colors"
               >
                 {totalPages}
               </button>
@@ -210,10 +218,49 @@ function JobPagination({ currentPage, totalPages, onPageChange }: JobPaginationP
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          className="px-3 py-2 text-sm rounded-md border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+          className="px-3 py-2 text-sm rounded-md border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
         >
           Next
         </button>
+      </div>
+
+      {/* Mobile Navigation */}
+      <div className="sm:hidden">
+        <div className="flex items-center justify-center space-x-4">
+          {/* Previous Button */}
+          <button
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage <= 1}
+            className="flex-1 px-4 py-2 text-sm rounded-md border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors text-center"
+          >
+            Previous
+          </button>
+
+          {/* Mobile Page Numbers - only show current and adjacent */}
+          <div className="flex items-center space-x-1">
+            {getPageNumbers(true).map((page) => (
+              <button
+                key={page}
+                onClick={() => onPageChange(page)}
+                className={`w-10 h-10 text-sm rounded-md border transition-colors ${page === currentPage
+                  ? "bg-blue-500 text-white border-blue-500"
+                  : "hover:bg-gray-50"
+                  }`}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+
+          {/* Next Button */}
+          <button
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage >= totalPages}
+            className="flex-1 px-4 py-2 text-sm rounded-md border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors text-center"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   )
