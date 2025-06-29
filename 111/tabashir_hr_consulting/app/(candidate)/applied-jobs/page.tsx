@@ -203,7 +203,7 @@ export default function AppliedJobsPage() {
     <div className="container mx-auto py-6 max-lg:py-1 max-w-7xl text-gray-900">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 px-4 lg:px-0">
         <h1 className="text-2xl max-lg:text-xl font-semibold text-gray-900">Applied Jobs</h1>
-        <UserProfileHeader />
+        {/* <UserProfileHeader /> */}
       </div>
 
       <div className="bg-white rounded-lg shadow-sm mx-4 lg:mx-0">
@@ -373,7 +373,7 @@ export default function AppliedJobsPage() {
                               </Badge>
                             </TableCell>
                             <TableCell>
-                              <DropdownMenu>
+                              {/* <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button
                                     variant="ghost"
@@ -411,7 +411,7 @@ export default function AppliedJobsPage() {
                                     <span>Delete</span>
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
-                              </DropdownMenu>
+                              </DropdownMenu> */}
                             </TableCell>
                           </TableRow>
                         ))
