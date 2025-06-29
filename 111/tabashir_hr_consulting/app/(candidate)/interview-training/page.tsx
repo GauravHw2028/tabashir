@@ -1,16 +1,11 @@
 import Image from "next/image"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Bell, Calendar, CheckCircle, Clock, Video } from "lucide-react"
-import { UserProfileHeader } from "../dashboard/_components/user-profile-header"
+import { Bell } from "lucide-react"
 
 export default function InterviewTrainingPage() {
   return (
     <div className="container mx-auto px-4 ">
-      <div className="w-full flex justify-end">
-        <UserProfileHeader />
-      </div>
       <div className="flex flex-col items-center justify-center space-y-8 py-12">
         {/* Header */}
         <div className="text-center space-y-4 max-w-3xl">
