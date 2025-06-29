@@ -94,9 +94,6 @@ export default function ServiceDetailsPage() {
 
   return (
     <div className="flex-1 text-gray-900">
-      <div className="w-full flex justify-end pb-6">
-        <UserProfileHeader />
-      </div>
       <div className="bg-white rounded-lg shadow-sm p-8 min-h-[calc(100vh-125px)]">
         <h1 className="text-2xl font-bold mb-10">Packages</h1>
 
