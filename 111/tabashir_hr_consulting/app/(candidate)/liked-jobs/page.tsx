@@ -324,18 +324,18 @@ export default function LikedJobsPage() {
                   {filteredJobs.length} job{filteredJobs.length !== 1 ? 's' : ''}
                 </span>
               </div>
-              <UserProfileHeader />
-            </div>
 
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search your liked jobs..."
-                className="pl-10 pr-4 py-3 border border-gray-300 rounded-full w-full text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search your liked jobs..."
+                  className="pl-10 pr-4 py-3 border border-gray-300 rounded-full w-full text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              </div>
+              {/* <UserProfileHeader /> */}
             </div>
           </div>
 
