@@ -429,26 +429,23 @@ export default function AIJobApplyPage() {
   }
 
   return (
-    <div className="flex-1  text-gray-900 max-h-[calc(100vh-35px)] overflow-y-auto">
-      <div className="w-full flex justify-end mb-4">
-        <UserProfileHeader />
-      </div>
-      <div className="bg-white rounded-lg shadow-sm p-6 h-[90%]  ">
+    <div className="flex-1  text-gray-900 overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-sm px-10 max-lg:px-6 py-10 max-lg:py-8 max-lg:h-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex items-center mb-10">
-              <h1 className="text-2xl font-bold">Automate your Applying Job</h1>
-              <Sparkles className="ml-3 text-yellow-400 h-6 w-6" />
+            <div className="flex items-center mb-10 max-lg:mb-8">
+              <h1 className="text-2xl font-bold max-lg:text-xl">Automate your Applying Job</h1>
+              <Sparkles className="ml-3 text-yellow-400 h-6 w-6 max-lg:hidden" />
             </div>
 
             {/* Step 1: Select Resume */}
             <div className="mb-10">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-6 max-lg:flex-col max-lg:items-start max-lg:gap-4 max-lg:mb-4">
                 <div className="flex items-center">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3 max-lg:w-6 max-lg:h-6 max-lg:text-sm">
                     1
                   </div>
-                  <h2 className="text-xl font-semibold">Select Your Resume</h2>
+                  <h2 className="text-xl font-semibold max-lg:text-lg">Select Your Resume</h2>
                 </div>
                 <button
                   type="button"
@@ -488,7 +485,7 @@ export default function AIJobApplyPage() {
                                       </div>
                                     </div>
                                     <div className="flex-1">
-                                      <p className="font-medium text-sm">{item.filename}</p>
+                                      <p className="font-medium text-sm">{item.filename.split(".")[0].slice(0, 15) + (item.filename.split(".")[0].length > 15 ? "..." : "") + item.filename.split(".")[1]}</p>
                                       <p className="text-xs text-gray-500 mt-1">
                                         Created on: {new Date(item.createdAt).toLocaleDateString()}
                                       </p>
@@ -503,7 +500,7 @@ export default function AIJobApplyPage() {
                                     </div>
                                   </div>
                                   <div className="flex-1">
-                                    <p className="font-medium text-sm">{item.filename}</p>
+                                    <p className="font-medium text-sm">{item.filename.split(".")[0].slice(0, 15) + (item.filename.split(".")[0].length > 15 ? "..." : "") + item.filename.split(".")[1]}</p>
                                     <p className="text-xs text-gray-500 mt-1">
                                       Created on: {new Date(item.createdAt).toLocaleDateString()}
                                     </p>
@@ -528,12 +525,14 @@ export default function AIJobApplyPage() {
 
             {/* Step 2: Job Position (Multi-select dropdown) */}
             <div className="mb-10">
-              <div className="flex items-center mb-6">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3">
+              <div className="flex items-center mb-6 max-lg:mb-4">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3 max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0">
                   2
                 </div>
-                <h2 className="text-xl font-semibold">Which Job Position you prefer</h2>
-                <span className="text-xs text-gray-500 ml-2">min 5 and max 30</span>
+                <div className="flex items-center max-lg:flex-col max-lg:items-start max-lg:gap-2">
+                  <h2 className="text-xl font-semibold max-lg:text-lg">Which Job Position you prefer</h2>
+                  <span className="text-xs text-gray-500 ml-2 max-lg:ml-0">min 5 and max 30</span>
+                </div>
               </div>
 
               <FormField
@@ -608,12 +607,12 @@ export default function AIJobApplyPage() {
             </div>
 
             {/* Step 3: Location */}
-            <div className="mb-16">
-              <div className="flex items-center mb-6">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3">
+            <div className="mb-16 max-lg:mb-10">
+              <div className="flex items-center mb-6 max-lg:mb-4">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3 max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0">
                   3
                 </div>
-                <h2 className="text-xl font-semibold">Cities you Prefer</h2>
+                <h2 className="text-xl font-semibold max-lg:text-lg">Cities you Prefer</h2>
               </div>
 
               <FormField
@@ -692,11 +691,11 @@ export default function AIJobApplyPage() {
 
             {/* Step 4: Nationality (Multi-select dropdown) */}
             <div className="mb-10">
-              <div className="flex items-center mb-6">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3">
+              <div className="flex items-center mb-6 max-lg:mb-4">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3 max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0">
                   4
                 </div>
-                <h2 className="text-xl font-semibold">Nationality</h2>
+                <h2 className="text-xl font-semibold max-lg:text-lg">Nationality</h2>
               </div>
               <FormField
                 control={form.control}
@@ -774,11 +773,11 @@ export default function AIJobApplyPage() {
 
             {/* Step 5: Gender (Single-select dropdown) */}
             <div className="mb-10">
-              <div className="flex items-center mb-6">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3">
+              <div className="flex items-center mb-6 max-lg:mb-4">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3 max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0">
                   5
                 </div>
-                <h2 className="text-xl font-semibold">Gender</h2>
+                <h2 className="text-xl font-semibold max-lg:text-lg">Gender</h2>
               </div>
               <FormField
                 control={form.control}
