@@ -123,7 +123,7 @@ export function ResumeListClient({
   }
 
   return (
-    <div className="bg-white rounded-lg px-6 min-h-[calc(100vh-35px)]">
+    <div className="bg-white rounded-lg px-6 min-h-[calc(100vh-35px)] py-10">
       {/* Resume Upload Modal */}
       <ResumeUploadModal
         isOpen={isModalOpen}
@@ -148,13 +148,9 @@ export function ResumeListClient({
         title="Delete Resume"
         description="Are you sure you want to delete this resume? This action cannot be undone."
       />
-
-      <div className="w-full flex py-3 justify-end">
-        <UserProfileHeader />
-      </div>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 max-lg:flex-col max-lg:gap-4">
         <h1 className="text-2xl font-semibold text-gray-900">My Resume</h1>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 justify-end max-lg:justify-center">
           <button
             onClick={() => setIsModalOpen(true)}
             className="bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white py-2 px-4 rounded-md flex items-center gap-2 hover:opacity-90"
@@ -234,7 +230,7 @@ function ResumeCard({ resume, onDelete, onDownload, isDownloading }: ResumeCardP
           PDF
         </div>
         <div className="flex-1">
-          <h3 className="text-sm font-medium text-gray-900 mb-1">{resume.filename}</h3>
+          <h3 className="text-sm font-medium text-gray-900 mb-1">{resume.filename.split(".")[0].slice(0, 15) + (resume.filename.split(".")[0].length > 15 ? "..." : "") + resume.filename.split(".")[1]}</h3>
           <p className="text-xs text-gray-500">
             Created on: {new Date(resume.createdAt).toLocaleDateString()}
           </p>
