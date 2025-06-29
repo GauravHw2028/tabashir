@@ -253,7 +253,7 @@ export default function AccountPage() {
   )
 
   return (
-    <div className="flex-1 p-6 text-gray-900 rounded-lg max-w-3xl">
+    <div className="flex-1 p-6 max-lg:p-0 text-gray-900 rounded-lg max-w-3xl">
       <div className="space-y-6">
         {/* Personal Information */}
         <Card>
@@ -358,7 +358,7 @@ export default function AccountPage() {
               <div className="grid grid-cols-1 gap-4 items-start">
                 <label className="text-gray-700 pt-2">Your top skills and tools</label>
                 <div className="col-span-3">
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between max-lg:flex-col max-lg:items-start max-lg:gap-4">
                     <div className="flex flex-wrap gap-2">
                       {skills.map((skill, index) => (
                         <Badge
