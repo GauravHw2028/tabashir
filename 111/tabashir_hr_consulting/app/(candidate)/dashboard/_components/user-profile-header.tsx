@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Globe, Check, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/lib/use-translation";
 
 const languages = [
   { code: "en", name: "English", flag: "🇺🇸" },
@@ -20,24 +21,32 @@ const languages = [
 ];
 
 export function UserProfileHeader() {
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [isOpen, setIsOpen] = useState(false);
+  const { t, language } = useTranslation();
 
+  const selectedLanguage = language;
   const currentLanguage = languages.find(lang => lang.code === selectedLanguage);
 
-  // Load saved language preference on mount
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem('preferred-language');
-    if (savedLanguage) {
-      setSelectedLanguage(savedLanguage);
+  const updateDocumentLanguage = (lang: string) => {
+    if (lang === 'ar') {
+      document.documentElement.dir = 'rtl';
+      document.documentElement.lang = 'ar';
+    } else {
+      document.documentElement.dir = 'ltr';
+      document.documentElement.lang = 'en';
     }
-  }, []);
+  };
 
   const handleLanguageChange = (languageCode: string) => {
-    setSelectedLanguage(languageCode);
     setIsOpen(false);
     localStorage.setItem('preferred-language', languageCode);
+    updateDocumentLanguage(languageCode);
     console.log(`Language changed to: ${languageCode}`);
+
+    // Trigger a custom event to notify other components
+    window.dispatchEvent(new CustomEvent('languageChanged', {
+      detail: { language: languageCode }
+    }));
   };
 
   return (
@@ -58,10 +67,10 @@ export function UserProfileHeader() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Globe className="h-5 w-5" />
-            Select Language
+            {t('selectLanguage')}
           </DialogTitle>
           <DialogDescription>
-            Choose your preferred language for the website interface.
+            {t('chooseLanguage')}
           </DialogDescription>
         </DialogHeader>
 
@@ -87,7 +96,7 @@ export function UserProfileHeader() {
         </div>
 
         <div className="text-xs text-gray-500 text-center">
-          Language preference will be saved for your next visit
+          {t('languagePreference')}
         </div>
       </DialogContent>
     </Dialog>

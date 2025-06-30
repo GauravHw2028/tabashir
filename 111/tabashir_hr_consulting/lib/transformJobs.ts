@@ -1,5 +1,6 @@
 export const transformJobs = (jobs: any) => {
-  console.log(jobs)
+  if (!jobs) return []
+  try {
   return jobs.map((job: any) => ({
     id: job.id.toString(),
     title: job.job_title,
@@ -13,7 +14,7 @@ export const transformJobs = (jobs: any) => {
     postedTime: job.job_date,
     jobType: job.working_days,
     salary: {
-      amount: job.salary,
+      amount: job.salary || 0,
       currency: "AED",
       period: "month"
     },
@@ -29,6 +30,10 @@ export const transformJobs = (jobs: any) => {
       value: 85 // Default match percentage
     },
   })).filter((job: any) => job.title !== "Nan" && job.title !== "nan")
+  } catch (error) {
+    console.error("Error transforming jobs:", error, jobs)
+    return []
+  }
 }
 
 

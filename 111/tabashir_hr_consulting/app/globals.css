@@ -16,9 +16,47 @@
 
   .blue-gradient {
     background: linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%);
-
   }
-  
+
+  /* RTL Support */
+  [dir="rtl"] {
+    text-align: right;
+  }
+
+  [dir="rtl"] .flex {
+    flex-direction: row-reverse;
+  }
+
+  [dir="rtl"] .text-left {
+    text-align: right;
+  }
+
+  [dir="rtl"] .text-right {
+    text-align: left;
+  }
+
+  [dir="rtl"] .ml-auto {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  [dir="rtl"] .mr-auto {
+    margin-right: 0;
+    margin-left: auto;
+  }
+
+  /* Custom RTL utilities */
+  .rtl\:rotate-180[dir="rtl"] {
+    transform: rotate(180deg);
+  }
+
+  .rtl\:flex-row-reverse[dir="rtl"] {
+    flex-direction: row-reverse;
+  }
+
+  .rtl\:text-right[dir="rtl"] {
+    text-align: right;
+  }
 }
 
 @layer base {
