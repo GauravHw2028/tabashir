@@ -70,6 +70,10 @@ const translations = {
     arabic: "العربية",
     languagePreference: "Language preference will be saved for your next visit",
     chooseLanguage: "Choose your preferred language for the website interface.",
+    
+    // Navigation
+    toggleMenu: "Toggle menu",
+    whatsappCommunity: "WhatsApp Community",
   },
   ar: {
     // Navigation
@@ -137,6 +141,10 @@ const translations = {
     arabic: "العربية",
     languagePreference: "سيتم حفظ تفضيل اللغة لزيارتك القادمة",
     chooseLanguage: "اختر لغتك المفضلة لواجهة الموقع.",
+    
+    // Navigation
+    toggleMenu: "تبديل القائمة",
+    whatsappCommunity: "مجتمع الواتساب",
   }
 };
 

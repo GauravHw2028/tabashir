@@ -10,7 +10,6 @@ import {
   FileText,
   Sparkles,
   Video,
-  DollarSign,
   Info,
   MessageCircle,
   BookOpen,
@@ -19,6 +18,7 @@ import {
 } from "lucide-react"
 import { onLogout } from "@/actions/auth"
 import Image from "next/image"
+import { useTranslation } from "@/lib/use-translation"
 
 interface SidebarProps {
   onNavigate?: () => void;
@@ -26,6 +26,7 @@ interface SidebarProps {
 
 export function Sidebar({ onNavigate }: SidebarProps) {
   const pathname = usePathname()
+  const { t, isRTL } = useTranslation()
 
   const isActive = (path: string) => {
     return pathname === path
@@ -38,16 +39,16 @@ export function Sidebar({ onNavigate }: SidebarProps) {
   };
 
   const navItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: Briefcase, label: "Jobs", href: "/jobs" },
-    { icon: ClipboardList, label: "Applied Jobs", href: "/applied-jobs" },
-    { icon: Heart, label: "Liked Jobs", href: "/liked-jobs" },
-    { icon: FileText, label: "Resume", href: "/resume" },
-    { icon: Sparkles, label: "AI Job Apply", href: "/ai-job-apply" },
-    { icon: Video, label: "Interview Training", href: "/interview-training" },
-    { icon: Info, label: "Service Details", href: "/service-details" },
-    { icon: MessageCircle, label: "Whatsapp Community", href: "/whatsapp-community" },
-    { icon: BookOpen, label: "Free Courses", href: "/free-courses" },
+    { icon: LayoutDashboard, label: t("dashboard"), href: "/dashboard" },
+    { icon: Briefcase, label: t("jobs"), href: "/jobs" },
+    { icon: ClipboardList, label: t("appliedJobs"), href: "/applied-jobs" },
+    { icon: Heart, label: t("likedJobs"), href: "/liked-jobs" },
+    { icon: FileText, label: t("resume"), href: "/resume" },
+    { icon: Sparkles, label: t("aiJobApply"), href: "/ai-job-apply" },
+    { icon: Video, label: t("interview"), href: "/interview-training" },
+    { icon: Info, label: t("services"), href: "/service-details" },
+    { icon: MessageCircle, label: t("whatsappCommunity"), href: "/whatsapp-community" },
+    { icon: BookOpen, label: t("courses"), href: "/free-courses" },
   ]
 
   return (
@@ -63,10 +64,10 @@ export function Sidebar({ onNavigate }: SidebarProps) {
               key={item.href}
               href={item.href}
               onClick={handleNavigation}
-              className={`flex items-center px-2 py-2 mb-2 text-base font-medium rounded-md ${isActive(item.href) ? "blue-gradient text-white" : "text-gray-700 hover:bg-gray-100"
+              className={`flex items-center px-2 py-2 mb-2 text-base font-medium rounded-md ${isRTL ? 'flex-row-reverse' : ''} ${isActive(item.href) ? "blue-gradient text-white" : "text-gray-700 hover:bg-gray-100"
                 }`}
             >
-              <item.icon className="mr-3 h-5 w-5" />
+              <item.icon className={`h-5 w-5 ${isRTL ? 'ml-3' : 'mr-3'}`} />
               {item.label}
             </Link>
           ))}
@@ -77,16 +78,16 @@ export function Sidebar({ onNavigate }: SidebarProps) {
         <Link
           href="/account"
           onClick={handleNavigation}
-          className="flex items-center px-2 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100"
+          className={`flex items-center px-2 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100 ${isRTL ? 'flex-row-reverse' : ''}`}
         >
-          <User className="mr-3 h-5 w-5" />
-          Account
+          <User className={`h-5 w-5 ${isRTL ? 'ml-3' : 'mr-3'}`} />
+          {t("account")}
         </Link>
         <button onClick={() => {
           onLogout("/candidate/login")
-        }} className="flex items-center px-2 py-2 mt-2 text-sm rounded-md text-red-500 hover:bg-gray-100 w-full text-left">
-          <LogOut className="mr-3 h-5 w-5" />
-          Logout
+        }} className={`flex items-center px-2 py-2 mt-2 text-sm rounded-md text-red-500 hover:bg-gray-100 w-full ${isRTL ? 'flex-row-reverse text-right' : 'text-left'}`}>
+          <LogOut className={`h-5 w-5 ${isRTL ? 'ml-3' : 'mr-3'}`} />
+          {t("logout")}
         </button>
       </div>
     </div>
