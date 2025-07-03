@@ -38,6 +38,7 @@ import { Eye, Bookmark, Trash2, Loader2 } from "lucide-react";
 import { UserProfileHeader } from "../dashboard/_components/user-profile-header";
 import { auth } from "@/app/utils/auth";
 import { toast } from "sonner";
+import { useTranslation } from "@/lib/use-translation";
 
 // Type definition for applied job
 interface AppliedJob {
@@ -95,6 +96,7 @@ export default function AppliedJobsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalJobs, setTotalJobs] = useState(0);
+  const { t, isRTL } = useTranslation();
 
   // Fetch applied jobs on component mount
   useEffect(() => {
@@ -173,11 +175,11 @@ export default function AppliedJobsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto py-6 max-w-7xl text-gray-900">
+      <div className={`container mx-auto py-6 max-w-7xl text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
         <div className="flex justify-center items-center min-h-[400px]">
           <div className="flex flex-col items-center gap-4">
             <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-            <p className="text-gray-600">Loading applied jobs...</p>
+            <p className="text-gray-600">{t("loadingJobs")}</p>
           </div>
         </div>
       </div>
@@ -186,12 +188,12 @@ export default function AppliedJobsPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto py-6 max-w-7xl text-gray-900">
+      <div className={`container mx-auto py-6 max-w-7xl text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
         <div className="flex justify-center items-center min-h-[400px]">
           <div className="text-center">
-            <p className="text-red-600 mb-4">{error}</p>
+            <p className="text-red-600 mb-4">{t("failedToLoad")}</p>
             <Button onClick={() => window.location.reload()}>
-              Try Again
+              {t("tryAgain")}
             </Button>
           </div>
         </div>
@@ -200,9 +202,9 @@ export default function AppliedJobsPage() {
   }
 
   return (
-    <div className="container mx-auto py-6 max-lg:py-1 max-w-7xl text-gray-900">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 px-4 lg:px-0">
-        <h1 className="text-2xl max-lg:text-xl font-semibold text-gray-900">Applied Jobs</h1>
+    <div className={`container mx-auto py-6 max-lg:py-1 max-w-7xl text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
+      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 px-4 lg:px-0 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
+        <h1 className="text-2xl max-lg:text-xl font-semibold text-gray-900">{t("appliedJobs")}</h1>
         {/* <UserProfileHeader /> */}
       </div>
 
@@ -211,11 +213,11 @@ export default function AppliedJobsPage() {
           {/* Search Bar - Mobile Friendly */}
           <div className="mb-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4`} />
               <Input
                 type="text"
-                placeholder="Search jobs, companies, or locations..."
-                className="pl-10 pr-4 py-2 w-full"
+                placeholder={t("searchJobs")}
+                className={`${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'} py-2 w-full`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -227,8 +229,8 @@ export default function AppliedJobsPage() {
             {filteredJobs.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 {searchQuery
-                  ? "No jobs found matching your search criteria"
-                  : "You haven't applied to any jobs yet"
+                  ? t("noResults")
+                  : t("noJobsFound")
                 }
               </div>
             ) : (
@@ -273,16 +275,16 @@ export default function AppliedJobsPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-[160px]">
                             <DropdownMenuItem className="cursor-pointer">
-                              <Eye className="mr-2 h-4 w-4" />
-                              <span>View Details</span>
+                              <Eye className={`${isRTL ? 'ml-2' : 'mr-2'} h-4 w-4`} />
+                              <span>{t("viewDetails")}</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem className="cursor-pointer">
-                              <Bookmark className="mr-2 h-4 w-4" />
-                              <span>Bookmark</span>
+                              <Bookmark className={`${isRTL ? 'ml-2' : 'mr-2'} h-4 w-4`} />
+                              <span>{t("likeJob")}</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600">
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              <span>Delete</span>
+                              <Trash2 className={`${isRTL ? 'ml-2' : 'mr-2'} h-4 w-4`} />
+                              <span>{t("delete")}</span>
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -291,16 +293,16 @@ export default function AppliedJobsPage() {
 
                     <div className="grid grid-cols-2 gap-2 text-xs text-gray-500">
                       <div>
-                        <span className="font-medium">Position:</span> {job.position}
+                        <span className="font-medium">{t("position")}:</span> {job.position}
                       </div>
                       <div>
-                        <span className="font-medium">Job ID:</span> {job.jobId}
+                        <span className="font-medium">{t("jobId")}:</span> {job.jobId}
                       </div>
                       <div>
-                        <span className="font-medium">Applied:</span> {job.applied}
+                        <span className="font-medium">{t("appliedDate")}:</span> {job.applied}
                       </div>
                       <div>
-                        <span className="font-medium">Location:</span> {job.location}
+                        <span className="font-medium">{t("location")}:</span> {job.location}
                       </div>
                     </div>
                   </div>
@@ -316,25 +318,25 @@ export default function AppliedJobsPage() {
                   <TableHeader className="bg-gray-50">
                     <TableRow>
                       <TableHead className="font-medium text-xs uppercase text-gray-500 py-3 min-w-[200px]">
-                        Job Title
+                        {t("jobTitle")}
                       </TableHead>
                       <TableHead className="font-medium text-xs uppercase text-gray-500 py-3 min-w-[120px]">
-                        Position
+                        {t("position")}
                       </TableHead>
                       <TableHead className="font-medium text-xs uppercase text-gray-500 py-3 min-w-[100px]">
-                        Job ID
+                        {t("jobId")}
                       </TableHead>
                       <TableHead className="font-medium text-xs uppercase text-gray-500 py-3 min-w-[100px]">
-                        Applied
+                        {t("appliedDate")}
                       </TableHead>
                       <TableHead className="font-medium text-xs uppercase text-gray-500 py-3 min-w-[150px]">
-                        Company
+                        {t("company")}
                       </TableHead>
                       <TableHead className="font-medium text-xs uppercase text-gray-500 py-3 min-w-[120px]">
-                        Location
+                        {t("location")}
                       </TableHead>
                       <TableHead className="font-medium text-xs uppercase text-gray-500 py-3 min-w-[100px]">
-                        Status
+                        {t("status")}
                       </TableHead>
                       <TableHead className="font-medium text-xs uppercase text-gray-500 py-3 w-10"></TableHead>
                     </TableRow>
@@ -344,8 +346,8 @@ export default function AppliedJobsPage() {
                       <TableRow>
                         <TableCell colSpan={8} className="text-center py-8 text-gray-500">
                           {searchQuery
-                            ? "No jobs found matching your search criteria"
-                            : "You haven't applied to any jobs yet"
+                            ? t("noResults")
+                            : t("noJobsFound")
                           }
                         </TableCell>
                       </TableRow>

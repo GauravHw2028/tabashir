@@ -2,8 +2,11 @@
 
 import { Search } from "lucide-react"
 import Image from "next/image"
+import { useTranslation } from "@/lib/use-translation"
 
 export default function FreeCourses() {
+  const { t, isRTL } = useTranslation();
+
   // Course data
   const courses = [
     {
@@ -75,23 +78,23 @@ export default function FreeCourses() {
   ]
 
   return (
-    <div className="w-full">
+    <div className={`w-full ${isRTL ? 'text-right' : 'text-left'}`}>
       {/* Search bar */}
       <div className="mb-8">
         <div className="relative w-[370px]">
           <input
             type="text"
-            placeholder="Search in videos"
-            className="w-full h-10 pl-10 pr-4 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+            placeholder={t("searchInVideos")}
+            className={`w-full h-10 ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500`}
           />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+          <Search className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 transform -translate-y-1/2 text-gray-400`} size={18} />
         </div>
       </div>
 
       {/* Recommended Videos section */}
       <div className="mb-6">
-        <h2 className="text-xl font-bold mb-1 text-black ">Recommended Videos</h2>
-        <p className="text-sm text-gray-500">Top picks for you</p>
+        <h2 className="text-xl font-bold mb-1 text-black">{t("recommendedVideos")}</h2>
+        <p className="text-sm text-gray-500">{t("topPicksForYou")}</p>
       </div>
 
       {/* Course grid */}
@@ -117,11 +120,10 @@ export default function FreeCourses() {
                   {course.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                        tag === "BEST SELLER" ? "bg-blue-600 text-white" : "bg-pink-500 text-white"
-                      }`}
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded ${tag === "BEST SELLER" ? "bg-blue-600 text-white" : "bg-pink-500 text-white"
+                        }`}
                     >
-                      {tag}
+                      {tag === "BEST SELLER" ? t("bestSeller") : tag === "NEW" ? t("new") : tag}
                     </span>
                   ))}
                 </div>

@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import type { Job } from "../jobs/_components/types";
 import { JobDetails } from "../jobs/_components/job-details";
 import { useSession } from "next-auth/react";
+import { useTranslation } from "@/lib/use-translation";
 
 // Custom JobCard wrapper for liked jobs that handles unlike callbacks
 function LikedJobCard({ job, onClick, isSelected, onUnlike }: {
@@ -20,6 +21,7 @@ function LikedJobCard({ job, onClick, isSelected, onUnlike }: {
   onUnlike?: (jobId: string) => void;
 }) {
   const [isLiked, setIsLiked] = useState(true); // Start as liked since this is a liked job
+  const { t, isRTL } = useTranslation();
 
   const handleLike = async () => {
     setIsLiked(true)
@@ -45,10 +47,10 @@ function LikedJobCard({ job, onClick, isSelected, onUnlike }: {
   return (
     <div
       className={`bg-white rounded-lg p-3 sm:p-4 cursor-pointer transition-all shadow-md hover:shadow-lg ${isSelected ? "bg-[#E9F5FF]" : ""
-        }`}
+        } ${isRTL ? 'text-right' : 'text-left'}`}
       onClick={onClick}
     >
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+      <div className={`flex flex-col sm:flex-row gap-3 sm:gap-4 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
         {/* Mobile: Image and title row */}
         <div className="flex gap-3 sm:contents">
           <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
@@ -78,9 +80,9 @@ function LikedJobCard({ job, onClick, isSelected, onUnlike }: {
                       }`}
                   >
                     {job.match.type === "top"
-                      ? "Top"
+                      ? t("topMatch")
                       : job.match.type === "best"
-                        ? "Best"
+                        ? t("bestForYou")
                         : `${job.match.value}%`}
                   </div>
                 )}
@@ -121,10 +123,10 @@ function LikedJobCard({ job, onClick, isSelected, onUnlike }: {
                     }`}
                 >
                   {job.match.type === "top"
-                    ? "Top Match"
+                    ? t("topMatch")
                     : job.match.type === "best"
-                      ? "Best For You"
-                      : `${job.match.value}% Match`}
+                      ? t("bestForYou")
+                      : `${job.match.value}% ${t("match")}`}
                 </div>
               )}
 
@@ -149,41 +151,41 @@ function LikedJobCard({ job, onClick, isSelected, onUnlike }: {
       {/* Job details - responsive layout */}
       <div className="mt-3 space-y-3">
         {/* Location and basic info */}
-        <div className="flex flex-wrap items-center text-xs text-gray-500 gap-x-3 gap-y-1">
+        <div className={`flex flex-wrap items-center text-xs text-gray-500 gap-x-3 gap-y-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
           <div className="flex items-center gap-1">
             <MapPin size={12} />
             <span>{job.location}</span>
           </div>
-          <div className="hidden sm:block">{job.views} views</div>
+          <div className="hidden sm:block">{job.views} {t("views")}</div>
           <div>{job.postedTime}</div>
           <div className="hidden sm:block">{job.jobType}</div>
-          <div className="sm:hidden text-xs">{job.applicationsCount} applied</div>
+          <div className="sm:hidden text-xs">{job.applicationsCount} {t("applied")}</div>
         </div>
 
         {/* Mobile: Additional details */}
-        <div className="flex flex-wrap items-center text-xs text-gray-500 gap-x-3 gap-y-1 sm:hidden">
-          <div>{job.views} views</div>
+        <div className={`flex flex-wrap items-center text-xs text-gray-500 gap-x-3 gap-y-1 sm:hidden ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <div>{job.views} {t("views")}</div>
           <div>{job.jobType}</div>
         </div>
 
         {/* Tags and salary */}
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-          <div className="flex gap-2 flex-wrap">
+        <div className={`flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
+          <div className={`flex gap-2 flex-wrap ${isRTL ? 'flex-row-reverse' : ''}`}>
             <div className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">
-              Team
+              {t("team")}
             </div>
             <div className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">
               {job.department}
             </div>
           </div>
 
-          <div className="text-sm font-medium text-blue-500 flex justify-between sm:justify-end items-center">
+          <div className={`text-sm font-medium text-blue-500 flex justify-between sm:justify-end items-center ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
             <span className="sm:hidden text-xs text-gray-500">
-              {job.applicationsCount} applied
+              {job.applicationsCount} {t("applied")}
             </span>
             <span>
               {job.salary.amount}
-              <span className="text-xs text-gray-500 ml-1">
+              <span className={`text-xs text-gray-500 ${isRTL ? 'mr-1' : 'ml-1'}`}>
                 {job.salary && job.salary.period ? `/${job.salary.period}` : ''}
               </span>
             </span>
@@ -198,6 +200,7 @@ export default function LikedJobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
+  const { t, isRTL } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const session = useSession();
   const fetchLikedJobs = async () => {
@@ -301,39 +304,39 @@ export default function LikedJobsPage() {
 
   if (loading) {
     return (
-      <div className="px-6 py-2 bg-white rounded-md mx-auto max-h-[calc(100vh-35px)] overflow-y-scroll">
+      <div className={`px-6 py-2 bg-white rounded-md mx-auto max-h-[calc(100vh-35px)] overflow-y-scroll ${isRTL ? 'text-right' : 'text-left'}`}>
         <div className="flex justify-center items-center h-64">
           <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
-          <span className="ml-3 text-gray-600">Loading liked jobs...</span>
+          <span className={`${isRTL ? 'mr-3' : 'ml-3'} text-gray-600`}>{t("loadingJobs")}</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="h-screen flex flex-col lg:flex-row gap-6 rounded-lg max-h-[calc(100vh-35px)] relative">
+    <div className={`h-screen flex flex-col lg:flex-row gap-6 rounded-lg max-h-[calc(100vh-35px)] relative ${isRTL ? 'lg:flex-row-reverse' : ''}`}>
       {/* Job listings */}
-      <div className={`flex-1 overflow-y-scroll rounded-lg bg-white ${selectedJob ? 'hidden lg:block lg:flex-1' : ''}`}>
+      <div className={`flex-1 overflow-y-scroll rounded-lg bg-white ${selectedJob ? 'hidden lg:block lg:flex-1' : ''} ${isRTL ? 'text-right' : 'text-left'}`}>
         <div className="h-full flex flex-col">
           {/* Header */}
           <div className="p-6 border-b">
-            <div className="flex max-md:flex-col max-md:gap-4 items-center justify-between mb-4">
-              <div className="flex items-center gap-4">
-                <h1 className="text-xl font-semibold text-gray-900">Liked Jobs</h1>
+            <div className={`flex max-md:flex-col max-md:gap-4 items-center justify-between mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <div className={`flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <h1 className="text-xl font-semibold text-gray-900">{t("likedJobs")}</h1>
                 <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                  {filteredJobs.length} job{filteredJobs.length !== 1 ? 's' : ''}
+                  {filteredJobs.length} {filteredJobs.length !== 1 ? t("results") : t("results")}
                 </span>
               </div>
 
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search your liked jobs..."
-                  className="pl-10 pr-4 py-3 border border-gray-300 rounded-full w-full text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder={t("searchJobs")}
+                  className={`${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'} py-3 border border-gray-300 rounded-full w-full text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Search className={`w-4 h-4 absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 transform -translate-y-1/2 text-gray-400`} />
               </div>
               {/* <UserProfileHeader /> */}
             </div>
@@ -342,7 +345,7 @@ export default function LikedJobsPage() {
           {/* Job List */}
           <div className="flex-1 overflow-y-auto">
             {filteredJobs.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-center p-8">
+              <div className={`flex flex-col items-center justify-center h-full text-center p-8 ${isRTL ? 'text-right' : 'text-left'}`}>
                 <div className="w-24 h-24 mb-4 text-gray-300">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -359,12 +362,12 @@ export default function LikedJobsPage() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                  {jobs.length === 0 ? "No Liked Jobs Yet" : "No matching jobs found"}
+                  {jobs.length === 0 ? t("noJobsFound") : t("noResults")}
                 </h3>
                 <p className="text-gray-500 max-w-md">
                   {jobs.length === 0
-                    ? "Start exploring job opportunities and save the ones you're interested in. Your liked jobs will appear here for easy access."
-                    : "Try adjusting your search terms to find more liked jobs."
+                    ? t("noData")
+                    : t("noResults")
                   }
                 </p>
               </div>

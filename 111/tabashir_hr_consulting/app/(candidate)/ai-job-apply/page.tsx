@@ -38,6 +38,7 @@ import {
 import { CITIES } from "@/data/cities"
 import { useSession } from "next-auth/react"
 import { ResumeUploadModal } from "../resume/_components/resume-upload-modal"
+import { useTranslation } from "@/lib/use-translation"
 
 // Define the form schema with Zod
 const formSchema = z.object({
@@ -269,6 +270,7 @@ export default function AIJobApplyPage() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const session = useSession()
   const router = useRouter()
+  const { t, isRTL } = useTranslation()
 
   useEffect(() => {
     async function fetchResumeList() {
@@ -429,23 +431,23 @@ export default function AIJobApplyPage() {
   }
 
   return (
-    <div className="flex-1  text-gray-900 overflow-y-auto">
+    <div className={`flex-1 text-gray-900 overflow-y-auto ${isRTL ? 'text-right' : 'text-left'}`}>
       <div className="bg-white rounded-lg shadow-sm px-10 max-lg:px-6 py-10 max-lg:py-8 max-lg:h-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex items-center mb-10 max-lg:mb-8">
-              <h1 className="text-2xl font-bold max-lg:text-xl">Automate your Applying Job</h1>
-              <Sparkles className="ml-3 text-yellow-400 h-6 w-6 max-lg:hidden" />
+            <div className={`flex items-center mb-10 max-lg:mb-8 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <h1 className="text-2xl font-bold max-lg:text-xl">{t("aiJobApply")}</h1>
+              <Sparkles className={`${isRTL ? 'mr-3' : 'ml-3'} text-yellow-400 h-6 w-6 max-lg:hidden`} />
             </div>
 
             {/* Step 1: Select Resume */}
             <div className="mb-10">
-              <div className="flex items-center justify-between mb-6 max-lg:flex-col max-lg:items-start max-lg:gap-4 max-lg:mb-4">
-                <div className="flex items-center">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3 max-lg:w-6 max-lg:h-6 max-lg:text-sm">
+              <div className={`flex items-center justify-between mb-6 max-lg:flex-col max-lg:items-start max-lg:gap-4 max-lg:mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <div className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                  <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold ${isRTL ? 'ml-3' : 'mr-3'} max-lg:w-6 max-lg:h-6 max-lg:text-sm`}>
                     1
                   </div>
-                  <h2 className="text-xl font-semibold max-lg:text-lg">Select Your Resume</h2>
+                  <h2 className="text-xl font-semibold max-lg:text-lg">{t("selectResume")}</h2>
                 </div>
                 <button
                   type="button"
@@ -453,7 +455,7 @@ export default function AIJobApplyPage() {
                   className="bg-gradient-to-r from-blue-950 to-blue-700 text-white py-2 px-4 rounded-md flex items-center gap-2 hover:from-blue-900 hover:to-blue-600 text-sm"
                 >
                   <Plus size={16} />
-                  <span>New Resume</span>
+                  <span>{t("resume")}</span>
                 </button>
               </div>
 
