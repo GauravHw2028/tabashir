@@ -40,6 +40,10 @@ export function ResumeListClient({
   const [isLoading, setIsLoading] = useState(false)
   const [downloadingResumeId, setDownloadingResumeId] = useState<string | null>(null)
 
+  const handleAiEnhance = () => {
+    setIsAiEnhanceModalOpen(true)
+  }
+
   // Note: Initial data is fetched on the server, no need for useEffect fetch here
   // If you need real-time updates, you might consider alternative approaches like polling or websockets.
 
@@ -129,6 +133,7 @@ export function ResumeListClient({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onUploadSuccess={handleUploadSuccess}
+        onAiEnhance={handleAiEnhance}
       />
 
       {/* AI Enhance Upload Modal */}
@@ -158,13 +163,6 @@ export function ResumeListClient({
             <Plus size={20} />
             <span>New Resume</span>
           </button>
-          <button
-            onClick={() => setIsAiEnhanceModalOpen(true)}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 px-4 rounded-md flex items-center gap-2 hover:opacity-90"
-          >
-            <Sparkles size={20} />
-            <span>Upload & Enhance</span>
-          </button>
         </div>
       </div>
 
@@ -192,6 +190,7 @@ export function ResumeListClient({
               <Sparkles size={20} />
               <span>Upload & Enhance</span>
             </button>
+
           </div>
         </div>
       ) : (

@@ -89,8 +89,6 @@ export default function ResumeLayout({
 
   return (
     <>
-      <h1 className="text-4xl font-bold text-gray-900 mb-6">TABASHIR</h1>
-
       <div className="max-w-[1300px] mb-[100px] mx-auto ">
         {/* Full width header card */}
         <div className="flex flex-wrap justify-between items-center mb-1">

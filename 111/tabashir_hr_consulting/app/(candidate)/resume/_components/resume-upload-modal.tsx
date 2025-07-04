@@ -11,9 +11,10 @@ interface ResumeUploadModalProps {
   isOpen: boolean
   onClose: () => void
   onUploadSuccess: (newResume: { id: string; filename: string; createdAt: Date; formatedUrl: string | null; originalUrl: string; formatedContent: string | null; }) => void;
+  onAiEnhance: () => void;
 }
 
-export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess }: ResumeUploadModalProps) {
+export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess, onAiEnhance }: ResumeUploadModalProps) {
   const router = useRouter()
   const [isDragging, setIsDragging] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -35,7 +36,7 @@ export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess }: ResumeUp
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault()
     setIsDragging(false)
-    
+
     const file = e.dataTransfer.files?.[0]
     if (file) {
       await handleFileUpload(file)
@@ -57,7 +58,7 @@ export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess }: ResumeUp
 
       // First step: Upload the file
       const uploadResult = await onUploadResume(file)
-      
+
       if (uploadResult.error) {
         setUploadStatus("error")
         setErrorMessage(uploadResult.message)
@@ -79,7 +80,7 @@ export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess }: ResumeUp
       if (uploadResult.originalFile) {
         try {
           const processResult = await processResumeWithAIAfterUpload(uploadResult.originalFile.id)
-          
+
           if (processResult.error) {
             console.error("AI Processing Error:", processResult.message)
             return
@@ -120,9 +121,8 @@ export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess }: ResumeUp
 
           {/* Upload area */}
           <div
-            className={`relative border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer mb-6 ${
-              isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300"
-            }`}
+            className={`relative border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer mb-6 ${isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300"
+              }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -200,8 +200,16 @@ export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess }: ResumeUp
             <Sparkles size={16} className="text-yellow-300" />
             Create new using AI
           </button>
+
+          <button
+            onClick={onAiEnhance}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 rounded-md flex items-center gap-2 hover:opacity-90 w-full mt-3 text-center justify-center py-3 font-medium"
+          >
+            <Sparkles size={20} />
+            <span >Upload & Enhance</span>
+          </button>
         </div>
       </div>
-    </div>
-  )
+    </div>
+  )
 }

@@ -25,14 +25,14 @@ export default function NewResumePage() {
       } catch (error) {
         toast.error("Something went wrong");
       }
-     
+
     };
     setupResume();
   }, []);
 
   return (
-    <div className="flex items-center justify-center max-h-[calc(100vh-35px)] bg-white">
-      <div className="text-center space-y-6 p-8 rounded-2xl bg-white shadow-lg max-w-md w-full mx-4">
+    <div className="flex items-center justify-center h-[calc(100vh-35px)]">
+      <div className="text-center space-y-6 p-8 rounded-2xl shadow-lg max-w-md w-full mx-4 bg-white">
         <div className="relative">
           <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
