@@ -25,7 +25,7 @@ export default function CandidateLayout({
         <div className="flex-1 flex flex-col">
           <main className="pl-0 lg:pl-4 lg:pt-0 flex-1">
             <div className={`max-w-7xl mx-auto py-2 ${pathname.startsWith("/resume") ? 'mb-6' : ''}`}>
-              <div className={`flex items-center justify-between mb-2 ${isRTL ? 'flex-row-reverse' : 'flex-row'} ${pathname.startsWith("/resume") ? 'max-md:flex-col' : ''}`}>
+              <div className={`flex items-center mb-2 ${isRTL ? 'flex-row-reverse' : 'flex-row'} ${pathname.startsWith("/resume") ? 'max-md:flex-col justify-between' : 'justify-end'}`}>
                 {pathname.startsWith("/resume") && <h1 className="text-4xl font-bold text-gray-900 mb-6">TABASHIR</h1>}
                 <div className="flex items-center gap-[8px]">
                   <Button variant="outline" asChild className="flex items-center gap-3 bg-white pl-[7px] pr-4 py-5 rounded-full border border-gray-200">
