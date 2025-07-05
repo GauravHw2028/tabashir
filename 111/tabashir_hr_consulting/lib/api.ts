@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react"
 
-const token = process.env.NEXT_PUBLIC_TOKEN;
+const token = process.env.NEXT_PUBLIC_API_TOKEN;
 
 export const getJobs = async (
   email?: string,
@@ -38,7 +38,7 @@ export const getJobs = async (
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          "X-API-TOKEN": `${token}`,
         },
       },
     )
@@ -58,7 +58,7 @@ export const getJobById = async (jobId: string) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          "X-API-TOKEN": `${token}`,
         },
       },
     )
@@ -95,7 +95,7 @@ export const createJobAPI = async (jobData: {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          "X-API-TOKEN": `${token}`,
         },
         body: JSON.stringify(jobData),
       }
