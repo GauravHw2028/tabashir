@@ -59,7 +59,7 @@ export default function SkillsForm({
   const { setFormCompleted, isPaymentCompleted, setResumeGenerated } = useResumeStore()
   const [generatingCV, setGeneratingCV] = useState(false)
   const [isCheckingPayment, setIsCheckingPayment] = useState(false)
-
+  const token = process.env.NEXT_PUBLIC_API_TOKEN;
   // Initialize form with default values
   const form = useForm<SkillsFormValues>({
     resolver: zodResolver(skillsFormSchema),
@@ -146,6 +146,7 @@ export default function SkillsForm({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-API-TOKEN": `${token}`,
       },
       body: JSON.stringify({
         user_id: userId,
