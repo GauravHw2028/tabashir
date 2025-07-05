@@ -27,7 +27,7 @@ export function SkillTrendsChart({ jobTitle, skills }: SkillTrendsChartProps) {
   const [chartData, setChartData] = useState<ChartData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
+  const token = process.env.NEXT_PUBLIC_API_TOKEN;
   const formatMonthName = (monthString: string): string => {
     const date = new Date(monthString + "-01")
     return date.toLocaleDateString('en-US', { month: 'short' })
@@ -38,7 +38,11 @@ export function SkillTrendsChart({ jobTitle, skills }: SkillTrendsChartProps) {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`https://backend.tabashir.ae/api/v1/resume/jobs/monthly-count?keyword=${encodeURIComponent(keyword)}`)
+      const response = await fetch(`https://backend.tabashir.ae/api/v1/resume/jobs/monthly-count?keyword=${encodeURIComponent(keyword)}`, {
+        headers: {
+          "X-API-TOKEN": `${token}`,
+        },
+      })
 
       if (!response.ok) {
         throw new Error('Failed to fetch data')

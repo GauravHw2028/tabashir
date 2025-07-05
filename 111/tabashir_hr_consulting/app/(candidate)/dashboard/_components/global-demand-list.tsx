@@ -51,12 +51,18 @@ export function GlobalDemandList({ jobTitle, skills }: GlobalDemandListProps) {
   const [error, setError] = useState<string | null>(null)
   const [selectedSkill, setSelectedSkill] = useState(skills[0])
 
+  const token = process.env.NEXT_PUBLIC_API_TOKEN;
+
   const fetchData = async () => {
     try {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`https://backend.tabashir.ae/api/v1/resume/jobs/count-by-city?job_title=${encodeURIComponent(selectedSkill)}`)
+      const response = await fetch(`https://backend.tabashir.ae/api/v1/resume/jobs/count-by-city?job_title=${encodeURIComponent(selectedSkill)}`, {
+        headers: {
+          "X-API-TOKEN": `${token}`,
+        },
+      })
 
       if (!response.ok) {
         throw new Error('Failed to fetch data')

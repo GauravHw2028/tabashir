@@ -38,7 +38,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
   const [isApplying, setIsApplying] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const session = useSession()
-
+  const token = process.env.NEXT_PUBLIC_API_TOKEN;
   // Fetch user resumes when component mounts
   useEffect(() => {
     async function fetchResumes() {
@@ -87,6 +87,9 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/${job.id}/apply`, {
         method: "POST",
         body: formData,
+        headers: {
+          "X-API-TOKEN": `${token}`,
+        },
       })
 
       if (!response.ok) {

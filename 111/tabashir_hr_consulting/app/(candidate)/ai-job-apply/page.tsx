@@ -271,6 +271,7 @@ export default function AIJobApplyPage() {
   const session = useSession()
   const router = useRouter()
   const { t, isRTL } = useTranslation()
+  const token = process.env.NEXT_PUBLIC_API_TOKEN;
 
   useEffect(() => {
     async function fetchResumeList() {
@@ -373,6 +374,9 @@ export default function AIJobApplyPage() {
         res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/apply`, {
           method: "POST",
           body: formData,
+          headers: {
+            "X-API-TOKEN": `${token}`,
+          },
         })
         console.log("res", res);
 
@@ -864,6 +868,7 @@ export default function AIJobApplyPage() {
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
         onUploadSuccess={handleUploadSuccess}
+        onAiEnhance={() => { }}
       />
 
       {/* Purchase Modal */}

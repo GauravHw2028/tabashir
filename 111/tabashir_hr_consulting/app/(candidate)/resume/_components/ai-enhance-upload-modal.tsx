@@ -21,6 +21,8 @@ export function AiEnhanceUploadModal({ isOpen, onClose }: AiEnhanceUploadModalPr
   const [uploadStatus, setUploadStatus] = useState<"idle" | "success" | "error">("idle")
   const [errorMessage, setErrorMessage] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const token = process.env.NEXT_PUBLIC_API_TOKEN;
+
 
   if (!isOpen) return null
 
@@ -88,6 +90,9 @@ export function AiEnhanceUploadModal({ isOpen, onClose }: AiEnhanceUploadModalPr
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/format`, {
         method: "POST",
         body: formData,
+        headers: {
+          "X-API-TOKEN": `${token}`,
+        },
       })
 
       if (!response.ok) {

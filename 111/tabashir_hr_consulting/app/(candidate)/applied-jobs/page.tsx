@@ -52,6 +52,8 @@ interface AppliedJob {
   status: string;
 }
 
+const token = process.env.NEXT_PUBLIC_API_TOKEN;
+
 // Function to fetch applied jobs
 async function fetchAppliedJobs(email: string) {
   try {
@@ -59,6 +61,7 @@ async function fetchAppliedJobs(email: string) {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-API-TOKEN": `${token}`,
       },
     });
 

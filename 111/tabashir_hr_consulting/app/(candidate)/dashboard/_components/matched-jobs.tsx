@@ -32,7 +32,7 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
   const [jobApplyCount, setJobApplyCount] = useState(0);
   const session = useSession();
   const router = useRouter();
-
+  const token = process.env.NEXT_PUBLIC_API_TOKEN;
   const fetchJobs = async () => {
     try {
       const response = await getJobs(session.data?.user?.email || "", undefined, undefined, undefined, undefined, undefined, jobType, undefined);
@@ -76,6 +76,7 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "X-API-TOKEN": `${token}`,
           },
           body: JSON.stringify({
             email: session.data?.user?.email
