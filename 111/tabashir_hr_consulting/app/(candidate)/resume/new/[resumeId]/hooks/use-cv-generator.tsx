@@ -8,6 +8,32 @@ import { getCV, getAiResumeFormatedContent } from "@/actions/ai-resume"
 import { changeAiResumeStatus, updateAiResumeRawData, uploadAIResume } from "@/actions/resume"
 import { useResumeStore } from "../../store/resume-store"
 
+export const cleanupFormattedData = (data: any): any => {
+  if (!data || typeof data !== 'object') return data
+
+  // Handle arrays
+  if (Array.isArray(data)) {
+    return data.map((item: any) => cleanupFormattedData(item))
+  }
+
+  const cleaned = { ...data }
+
+  // If this object has _gpa field, replace it with gpa
+  if ('_gpa' in cleaned) {
+    cleaned.gpa = cleaned._gpa
+    delete cleaned._gpa
+  }
+
+  // Recursively clean nested objects
+  for (const key in cleaned) {
+    if (cleaned[key] && typeof cleaned[key] === 'object') {
+      cleaned[key] = cleanupFormattedData(cleaned[key])
+    }
+  }
+
+  return cleaned
+}
+
 export const useCVGenerator = (resumeId: string, userId: string) => {
   const [generatingCV, setGeneratingCV] = useState(false)
   const { toast } = useToast()
@@ -217,8 +243,11 @@ export const useCVGenerator = (resumeId: string, userId: string) => {
         const file = await response.arrayBuffer()
         const jsonData = await responseRawJson.json()
 
+        // Clean up the formatted data (remove _gpa, add gpa)
+        const cleanedFormattedResume = cleanupFormattedData(jsonData.formatted_resume)
+
         // Update the formatted content in the database
-        await updateAiResumeRawData(resumeId, JSON.stringify(jsonData.formatted_resume))
+        await updateAiResumeRawData(resumeId, JSON.stringify(cleanedFormattedResume))
         await changeAiResumeStatus(resumeId, AiResumeStatus.COMPLETED)
 
         console.log("CV object data:", jsonData)

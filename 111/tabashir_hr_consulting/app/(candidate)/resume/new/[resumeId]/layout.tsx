@@ -119,8 +119,8 @@ export default function ResumeLayout({
 
         {/* Sidebar and content area */}
         <div className="flex gap-[50px] max-lg:flex-col max-lg:gap-[20px]">
-          {/* Sidebar - only visible when editor mode is enabled */}
-          {editorMode && <ResumeSidebar resumeId={resumeId} />}
+          {/* Sidebar - always visible when no CV exists, or when editor mode is enabled */}
+          {(!isResumeGenerated || editorMode) && <ResumeSidebar resumeId={resumeId} />}
 
           {/* Main content - takes full width when sidebar is hidden */}
           <div className={cn("flex-1 transition-all duration-300")}>
