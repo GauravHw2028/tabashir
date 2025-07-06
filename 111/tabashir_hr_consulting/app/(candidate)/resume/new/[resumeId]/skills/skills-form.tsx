@@ -19,6 +19,7 @@ import { changeAiResumeStatus, updateAiResumeRawData, uploadAIResume } from "@/a
 import ResumePayment from "../../../_components/resume-payment"
 import { getResumePaymentStatus as getResumePaymentStatusAction } from "@/actions/ai-resume"
 import Image from "next/image"
+import { cleanupFormattedData } from "../hooks/use-cv-generator"
 
 const skillSchema = z.object({
   name: z.string().min(2, { message: "Skill name is required" }),
@@ -200,7 +201,9 @@ export default function SkillsForm({
     const file = await response.arrayBuffer();
     const jsonData = await responseRawJson.json();
 
-    await updateAiResumeRawData(resumeId, JSON.stringify(jsonData.formatted_resume));
+    const cleanedFormattedResume = cleanupFormattedData(jsonData.formatted_resume)
+
+    await updateAiResumeRawData(resumeId, JSON.stringify(cleanedFormattedResume));
     await changeAiResumeStatus(resumeId, AiResumeStatus.COMPLETED);
 
     console.log("CV object data:", jsonData);
