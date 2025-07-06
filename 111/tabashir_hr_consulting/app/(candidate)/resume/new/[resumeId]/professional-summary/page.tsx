@@ -2,6 +2,7 @@ import { prisma } from "@/app/utils/db";
 import ProfessionalSummaryForm from "./professional-summary-form";
 import { auth } from "@/app/utils/auth";
 import { redirect } from "next/navigation";
+import { getAiResumeFormatedContent } from "@/actions/ai-resume";
 
 export default async function ProfessionalSummaryPage({ params }: { params: Promise<{ resumeId: string }> }) {
   const { resumeId } = await params;
@@ -17,7 +18,15 @@ export default async function ProfessionalSummaryPage({ params }: { params: Prom
     },
   });
 
+  const formattedContentResult = await getAiResumeFormatedContent(resumeId);
+  const hasExistingContent = formattedContentResult.data?.hasExistingContent || false;
+
   return (
-    <ProfessionalSummaryForm resumeId={resumeId} aiResumeProfessionalSummary={aiResumeProfessionalSummary} userId={session.user.id} />
+    <ProfessionalSummaryForm
+      resumeId={resumeId}
+      aiResumeProfessionalSummary={aiResumeProfessionalSummary}
+      userId={session.user.id}
+      hasExistingContent={hasExistingContent}
+    />
   )
 }

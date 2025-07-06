@@ -2,6 +2,7 @@ import { prisma } from "@/app/utils/db"
 import EducationForm from "./education-form"
 import { auth } from "@/app/utils/auth"
 import { redirect } from "next/navigation"
+import { getAiResumeFormatedContent } from "@/actions/ai-resume"
 
 export default async function EducationPage({ params }: { params: Promise<{ resumeId: string }> }) {
   const { resumeId } = await params
@@ -17,5 +18,13 @@ export default async function EducationPage({ params }: { params: Promise<{ resu
     },
   })
 
-  return <EducationForm resumeId={resumeId} aiResumeEducation={aiResumeEducation} userId={session.user.id} />
+  const formattedContentResult = await getAiResumeFormatedContent(resumeId);
+  const hasExistingContent = formattedContentResult.data?.hasExistingContent || false;
+
+  return <EducationForm
+    resumeId={resumeId}
+    aiResumeEducation={aiResumeEducation}
+    userId={session.user.id}
+    hasExistingContent={hasExistingContent}
+  />
 }

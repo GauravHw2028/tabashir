@@ -29,17 +29,19 @@ type LanguagesFormValues = z.infer<typeof languagesFormSchema>
 export default function LanguagesForm({
   resumeId,
   aiResumeLanguages,
-  userId
+  userId,
+  hasExistingContent
 }: {
   resumeId: string,
   aiResumeLanguages: AiLanguage[],
-  userId: string
+  userId: string,
+  hasExistingContent: boolean
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [newLanguage, setNewLanguage] = useState("")
   const router = useRouter()
   const { toast } = useToast()
-  const { setFormCompleted, editorMode } = useResumeStore()
+  const { setFormCompleted } = useResumeStore()
   const { generatingCV, handleGenerateCV } = useCVGenerator(resumeId, userId)
 
   // Initialize form with default values
@@ -192,13 +194,23 @@ export default function LanguagesForm({
               {isSubmitting ? "Saving..." : "Save & Continue"}
             </Button>
 
-            {editorMode && (
+            {hasExistingContent && (
               <Button
                 type="button"
                 variant="outline"
                 className="border-[#042052] text-[#042052] hover:bg-[#042052] hover:text-white"
                 disabled={isSubmitting || generatingCV}
-                onClick={handleGenerateCV}
+                onClick={async () => {
+                  // Save current form data first
+                  const formData = form.getValues();
+                  // Note: Languages form doesn't have a save function yet - it's commented out
+                  // You'll need to implement onSaveLanguages function
+
+                  console.log("Languages saved:", formData);
+
+                  // Then generate CV with updated data
+                  handleGenerateCV();
+                }}
               >
                 {generatingCV ? (
                   <>

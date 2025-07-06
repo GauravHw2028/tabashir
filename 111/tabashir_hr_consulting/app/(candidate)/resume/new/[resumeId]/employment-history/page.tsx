@@ -2,6 +2,7 @@ import EmploymentHistoryForm from "./employment-history-form";
 import { prisma } from "@/app/utils/db";
 import { auth } from "@/app/utils/auth";
 import { redirect } from "next/navigation";
+import { getAiResumeFormatedContent } from "@/actions/ai-resume";
 
 export default async function EmploymentHistoryPage({ params }: { params: Promise<{ resumeId: string }> }) {
   const { resumeId } = await params;
@@ -17,7 +18,15 @@ export default async function EmploymentHistoryPage({ params }: { params: Promis
     },
   });
 
+  const formattedContentResult = await getAiResumeFormatedContent(resumeId);
+  const hasExistingContent = formattedContentResult.data?.hasExistingContent || false;
+
   return (
-    <EmploymentHistoryForm resumeId={resumeId} aiResumeEmploymentHistory={aiResumeEmploymentHistory} userId={session.user.id} />
+    <EmploymentHistoryForm
+      resumeId={resumeId}
+      aiResumeEmploymentHistory={aiResumeEmploymentHistory}
+      userId={session.user.id}
+      hasExistingContent={hasExistingContent}
+    />
   )
 }

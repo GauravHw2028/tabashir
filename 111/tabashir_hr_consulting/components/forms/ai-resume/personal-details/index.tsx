@@ -30,14 +30,16 @@ const AiResumePersonalDetailsForm = ({
   aiResumePersonalDetails,
   aiResumeId,
   userId,
+  hasExistingContent,
 }: {
   aiResumePersonalDetails?: AiResumePersonalDetails & { socialLinks: AiSocialLink[] };
   aiResumeId: string;
   userId: string;
+  hasExistingContent: boolean;
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const { setResumeScore, setFormCompleted, editorMode } = useResumeStore()
+  const { setResumeScore, setFormCompleted } = useResumeStore()
   const { generatingCV, handleGenerateCV } = useCVGenerator(aiResumeId, userId)
 
   // Initialize form with default values
@@ -287,13 +289,25 @@ const AiResumePersonalDetailsForm = ({
             {isSubmitting ? "Saving..." : "Save & Continue"}
           </Button>
 
-          {editorMode && (
+          {hasExistingContent && (
             <Button
               type="button"
               variant="outline"
               className="border-[#042052] text-[#042052] hover:bg-[#042052] hover:text-white"
               disabled={isSubmitting || generatingCV}
-              onClick={handleGenerateCV}
+              onClick={async () => {
+                // Save current form data first
+                const formData = form.getValues();
+                const saveResult = await onSavePersonalDetails(aiResumeId, formData);
+
+                if (saveResult.error) {
+                  toast.error(saveResult.message);
+                  return;
+                }
+
+                // Then generate CV with updated data
+                handleGenerateCV();
+              }}
             >
               {generatingCV ? (
                 <>

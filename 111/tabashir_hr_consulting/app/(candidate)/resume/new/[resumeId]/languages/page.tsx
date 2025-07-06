@@ -2,6 +2,7 @@ import { prisma } from "@/app/utils/db"
 import LanguagesForm from "./languages-form"
 import { auth } from "@/app/utils/auth"
 import { redirect } from "next/navigation"
+import { getAiResumeFormatedContent } from "@/actions/ai-resume"
 
 export default async function LanguagesPage({ params }: { params: Promise<{ resumeId: string }> }) {
   const { resumeId } = await params
@@ -17,5 +18,13 @@ export default async function LanguagesPage({ params }: { params: Promise<{ resu
     },
   })
 
-  return <LanguagesForm resumeId={resumeId} aiResumeLanguages={aiResumeLanguages} userId={session.user.id} />
+  const formattedContentResult = await getAiResumeFormatedContent(resumeId);
+  const hasExistingContent = formattedContentResult.data?.hasExistingContent || false;
+
+  return <LanguagesForm
+    resumeId={resumeId}
+    aiResumeLanguages={aiResumeLanguages}
+    userId={session.user.id}
+    hasExistingContent={hasExistingContent}
+  />
 }

@@ -40,16 +40,18 @@ export default function EducationForm({
   resumeId,
   aiResumeEducation,
   userId,
+  hasExistingContent,
 }: {
   resumeId: string,
   aiResumeEducation: AiEducation[],
-  userId: string
+  userId: string,
+  hasExistingContent: boolean
 }) {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
-  const { setResumeScore, setFormCompleted, editorMode } = useResumeStore()
+  const { setResumeScore, setFormCompleted } = useResumeStore()
   const { generatingCV, handleGenerateCV } = useCVGenerator(resumeId, userId)
 
   // Initialize form with default values
@@ -344,13 +346,29 @@ export default function EducationForm({
               {isSubmitting ? "Saving..." : "Save & Continue"}
             </Button>
 
-            {editorMode && (
+            {hasExistingContent && (
               <Button
                 type="button"
                 variant="outline"
                 className="border-[#042052] text-[#042052] hover:bg-[#042052] hover:text-white"
                 disabled={isSubmitting || generatingCV}
-                onClick={handleGenerateCV}
+                onClick={async () => {
+                  // Save current form data first
+                  const formData = form.getValues();
+                  const saveResult = await onSaveEducation(resumeId, formData);
+
+                  if (saveResult.error) {
+                    toast({
+                      title: "Error",
+                      description: saveResult.message,
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+
+                  // Then generate CV with updated data
+                  handleGenerateCV();
+                }}
               >
                 {generatingCV ? (
                   <>

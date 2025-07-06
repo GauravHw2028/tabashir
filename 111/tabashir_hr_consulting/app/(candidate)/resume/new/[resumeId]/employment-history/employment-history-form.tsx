@@ -45,10 +45,10 @@ const employmentHistorySchema = z.object({
 
 type EmploymentHistoryFormValues = z.infer<typeof employmentHistorySchema>
 
-export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHistory, userId }: { resumeId: string, aiResumeEmploymentHistory: AiEmploymentHistory[], userId: string }) {
+export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHistory, userId, hasExistingContent }: { resumeId: string, aiResumeEmploymentHistory: AiEmploymentHistory[], userId: string, hasExistingContent: boolean }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
-  const { setResumeScore, setFormCompleted, editorMode } = useResumeStore()
+  const { setResumeScore, setFormCompleted } = useResumeStore()
   const { generatingCV, handleGenerateCV } = useCVGenerator(resumeId, userId)
 
   // Initialize form with default values
@@ -342,13 +342,34 @@ export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHist
               {isSubmitting ? "Saving..." : "Save & Continue"}
             </Button>
 
-            {editorMode && (
+            {hasExistingContent && (
               <Button
                 type="button"
                 variant="outline"
                 className="border-[#042052] text-[#042052] hover:bg-[#042052] hover:text-white"
                 disabled={isSubmitting || generatingCV}
-                onClick={handleGenerateCV}
+                onClick={async () => {
+                  // Save current form data first
+                  const formData = form.getValues();
+                  const formattedData = {
+                    jobs: formData.jobs.map(job => ({
+                      ...job,
+                      country: "", // Default empty country for backend compatibility
+                      startDate: new Date(job.startDate).toISOString(),
+                      endDate: job.endDate ? new Date(job.endDate).toISOString() : undefined,
+                    }))
+                  };
+
+                  const saveResult = await onSaveEmploymentHistory(resumeId, formattedData);
+
+                  if (saveResult.error) {
+                    toast.error(saveResult.message);
+                    return;
+                  }
+
+                  // Then generate CV with updated data
+                  handleGenerateCV();
+                }}
               >
                 {generatingCV ? (
                   <>

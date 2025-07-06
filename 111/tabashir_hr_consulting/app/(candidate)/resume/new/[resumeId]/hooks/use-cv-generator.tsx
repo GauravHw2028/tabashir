@@ -34,6 +34,105 @@ export const cleanupFormattedData = (data: any): any => {
   return cleaned
 }
 
+// Helper function to update formatted content with database data
+export const updateFormattedContent = async (resumeId: string, existingFormattedContent: string) => {
+  try {
+    // Parse existing formatted content
+    const formattedData = JSON.parse(existingFormattedContent)
+
+    // Get updated raw data from database
+    const updatedData = await getCV(resumeId)
+    if (updatedData.error) {
+      throw new Error(updatedData.message)
+    }
+
+    const rawData = updatedData.data
+
+    if (!rawData) {
+      throw new Error('No data received from database')
+    }
+
+    // Update header section (personal details)
+    if (rawData.cvPersonalDetails) {
+      formattedData.header = {
+        ...formattedData.header,
+        name: rawData.cvPersonalDetails.fullName || formattedData.header?.name || '',
+        email: rawData.cvPersonalDetails.email || formattedData.header?.email || '',
+        phone: rawData.cvPersonalDetails.phone || formattedData.header?.phone || '',
+        location: rawData.cvPersonalDetails.city && rawData.cvPersonalDetails.country
+          ? `${rawData.cvPersonalDetails.city}, ${rawData.cvPersonalDetails.country}`
+          : formattedData.header?.location || '',
+        github: formattedData.header?.github || '',
+        linkedin: formattedData.header?.linkedin || '',
+        nationality: formattedData.header?.nationality || '',
+      }
+    }
+
+    // Update objective section (professional summary)
+    if (rawData.cvProfessionalSummary?.summary) {
+      formattedData.objective = rawData.cvProfessionalSummary.summary
+    }
+
+    // Update work section (employment history)
+    if (rawData.cvEmploymentHistory && rawData.cvEmploymentHistory.length > 0) {
+      formattedData.work = rawData.cvEmploymentHistory.map((job: any) => ({
+        company: job.company || '',
+        date: job.startDate && job.endDate
+          ? `${new Date(job.startDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} – ${job.current ? 'Present' : new Date(job.endDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
+          : '',
+        details: job.description ? job.description.split('\n').filter((line: string) => line.trim()) : [],
+        location: job.city || '',
+        position: job.position || ''
+      }))
+    }
+
+    // Update education section
+    if (rawData.cvEducation && rawData.cvEducation.length > 0) {
+      formattedData.education = rawData.cvEducation.map((edu: any) => ({
+        gpa: edu.gpa || '',
+        coursework: edu.achievements || [],
+        date: edu.startDate && edu.endDate
+          ? `${new Date(edu.startDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} – ${new Date(edu.endDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
+          : '',
+        degree: edu.degree || '',
+        details: edu.achievements || [],
+        gpa_hidden: edu.gpa ? edu.gpa : 'N/A',
+        location: edu.city || '',
+        major: edu.field || '',
+        university: edu.institution || ''
+      }))
+    }
+
+    // Update skills section
+    if (rawData.cvSkills && rawData.cvSkills.length > 0) {
+      const technicalSkills = rawData.cvSkills.filter((skill: any) => skill.category === 'Technical').map((skill: any) => skill.name)
+      const softSkills = rawData.cvSkills.filter((skill: any) => skill.category === 'Soft Skills').map((skill: any) => skill.name)
+
+      formattedData.skills = {
+        skillset: technicalSkills.length > 0 ? technicalSkills : formattedData.skills?.skillset || [],
+        softskills: softSkills.length > 0 ? softSkills : formattedData.skills?.softskills || [],
+        training: formattedData.skills?.training || []
+      }
+    }
+
+    // Update languages section - keeping existing languages as cvLanguages doesn't exist in current schema
+    // Languages will be kept as-is from existing formatted content
+
+    // Update keywords (combine all skills)
+    const allSkills = [
+      ...(formattedData.skills?.skillset || []),
+      ...(formattedData.skills?.softskills || []),
+      ...(rawData.cvSkills?.map((skill: any) => skill.name) || [])
+    ]
+    formattedData.keywords = [...new Set(allSkills)] // Remove duplicates
+
+    return formattedData
+  } catch (error) {
+    console.error('Error updating formatted content:', error)
+    throw error
+  }
+}
+
 export const useCVGenerator = (resumeId: string, userId: string) => {
   const [generatingCV, setGeneratingCV] = useState(false)
   const { toast } = useToast()
@@ -88,86 +187,91 @@ export const useCVGenerator = (resumeId: string, userId: string) => {
       //   return
       // }
 
-      // If we have existing formatted content but no generated file, use new API
+      // If we have existing formatted content, update it with new form data first
       if (hasExistingContent && formatedContent) {
-        console.log("Using existing formatted content for generation with new API...")
+        console.log("Updating existing formatted content with new form data...")
 
-        let parsedFormatedContent
         try {
-          parsedFormatedContent = JSON.parse(formatedContent)
+          // Update the formatted content with database data
+          const updatedFormattedContent = await updateFormattedContent(resumeId, formatedContent)
+          console.log("Updated formatted content:", updatedFormattedContent)
+
+          // Update the formatted content in the database
+          await updateAiResumeRawData(resumeId, JSON.stringify(updatedFormattedContent))
+
+          // Now call generate-docx-from-json API with the updated formatted content
+          console.log("Calling generate-docx-from-json API with updated content...")
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/generate-docx-from-json`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-API-TOKEN": `${token}`,
+            },
+            body: JSON.stringify({
+              cv_data: updatedFormattedContent,
+              output_language: "regular"
+            }),
+          })
+
+          if (!response.ok) {
+            console.error("Failed to generate CV from updated content:", response.status, response.statusText)
+            toast({
+              title: "Error",
+              description: "Failed to generate CV from updated content",
+              variant: "destructive",
+            })
+            return
+          }
+
+          const file = await response.arrayBuffer()
+
+          if (!file) {
+            console.log("Failed to generate CV", file)
+            toast({
+              title: "Error",
+              description: "Failed to generate CV",
+              variant: "destructive",
+            })
+            return
+          }
+
+          // Convert ArrayBuffer to Blob
+          console.log("Converting ArrayBuffer to Blob......")
+          const blob = new Blob([file], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
+
+          // Create a File object from the Blob
+          const namedFile = new File([blob], `resume_${resumeId}.docx`, { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
+
+          // Upload to UploadThing
+          const uploadResult = await uploadAIResume(namedFile, resumeId)
+
+          if (uploadResult.error) {
+            toast({
+              title: "Error",
+              description: uploadResult.message,
+              variant: "destructive",
+            })
+            return
+          }
+
+          await changeAiResumeStatus(resumeId, AiResumeStatus.COMPLETED)
+
+          toast({
+            title: "Success",
+            description: "CV generated and saved successfully",
+          })
+
+          setResumeGenerated(true)
+          router.push(`/resume/new/${resumeId}/download`)
         } catch (error) {
-          console.error("Failed to parse existing formatted content:", error)
+          console.error("Error updating formatted content:", error)
           toast({
             title: "Error",
-            description: "Failed to parse existing formatted content",
+            description: "Failed to update formatted content",
             variant: "destructive",
           })
           return
         }
-
-        console.log("Calling generate-docx-from-json API...")
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/generate-docx-from-json`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-API-TOKEN": `${token}`,
-          },
-          body: JSON.stringify({
-            cv_data: parsedFormatedContent,
-            output_language: "regular"
-          }),
-        })
-
-        if (!response.ok) {
-          console.error("Failed to generate CV from existing content:", response.status, response.statusText)
-          toast({
-            title: "Error",
-            description: "Failed to generate CV from existing content",
-            variant: "destructive",
-          })
-          return
-        }
-
-        const file = await response.arrayBuffer()
-
-        if (!file) {
-          console.log("Failed to generate CV", file)
-          toast({
-            title: "Error",
-            description: "Failed to generate CV",
-            variant: "destructive",
-          })
-          return
-        }
-
-        // Convert ArrayBuffer to Blob
-        console.log("Converting ArrayBuffer to Blob......")
-        const blob = new Blob([file], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
-
-        // Create a File object from the Blob
-        const namedFile = new File([blob], `resume_${resumeId}.docx`, { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
-
-        // Upload to UploadThing
-        const uploadResult = await uploadAIResume(namedFile, resumeId)
-
-        if (uploadResult.error) {
-          toast({
-            title: "Error",
-            description: uploadResult.message,
-            variant: "destructive",
-          })
-          return
-        }
-
-        await changeAiResumeStatus(resumeId, AiResumeStatus.COMPLETED)
-
-        toast({
-          title: "Success",
-          description: "CV generated and saved successfully",
-        })
-
-        setResumeGenerated(true)
-        router.push(`/resume/new/${resumeId}/download`)
 
       } else {
         // First time generation - use the original APIs

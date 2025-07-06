@@ -3,6 +3,7 @@ import { prisma } from "@/app/utils/db";
 import { AiResumePersonalDetails, AiSocialLink } from "@prisma/client";
 import { auth } from "@/app/utils/auth";
 import { redirect } from "next/navigation";
+import { getAiResumeFormatedContent } from "@/actions/ai-resume";
 
 export default async function PersonalDetailsPage({
   params,
@@ -26,6 +27,9 @@ export default async function PersonalDetailsPage({
       },
     });
 
+  const formattedContentResult = await getAiResumeFormatedContent(resumeId);
+  const hasExistingContent = formattedContentResult.data?.hasExistingContent || false;
+
   return (
     <div className="space-y-6 rounded-[6px]">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">
@@ -38,6 +42,7 @@ export default async function PersonalDetailsPage({
           aiResumePersonalDetails as AiResumePersonalDetails & { socialLinks: AiSocialLink[] }
         }
         userId={session.user.id}
+        hasExistingContent={hasExistingContent}
       />
     </div>
   );

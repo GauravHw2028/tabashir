@@ -26,13 +26,14 @@ type PageParams = {
   aiResumeProfessionalSummary: AiProfessionalDetails | null
   resumeId: string
   userId: string
+  hasExistingContent: boolean
 }
 
-export default function ProfessionalSummaryForm({ resumeId, aiResumeProfessionalSummary, userId }: PageParams) {
+export default function ProfessionalSummaryForm({ resumeId, aiResumeProfessionalSummary, userId, hasExistingContent }: PageParams) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
-  const { setResumeScore, setFormCompleted, editorMode } = useResumeStore()
+  const { setResumeScore, setFormCompleted } = useResumeStore()
   const { generatingCV, handleGenerateCV } = useCVGenerator(resumeId, userId)
 
   // Initialize form with default values
@@ -134,13 +135,29 @@ export default function ProfessionalSummaryForm({ resumeId, aiResumeProfessional
               {isSubmitting ? "Saving..." : "Save & Continue"}
             </Button>
 
-            {editorMode && (
+            {hasExistingContent && (
               <Button
                 type="button"
                 variant="outline"
                 className="border-[#042052] text-[#042052] hover:bg-[#042052] hover:text-white"
                 disabled={isSubmitting || generatingCV}
-                onClick={handleGenerateCV}
+                onClick={async () => {
+                  // Save current form data first
+                  const formData = form.getValues();
+                  const saveResult = await onSaveProfessionalSummary(resumeId, formData);
+
+                  if (saveResult.error) {
+                    toast({
+                      title: "Error",
+                      description: saveResult.message,
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+
+                  // Then generate CV with updated data
+                  handleGenerateCV();
+                }}
               >
                 {generatingCV ? (
                   <>
