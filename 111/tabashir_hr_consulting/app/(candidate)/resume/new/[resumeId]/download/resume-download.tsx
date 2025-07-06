@@ -28,7 +28,6 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages] = useState(1)
   const [zoomLevel, setZoomLevel] = useState(1)
-  const [editorMode, setEditorMode] = useState(true)
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [paymentProcessing, setPaymentProcessing] = useState(false)
   const [paymentSuccess, setPaymentSuccess] = useState(false)
@@ -36,13 +35,13 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
   const resumeContainerRef = useRef<HTMLDivElement>(null)
   const docxContainerRef = useRef<HTMLDivElement>(null)
 
-  const { setPaymentCompleted, isPaymentCompleted, setSidebarVisibility, getResumeScore } = useResumeStore()
+  const { setPaymentCompleted, isPaymentCompleted, setSidebarVisibility, getResumeScore, editorMode, setEditorMode } = useResumeStore()
 
   // Initialize isPaid from store
   useEffect(() => {
     setIsPaid(isPaymentCompleted)
     setEditorMode(!isPaymentCompleted)
-  }, [isPaymentCompleted])
+  }, [isPaymentCompleted, setEditorMode])
 
   // Control sidebar visibility based on editor mode
   useEffect(() => {

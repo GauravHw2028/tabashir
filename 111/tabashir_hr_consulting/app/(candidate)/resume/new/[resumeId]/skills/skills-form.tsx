@@ -12,10 +12,10 @@ import { useToast } from "@/components/ui/use-toast"
 import { X, Plus, Loader2 } from "lucide-react"
 import { useResumeStore } from "../../store/resume-store"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { AiSkill } from "@prisma/client"
+import { AiResumeStatus, AiSkill } from "@prisma/client"
 import { changeResumeStatus, onSaveSkills } from "@/actions/ai-resume"
 import { getCV } from "@/actions/ai-resume"
-import { uploadAIResume } from "@/actions/resume"
+import { changeAiResumeStatus, updateAiResumeRawData, uploadAIResume } from "@/actions/resume"
 import ResumePayment from "../../../_components/resume-payment"
 import { getResumePaymentStatus as getResumePaymentStatusAction } from "@/actions/ai-resume"
 import Image from "next/image"
@@ -142,30 +142,68 @@ export default function SkillsForm({
 
     console.log("Generating CV WITH AI......");
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/format-from-raw`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-API-TOKEN": `${token}`,
-      },
-      body: JSON.stringify({
-        user_id: userId,
-        raw_data: JSON.stringify(data.data),
-        output_language: "regular"
+    // Run both requests in parallel
+    const [response, responseRawJson] = await Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/format-from-raw`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-TOKEN": `${token}`,
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          raw_data: JSON.stringify(data.data),
+          output_language: "regular"
+        }),
       }),
-    });
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/format-cv-object`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-TOKEN": `${token}`,
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          raw_data: JSON.stringify(data.data),
+          output_language: "regular"
+        }),
+      })
+    ]);
+
+    // Check if both requests were successful
+    if (!response.ok) {
+      console.error("Failed to generate CV:", response.status, response.statusText);
+      toast({
+        title: "Error",
+        description: "Failed to generate CV from server",
+        variant: "destructive",
+      });
+      setGeneratingCV(false);
+      setIsSubmitting(false);
+      setIsPaymentOpened(false);
+      return;
+    }
+
+    if (!responseRawJson.ok) {
+      console.error("Failed to get CV object:", responseRawJson.status, responseRawJson.statusText);
+      toast({
+        title: "Error",
+        description: "Failed to get CV object from server",
+        variant: "destructive",
+      });
+      setGeneratingCV(false);
+      setIsSubmitting(false);
+      setIsPaymentOpened(false);
+      return;
+    }
 
     const file = await response.arrayBuffer();
-    // const json = await response.json();
+    const jsonData = await responseRawJson.json();
 
-    // if (json.error) {
-    //   toast({
-    //     title: "Error",
-    //     description: json.message,
-    //     variant: "destructive",
-    //   });
-    //   return;
-    // }
+    await updateAiResumeRawData(resumeId, JSON.stringify(jsonData.formatted_resume));
+    await changeAiResumeStatus(resumeId, AiResumeStatus.COMPLETED);
+
+    console.log("CV object data:", jsonData);
 
     if (!file) {
       console.log("Failed to generate CV", file);

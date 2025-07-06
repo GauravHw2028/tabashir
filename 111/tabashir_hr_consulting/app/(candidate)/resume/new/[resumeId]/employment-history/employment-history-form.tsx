@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
-import { Plus, Trash2, CalendarIcon } from "lucide-react"
+import { Plus, Trash2, CalendarIcon, Loader2 } from "lucide-react"
 import { useResumeStore } from "../../store/resume-store"
 import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
@@ -19,6 +19,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { AiEmploymentHistory } from "@prisma/client"
 import { onSaveEmploymentHistory } from "@/actions/ai-resume"
+import { useCVGenerator } from "../hooks/use-cv-generator"
 
 const jobSchema = z.object({
   jobTitle: z.string().min(2, { message: "Job title is required" }),
@@ -44,10 +45,11 @@ const employmentHistorySchema = z.object({
 
 type EmploymentHistoryFormValues = z.infer<typeof employmentHistorySchema>
 
-export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHistory }: { resumeId: string, aiResumeEmploymentHistory: AiEmploymentHistory[] }) {
+export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHistory, userId }: { resumeId: string, aiResumeEmploymentHistory: AiEmploymentHistory[], userId: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
-  const { setResumeScore, setFormCompleted } = useResumeStore()
+  const { setResumeScore, setFormCompleted, editorMode } = useResumeStore()
+  const { generatingCV, handleGenerateCV } = useCVGenerator(resumeId, userId)
 
   // Initialize form with default values
   const form = useForm<EmploymentHistoryFormValues>({
@@ -331,14 +333,33 @@ export default function EmploymentHistoryPage({ resumeId, aiResumeEmploymentHist
             </div>
           ))}
 
-          <div className="flex justify-end mt-8">
+          <div className="flex justify-end gap-4 mt-8">
             <Button
               type="submit"
               className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:opacity-90 text-white"
-              disabled={isSubmitting}
+              disabled={isSubmitting || generatingCV}
             >
               {isSubmitting ? "Saving..." : "Save & Continue"}
             </Button>
+
+            {editorMode && (
+              <Button
+                type="button"
+                variant="outline"
+                className="border-[#042052] text-[#042052] hover:bg-[#042052] hover:text-white"
+                disabled={isSubmitting || generatingCV}
+                onClick={handleGenerateCV}
+              >
+                {generatingCV ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating CV...
+                  </>
+                ) : (
+                  "Generate CV"
+                )}
+              </Button>
+            )}
           </div>
         </form>
       </Form>

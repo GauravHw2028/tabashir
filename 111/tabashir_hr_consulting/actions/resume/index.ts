@@ -7,6 +7,7 @@ import OpenAI from "openai";
 import { extractText, getDocumentProxy } from 'unpdf';
 import { revalidatePath } from "next/cache";
 import { toast } from "sonner";
+import { AiResumeStatus } from "@prisma/client";
 
 interface Resume {
   id: string;
@@ -563,6 +564,56 @@ export async function uploadAIResume(file: File, resumeId: string) {
   }
 }
 
+export async function updateAiResumeRawData(resumeId: string, formatedContent: string) {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return {
+        error: true,
+        message: "Unauthorized access",
+      }
+    }
+
+    const candidate = await prisma.candidate.findUnique({
+      where: {
+        userId: session.user.id,
+      },  
+      select: {
+        id: true,
+      },
+    })
+
+    if (!candidate) {
+      return {
+        error: true,
+        message: "Candidate profile not found",
+      }
+    }
+
+    const aiResume = await prisma.aiResume.update({
+      where: { id: resumeId },
+      data:{
+        formatedContent: formatedContent,
+      },
+    })
+
+    console.log("aiResume: ", aiResume);
+
+    return {
+      error: false,
+      message: "AI resume updated successfully",
+      data: aiResume,
+    }
+  } catch (error) {
+    console.error("[UPDATE_AI_RESUME_ERROR]", error)
+    return {
+      error: true,
+      message: "Failed to update AI resume",
+    }
+  }
+}
+
 export async function getAiResumeFiles() {
   try {
     const session = await auth();
@@ -613,6 +664,38 @@ export async function getAiResumeFiles() {
     return {
       error: true,
       message: "Failed to fetch AI resume files",
+    }
+  }
+}
+
+export async function changeAiResumeStatus(resumeId: string, status : AiResumeStatus) {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return {
+        error: true,
+        message: "Unauthorized access",
+      }
+    }
+
+    const aiResume = await prisma.aiResume.update({
+      where: { id: resumeId },
+      data: {
+        status: status,
+      },
+    })
+
+    return {
+      error: false,
+      message: "AI resume status changed successfully",
+      data: aiResume,
+    }
+  } catch (error) {
+    console.error("[CHANGE_AI_RESUME_STATUS_ERROR]", error)
+    return {
+      error: true,
+      message: "Failed to change AI resume status",
     }
   }
 }

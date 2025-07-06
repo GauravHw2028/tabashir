@@ -1,6 +1,8 @@
 import AiResumePersonalDetailsForm from "@/components/forms/ai-resume/personal-details";
 import { prisma } from "@/app/utils/db";
 import { AiResumePersonalDetails, AiSocialLink } from "@prisma/client";
+import { auth } from "@/app/utils/auth";
+import { redirect } from "next/navigation";
 
 export default async function PersonalDetailsPage({
   params,
@@ -8,6 +10,11 @@ export default async function PersonalDetailsPage({
   params: Promise<{ resumeId: string }>;
 }) {
   const { resumeId } = await params;
+
+  const session = await auth();
+  if (!session?.user?.id) {
+    return redirect("/login");
+  }
 
   const aiResumePersonalDetails =
     await prisma.aiResumePersonalDetails.findFirst({
@@ -30,6 +37,7 @@ export default async function PersonalDetailsPage({
         aiResumePersonalDetails={
           aiResumePersonalDetails as AiResumePersonalDetails & { socialLinks: AiSocialLink[] }
         }
+        userId={session.user.id}
       />
     </div>
   );

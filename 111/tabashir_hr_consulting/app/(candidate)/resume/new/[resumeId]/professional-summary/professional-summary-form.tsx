@@ -10,10 +10,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
-import { Sparkles } from "lucide-react"
+import { Sparkles, Loader2 } from "lucide-react"
 import { useResumeStore } from "../../store/resume-store"
 import { AiProfessionalDetails } from "@prisma/client"
 import { onSaveProfessionalSummary } from "@/actions/ai-resume"
+import { useCVGenerator } from "../hooks/use-cv-generator"
 
 const professionalSummarySchema = z.object({
   summary: z.string().min(50, { message: "Professional summary should be at least 50 characters." }),
@@ -24,13 +25,15 @@ type ProfessionalSummaryFormValues = z.infer<typeof professionalSummarySchema>
 type PageParams = {
   aiResumeProfessionalSummary: AiProfessionalDetails | null
   resumeId: string
+  userId: string
 }
 
-export default function ProfessionalSummaryForm({ resumeId, aiResumeProfessionalSummary }: PageParams) {
+export default function ProfessionalSummaryForm({ resumeId, aiResumeProfessionalSummary, userId }: PageParams) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
-  const { setResumeScore, setFormCompleted } = useResumeStore()
+  const { setResumeScore, setFormCompleted, editorMode } = useResumeStore()
+  const { generatingCV, handleGenerateCV } = useCVGenerator(resumeId, userId)
 
   // Initialize form with default values
   const form = useForm<ProfessionalSummaryFormValues>({
@@ -122,14 +125,33 @@ export default function ProfessionalSummaryForm({ resumeId, aiResumeProfessional
             )}
           />
 
-          <div className="flex justify-end mt-8">
+          <div className="flex justify-end gap-4 mt-8">
             <Button
               type="submit"
               className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:opacity-90 text-white"
-              disabled={isSubmitting}
+              disabled={isSubmitting || generatingCV}
             >
               {isSubmitting ? "Saving..." : "Save & Continue"}
             </Button>
+
+            {editorMode && (
+              <Button
+                type="button"
+                variant="outline"
+                className="border-[#042052] text-[#042052] hover:bg-[#042052] hover:text-white"
+                disabled={isSubmitting || generatingCV}
+                onClick={handleGenerateCV}
+              >
+                {generatingCV ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating CV...
+                  </>
+                ) : (
+                  "Generate CV"
+                )}
+              </Button>
+            )}
           </div>
         </form>
       </Form>

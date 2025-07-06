@@ -92,8 +92,8 @@ export async function onSavePersonalDetails(aiResumeId: string, data: AiResumePe
       city: validateData.city,
       socialLinks: {
         create: validateData.socialLinks?.map((link) => ({
-          label: link.label,
-          url: link.url,
+          label: link.label || "",
+          url: link.url || "",
         })),
       },
     },
@@ -106,8 +106,8 @@ export async function onSavePersonalDetails(aiResumeId: string, data: AiResumePe
       city: validateData.city,
       socialLinks: {
         create: validateData.socialLinks?.map((link) => ({
-          label: link.label,
-          url: link.url,
+          label: link.label || "",
+          url: link.url || "",
         })),
       },
     },
@@ -270,6 +270,7 @@ export async function onSaveEducation(aiResumeId: string, data: {
     endDate: string;
     city: string;
     description?: string | undefined;
+    gpa?: number | null;
   }[];
 }) {
   const session = await auth();
@@ -316,6 +317,7 @@ export async function onSaveEducation(aiResumeId: string, data: {
         startDate: new Date(education.startDate), 
         endDate: education.endDate ? new Date(education.endDate) : null,
         current: false,
+        gpa: education.gpa || null, // Use GPA from form data or null if not provided
         achievements: education.description ? education.description.split(",") : [],
       })),
     });
@@ -773,6 +775,54 @@ export async function submitAiJobApply(jobCount: boolean, aiJobApplyCount: boole
   return {
     error: false,
     message: "User updated successfully!",
+  };
+}
+
+export async function getAiResumeFormatedContent(resumeId: string) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { error: true, message: "Unauthenticated" };
+  }
+
+  const candidate = await prisma.candidate.findUnique({
+    where: {
+      userId: session.user.id,
+    },
+  });
+
+  if (!candidate) {
+    return { error: true, message: "Candidate not found" };
+  }
+
+  const resume = await prisma.aiResume.findUnique({
+    where: {
+      id: resumeId,
+    },
+    select: {
+      formatedContent: true,
+      formatedUrl: true,
+      status: true,
+    },
+  });
+
+  if (!resume) {
+    return { error: true, message: "Resume not found" };
+  }
+
+  const hasValidFormatedContent = resume.formatedContent && resume.formatedContent.trim() !== "";
+  const hasGeneratedUrl = resume.formatedUrl && resume.formatedUrl.trim() !== "";
+
+  return {
+    error: false,
+    message: "Formatted content fetched successfully!",
+    data: {
+      formatedContent: resume.formatedContent,
+      formatedUrl: resume.formatedUrl,
+      status: resume.status,
+      hasExistingContent: hasValidFormatedContent,
+      hasGeneratedResume: hasGeneratedUrl,
+    },
   };
 }
 

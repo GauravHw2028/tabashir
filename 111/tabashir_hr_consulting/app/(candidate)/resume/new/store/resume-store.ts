@@ -15,6 +15,7 @@ interface ResumeStore {
   isPaymentCompleted: boolean
   isSidebarVisible: boolean
   resumeScore: number
+  editorMode: boolean
 
   setResumeId: (id: string) => void
   setFormCompleted: (section: ResumeSection) => void
@@ -26,6 +27,7 @@ interface ResumeStore {
   getResumeScore: () => number
   setResumeScore: (score: number) => void
   setSidebarVisibility: (isVisible: boolean) => void
+  setEditorMode: (mode: boolean) => void
 }
 
 export const useResumeStore = create<ResumeStore>()(
@@ -43,6 +45,7 @@ export const useResumeStore = create<ResumeStore>()(
       isPaymentCompleted: false,
       isSidebarVisible: true,
       resumeScore: 0,
+      editorMode: true,
 
       setResumeId: (id) => set({ resumeId: id }),
 
@@ -105,6 +108,8 @@ export const useResumeStore = create<ResumeStore>()(
       },
 
       setSidebarVisibility: (isVisible) => set({ isSidebarVisible: isVisible }),
+
+      setEditorMode: (mode) => set({ editorMode: mode }),
     }),
     {
       name: "resume-store",

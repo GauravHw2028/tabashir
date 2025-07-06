@@ -23,7 +23,7 @@ export default function ResumeLayout({
 }) {
   const { resumeId } = use(params)
   const [resumeScore, setResumeScore] = useState(0)
-  const { setFormCompleted, completedForms, getResumeScore, resetForms, setPaymentCompleted, setResumeGenerated, isResumeGenerated } = useResumeStore()
+  const { setFormCompleted, completedForms, getResumeScore, resetForms, setPaymentCompleted, setResumeGenerated, isResumeGenerated, editorMode } = useResumeStore()
 
   const calculateScore = async () => {
     resetForms();
@@ -119,9 +119,8 @@ export default function ResumeLayout({
 
         {/* Sidebar and content area */}
         <div className="flex gap-[50px] max-lg:flex-col max-lg:gap-[20px]">
-          {/* Sidebar - only visible when isSidebarVisible is true */}
-          {/* {isSidebarVisible && <ResumeSidebar resumeId={resumeId} />} */}
-          <ResumeSidebar resumeId={resumeId} />
+          {/* Sidebar - only visible when editor mode is enabled */}
+          {editorMode && <ResumeSidebar resumeId={resumeId} />}
 
           {/* Main content - takes full width when sidebar is hidden */}
           <div className={cn("flex-1 transition-all duration-300")}>
