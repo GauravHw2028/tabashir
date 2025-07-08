@@ -34,6 +34,7 @@ model User {
     resetToken       String?
     resetTokenExpiry DateTime?
     JobLike          JobLike[]
+    Recruiter        Recruiter?
 
     @@map("users")
 }
@@ -129,6 +130,20 @@ model Owner {
     @@index([userId])
 }
 
+model Recruiter {
+    id                String   @id @default(cuid())
+    userId            String   @unique
+    user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    companyName       String
+    contactPersonName String
+    phone             String?
+    jobs              Job[]
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt
+
+    @@index([userId])
+}
+
 model Job {
     id                  String    @id @default(cuid())
     title               String
@@ -153,13 +168,17 @@ model Job {
     createdAt           DateTime  @default(now())
     updatedAt           DateTime  @updatedAt
 
-    ownerId String
-    owner   Owner  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+    // Either owner or recruiter can create jobs
+    ownerId     String?
+    owner       Owner?     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+    recruiterId String?
+    recruiter   Recruiter? @relation(fields: [recruiterId], references: [id], onDelete: Cascade)
 
     applicants   JobApplication[]
     SavedJobPost SavedJobPost[]
 
     @@index([ownerId])
+    @@index([recruiterId])
 }
 
 enum JobStatus {
@@ -427,4 +446,13 @@ model JobLike {
     updatedAt DateTime @updatedAt
 
     @@index([userId])
+}
+
+model api_tokens {
+    id          String   @id @default(cuid())
+    token       String
+    description String
+    active      Boolean  @default(true)
+    created_at  DateTime @default(now())
+    updated_at  DateTime @updatedAt
 }

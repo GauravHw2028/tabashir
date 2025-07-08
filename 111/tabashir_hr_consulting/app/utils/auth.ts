@@ -10,6 +10,7 @@ import { UserType, User } from "@prisma/client";
 type UserWithRelations = User & {
   candidate: any | null;
   Owner: any | null;
+  Recruiter: any | null;
 };
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -31,7 +32,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           include: {
             candidate: true,
             Owner: true,
-            
+            Recruiter: true,
           },
         })) as UserWithRelations | null;
         console.log("User: ", user);

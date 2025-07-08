@@ -5,6 +5,7 @@ import { z } from "zod";
 import { signIn, signOut } from "@/app/utils/auth";
 import { redirect } from "next/dist/server/api-utils";
 import { registrationFormSchema, RegistrationFormSchemaType } from "@/components/forms/registration/candidate/schema";
+import { recruiterRegistrationFormSchema, RecruiterRegistrationFormSchemaType } from "@/components/forms/registration/recruiter/schema";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
 import { prisma } from '@/app/utils/db'
@@ -75,7 +76,7 @@ export async function onLogin(data: z.infer<typeof loginFormSchema>) {
       password: password,
       redirect: false,
     })
-    const redirectTo = isUserExist.userType === "ADMIN" ? "/admin/dashboard" : isUserExist.userType === "CANDIDATE" ? "/dashboard" : ""
+    const redirectTo = isUserExist.userType === "ADMIN" ? "/admin/dashboard" : isUserExist.userType === "CANDIDATE" ? "/dashboard" : isUserExist.userType === "RECURITER" ? "/recruiter/dashboard" : ""
     return {
       error: false,
       message: "Successfully logged in!",
@@ -192,6 +193,84 @@ export async function onCandidateRegistration(data: RegistrationFormSchemaType) 
       error: false,
       message: "Registration successful! Please check your email to verify your account before logging in.",
       redirectTo: `/candidate/login`
+    }
+  } catch (error: any) {
+    console.error(error)
+    return {
+      error: true,
+      message: error.message
+    }
+  }
+}
+
+export async function onRecruiterRegistration(data: RecruiterRegistrationFormSchemaType) {
+  const validate = recruiterRegistrationFormSchema.parse(data)
+  if (!validate) {
+    return {
+      error: true,
+      message: "Invalid data"
+    }
+  }
+
+  const { email, companyName, contactPersonName, phone, password } = validate
+  try {
+    const isUserExist = await prisma.user.findUnique({
+      where: {
+        email
+      }
+    })
+
+    if (isUserExist) {
+      return {
+        error: true,
+        message: "User already exists"
+      }
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12)
+
+    const newUser = await prisma.user.create({
+      data: {
+        email: email,
+        name: contactPersonName,
+        password: hashedPassword,
+        userType: "RECURITER",
+        emailVerified: new Date(), // Auto-verify recruiter accounts for now
+      },
+    })
+
+    if (!newUser) {
+      return {
+        error: true,
+        message: "Failed to create new user!"
+      }
+    }
+
+    // Create recruiter profile
+    const recruiterProfile = await prisma.recruiter.create({
+      data: {
+        userId: newUser.id,
+        companyName,
+        contactPersonName,
+        phone,
+      }
+    })
+
+    if (!recruiterProfile) {
+      // If recruiter profile creation fails, delete the user
+      await prisma.user.delete({
+        where: { id: newUser.id }
+      })
+      return {
+        error: true,
+        message: "Failed to create recruiter profile!"
+      }
+    }
+
+    return {
+      error: false,
+      message: "Registration successful! You can now log in to your account.",
+      redirectTo: `/recruiter/login`
     }
   } catch (error: any) {
     console.error(error)
