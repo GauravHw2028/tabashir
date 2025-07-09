@@ -15,6 +15,10 @@ const HomePage = async () => {
   if (session.user && session.user.userType === "ADMIN") {
     return redirect("/admin/dashboard")
   }
+  console.log(session.user)
+  if (session.user && session.user.userType === "RECURITER") {
+    return redirect("/recruiter/dashboard")
+  }
   return <h2>redirecting...</h2>
 }
 

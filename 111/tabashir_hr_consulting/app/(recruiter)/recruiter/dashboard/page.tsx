@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -12,93 +12,58 @@ import {
   Plus,
   MoreHorizontal,
   Edit,
-  Trash2
+  Trash2,
+  Loader2
 } from "lucide-react"
 import Link from "next/link"
+import { getRecruiterDashboardStats } from "./actions"
+import { toast } from "sonner"
 
 export default function RecruiterDashboard() {
-  // Sample data for the dashboard
-  const statsData = [
-    {
-      title: "Active Jobs",
-      value: "8",
-      icon: Briefcase,
-      color: "bg-blue-100",
-      iconColor: "text-blue-500",
-      change: "+2 from last month",
-    },
-    {
-      title: "Total Applications",
-      value: "2,847",
-      icon: Users,
-      color: "bg-green-100",
-      iconColor: "text-green-500",
-      change: "+18% from last month",
-    },
-    {
-      title: "Job Views",
-      value: "12,456",
-      icon: Eye,
-      color: "bg-purple-100",
-      iconColor: "text-purple-500",
-      change: "+12% from last month",
-    },
-    {
-      title: "Interviews Scheduled",
-      value: "24",
-      icon: Calendar,
-      color: "bg-orange-100",
-      iconColor: "text-orange-500",
-      change: "+6 this week",
-    },
-  ]
+  const [isLoading, setIsLoading] = useState(true)
+  const [dashboardData, setDashboardData] = useState<any>(null)
 
-  const recentJobs = [
-    {
-      id: 1,
-      title: "Senior Frontend Developer",
-      company: "Tech Corp",
-      location: "Remote",
-      type: "Full Time",
-      applications: 145,
-      views: 890,
-      status: "Active",
-      postedDate: "2024-01-15",
-    },
-    {
-      id: 2,
-      title: "UI/UX Designer",
-      company: "Design Studio",
-      location: "New York",
-      type: "Full Time",
-      applications: 89,
-      views: 456,
-      status: "Active",
-      postedDate: "2024-01-12",
-    },
-    {
-      id: 3,
-      title: "Backend Developer",
-      company: "StartupXYZ",
-      location: "San Francisco",
-      type: "Contract",
-      applications: 67,
-      views: 324,
-      status: "Paused",
-      postedDate: "2024-01-10",
-    },
-    {
-      id: 4,
-      title: "Product Manager",
-      company: "BigTech Inc",
-      location: "Seattle",
-      type: "Full Time",
-      applications: 201,
-      views: 1200,
-      status: "Active",
-      postedDate: "2024-01-08",
-    },
-  ]
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const result = await getRecruiterDashboardStats()
+        if (result.success) {
+          setDashboardData(result)
+        } else {
+          toast.error("Error loading dashboard", {
+            description: result.error || "Failed to load dashboard data",
+            className: "bg-red-500 text-white",
+          })
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error)
+        toast.error("Error loading dashboard", {
+          description: "Failed to load dashboard data. Please try again.",
+          className: "bg-red-500 text-white",
+        })
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+  }, [])
+
+  // Stats data structure for rendering
+  const getStatsData = () => {
+    if (!dashboardData?.stats) return []
+
+    return [
+      {
+        title: "Active Jobs",
+        value: dashboardData.stats.activeJobs.value.toString(),
+        icon: Briefcase,
+        color: "bg-blue-100",
+        iconColor: "text-blue-500",
+        change: dashboardData.stats.activeJobs.change,
+      },
+    ]
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -113,6 +78,22 @@ export default function RecruiterDashboard() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+            <p className="text-gray-600">Loading dashboard...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const statsData = getStatsData()
+  const recentJobs = dashboardData?.recentJobs || []
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -121,7 +102,7 @@ export default function RecruiterDashboard() {
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-600">Welcome back! Here's what's happening with your jobs.</p>
         </div>
-        <Link href="/recruiter/jobs/new">
+        <Link href="/recruiter/recruiter/jobs/new">
           <Button className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:from-[#0D57E1] hover:to-[#042052] text-white">
             <Plus className="h-4 w-4 mr-2" />
             Create New Job
@@ -131,7 +112,7 @@ export default function RecruiterDashboard() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statsData.map((stat, index) => (
+        {statsData.map((stat: any, index: number) => (
           <Card key={index} className="border-l-4 border-l-blue-500">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
@@ -159,7 +140,7 @@ export default function RecruiterDashboard() {
                 Your recently posted job listings and their performance
               </CardDescription>
             </div>
-            <Link href="/recruiter/jobs">
+            <Link href="/recruiter/recruiter/jobs">
               <Button variant="outline" size="sm">
                 View All Jobs
               </Button>
@@ -168,43 +149,57 @@ export default function RecruiterDashboard() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {recentJobs.map((job) => (
-              <div
-                key={job.id}
-                className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex-1">
-                  <div className="flex items-center gap-3">
-                    <h3 className="font-semibold text-gray-900">{job.title}</h3>
-                    <Badge className={getStatusColor(job.status)}>
-                      {job.status}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {job.company} • {job.location} • {job.type}
-                  </p>
-                  <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
-                    <span className="flex items-center gap-1">
-                      <Users className="h-3 w-3" />
-                      {job.applications} applications
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Eye className="h-3 w-3" />
-                      {job.views} views
-                    </span>
-                    <span>Posted {new Date(job.postedDate).toLocaleDateString()}</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm">
-                    <Edit className="h-4 w-4" />
+            {recentJobs.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-500">No jobs posted yet</p>
+                <Link href="/recruiter/recruiter/jobs/new">
+                  <Button className="mt-4">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Your First Job
                   </Button>
-                  <Button variant="ghost" size="sm">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </div>
+                </Link>
               </div>
-            ))}
+            ) : (
+              recentJobs.map((job: any) => (
+                <div
+                  key={job.id}
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <h3 className="font-semibold text-gray-900">{job.title}</h3>
+                      <Badge className={getStatusColor(job.status)}>
+                        {job.status}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {job.company} • {job.location} • {job.type}
+                    </p>
+                    <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <Users className="h-3 w-3" />
+                        {job.applications} applications
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Eye className="h-3 w-3" />
+                        {job.views} views
+                      </span>
+                      <span>Posted {new Date(job.postedDate).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Link href={`/recruiter/recruiter/jobs/${job.id}/edit`}>
+                      <Button variant="ghost" size="sm">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                    <Button variant="ghost" size="sm">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>

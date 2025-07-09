@@ -5,7 +5,7 @@ import Link from "next/link"
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import JobCard from "../../_components/job-card"
+import AdminJobCard from "../../_components/admin-job-card"
 import CreateJobCard from "../../_components/create-job-card"
 import { getJobs } from "./actions"
 import Loading from "./loading"
@@ -73,18 +73,17 @@ export default function JobsPage() {
           <CreateJobCard />
 
           {jobs.map((job) => (
-            <Link key={job.id} href={`/admin/jobs/${job.id}`}>
-              <JobCard
-                id={job.id}
-                title={job.title}
-                type={job.jobType}
-                received={job.applicationsCount}
-                interviewed={0}
-                views={job.views.toString()}
-                activeDate={new Date(job.createdAt).toLocaleDateString()}
-                status={job.isActive ? "active" : "paused"}
-              />
-            </Link>
+            <AdminJobCard
+              key={job.id}
+              id={job.id}
+              title={job.title}
+              type={job.jobType}
+              received={job.applicationsCount}
+              interviewed={0}
+              views={job.views.toString()}
+              activeDate={new Date(job.createdAt).toLocaleDateString()}
+              status={job.isActive ? "active" : "paused"}
+            />
           ))}
         </div>
 
@@ -92,7 +91,7 @@ export default function JobsPage() {
         <div className="flex justify-between items-center text-sm text-gray-600">
           <div className="flex items-center">
             <span>Showing</span>
-            <Select 
+            <Select
               defaultValue="10"
               onValueChange={(value) => {
                 setItemsPerPage(Number(value))
@@ -123,9 +122,8 @@ export default function JobsPage() {
             {Array.from({ length: totalPages }).map((_, index) => (
               <button
                 key={index}
-                className={`w-8 h-8 rounded-md ${
-                  currentPage === index + 1 ? "bg-blue-950 text-white" : "hover:bg-gray-100 text-gray-700"
-                }`}
+                className={`w-8 h-8 rounded-md ${currentPage === index + 1 ? "bg-blue-950 text-white" : "hover:bg-gray-100 text-gray-700"
+                  }`}
                 onClick={() => setCurrentPage(index + 1)}
               >
                 {index + 1}

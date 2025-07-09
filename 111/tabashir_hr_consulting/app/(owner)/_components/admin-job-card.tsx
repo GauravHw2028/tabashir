@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button"
-import { Edit } from "lucide-react"
 import Link from "next/link"
+import { Edit, Eye } from "lucide-react"
 
-interface JobCardProps {
+interface AdminJobCardProps {
   id: string
   title: string
   type: string
@@ -13,7 +13,7 @@ interface JobCardProps {
   status: "active" | "paused" | "closed"
 }
 
-export default function JobCard({ id, title, type, received, interviewed, views, activeDate, status }: JobCardProps) {
+export default function AdminJobCard({ id, title, type, received, interviewed, views, activeDate, status }: AdminJobCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
@@ -32,7 +32,7 @@ export default function JobCard({ id, title, type, received, interviewed, views,
   }
 
   return (
-    <div className="bg-[#0A2463] rounded-lg p-6 text-white h-full cursor-pointer hover:shadow-md transition-shadow">
+    <div className="bg-[#0A2463] rounded-lg p-6 text-white h-full">
       <div className="flex justify-between items-start mb-6">
         <div>
           <h3 className="text-lg font-semibold">{title}</h3>
@@ -87,11 +87,14 @@ export default function JobCard({ id, title, type, received, interviewed, views,
               Edit
             </Button>
           </Link>
-          <Button variant="outline" size="sm" className="text-white border-white hover:bg-blue-800">
-            View Details
-          </Button>
+          <Link href={`/admin/jobs/${id}`}>
+            <Button variant="outline" size="sm" className="text-white border-white hover:bg-blue-800">
+              <Eye className="h-3 w-3 mr-1" />
+              View
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
   )
-}
+} 

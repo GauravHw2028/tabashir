@@ -89,6 +89,7 @@ export const createJobAPI = async (jobData: {
   phone: string
 }) => {
   try {
+    console.log("jobData", jobData);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs`,
       {
@@ -100,7 +101,72 @@ export const createJobAPI = async (jobData: {
         body: JSON.stringify(jobData),
       }
     )
-    console.log("response", response);
+    const data = await response.json()
+    return { success: response.ok, data: data }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: error }
+  }
+}
+
+export const updateJobAPI = async (jobId: string, jobData: {
+  entity: string
+  nationality: string
+  gender: string
+  job_title: string
+  academic_qualification: string
+  experience: string
+  languages: string
+  salary: string
+  vacancy_city: string
+  working_hours: string
+  working_days: string
+  application_email: string
+  job_description: string
+  job_date: string
+  apply_url: string
+  phone: string
+  source: string
+  company_name: string
+  website_url: string
+  job_type: string
+}) => {
+  try {
+    console.log("Updating job with ID:", jobId, "Data:", jobData);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs/${jobId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-TOKEN": `${token}`,
+        },
+        body: JSON.stringify({
+          job_id: jobId,
+          payload: jobData
+        }),
+      }
+    )
+    const data = await response.json()
+    return { success: response.ok, data: data }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: error }
+  }
+}
+
+export const getJobByApiId = async (jobId: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs/${jobId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-TOKEN": `${token}`,
+        },
+      }
+    )
     const data = await response.json()
     return { success: response.ok, data: data }
   } catch (error) {

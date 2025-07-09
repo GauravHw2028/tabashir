@@ -1,11 +1,12 @@
 "use client"
 
 import Image from "next/image"
-import { Eye } from "lucide-react"
+import { Eye, Edit } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { JobStatusSelector } from "./job-status-selector"
 import { JsonToHtml } from "@/components/tiptap-editor/json-to-html"
 import { ApplicationsTable } from "./applications-table"
+import Link from "next/link"
 
 interface JobDetailsClientProps {
   job: any
@@ -32,6 +33,14 @@ export function JobDetailsClient({ job, applications, jobId }: JobDetailsClientP
         </div>
         <div className="text-right">
           <p className="text-sm mb-2">Posted on {new Date(job.createdAt).toLocaleDateString()}</p>
+          <div className="flex gap-2 mb-2">
+            <Link href={`/admin/jobs/${jobId}/edit`}>
+              <Button variant="outline" size="sm">
+                <Edit className="h-4 w-4 mr-1" />
+                Edit Job
+              </Button>
+            </Link>
+          </div>
           <JobStatusSelector jobId={jobId} currentStatus={job.status} />
         </div>
       </div>

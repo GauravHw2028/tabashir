@@ -71,7 +71,7 @@ export default function RecruiterJobsPage() {
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">My Jobs</h1>
-          <Link href="/recruiter/jobs/new">
+          <Link href="/recruiter/recruiter/jobs/new">
             <Button className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:from-[#0D57E1] hover:to-[#042052] text-white">
               <Plus className="h-4 w-4 mr-2" />
               Create New Job
@@ -122,7 +122,7 @@ export default function RecruiterJobsPage() {
               <p className="text-gray-600 mb-4">
                 Start by creating your first job posting to attract top talent
               </p>
-              <Link href="/recruiter/jobs/new">
+              <Link href="/recruiter/recruiter/jobs/new">
                 <Button className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:from-[#0D57E1] hover:to-[#042052] text-white">
                   <Plus className="h-4 w-4 mr-2" />
                   Create Your First Job
@@ -156,10 +156,12 @@ export default function RecruiterJobsPage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                      <Edit className="h-4 w-4 mr-1" />
-                      Edit
-                    </Button>
+                    <Link href={`/recruiter/jobs/${job.id}/edit`}>
+                      <Button variant="outline" size="sm">
+                        <Edit className="h-4 w-4 mr-1" />
+                        Edit
+                      </Button>
+                    </Link>
                     <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
                       <Trash2 className="h-4 w-4 mr-1" />
                       Delete

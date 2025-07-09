@@ -16,7 +16,7 @@ export default async function OwnerLayout({
   }
   return (
     <SessionProvider>
-      <div className="flex h-screen bg-[#F0F0F0] text-gray-900">
+      <div className="flex bg-[#F0F0F0] text-gray-900">
         <OwnerLayoutContent>{children}</OwnerLayoutContent>
       </div>
     </SessionProvider>

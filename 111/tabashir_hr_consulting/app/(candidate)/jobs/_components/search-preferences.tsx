@@ -16,7 +16,7 @@ interface SearchPreferencesProps {
   ) => void
 }
 
-const LOCATIONS = ["Dubai, UAE", "Abu Dhabi, UAE", "Sharjah, UAE"]
+const LOCATIONS = ["Dubai, UAE", "Abu Dhabi, UAE", "Sharjah, UAE", "Ras Al Khaimah, UAE", "Fujairah, UAE", "Ajman, UAE", "Umm Al Quwain, UAE", "Al Ain, UAE"]
 const JOB_TYPES = ["Full Time", "Part Time", "Contract", "Freelance"]
 const ATTENDANCE_TYPES = ["Hybrid", "Onsite", "Remote"]
 
@@ -157,7 +157,7 @@ export function SearchPreferences({
         <div className="flex items-center gap-2 mb-2">
           <input
             type="range"
-            min={12000}
+            min={100}
             max={50000}
             step={1000}
             value={salaryRange[0]}
@@ -166,7 +166,7 @@ export function SearchPreferences({
           />
           <input
             type="range"
-            min={12000}
+            min={100}
             max={50000}
             step={1000}
             value={salaryRange[1]}
