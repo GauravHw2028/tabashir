@@ -11,7 +11,7 @@ export const getJobs = async (
   experience?: string,
   attendance?: string,
   query?: string,
-  sort?: "newest" | "oldest" | "salary_asc" | "salary_desc",
+  sort?: "job_date_desc" | "job_date_asc" | "salary_asc" | "salary_desc",
   page: number = 1,
   limit: number = 60
 ) => {

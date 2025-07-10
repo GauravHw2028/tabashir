@@ -28,8 +28,8 @@ export default function JobsPage() {
   const [attendance, setAttendance] = useState(searchParams.get("attendance") || "")
   const [query, setQuery] = useState(searchParams.get("query") || "")
   const [jobApplyCount, setJobApplyCount] = useState(0)
-  const [sort, setSort] = useState<"newest" | "oldest" | "salary_asc" | "salary_desc">(
-    (searchParams.get("sort") as "newest" | "oldest" | "salary_asc" | "salary_desc") || "newest"
+  const [sort, setSort] = useState<"job_date_desc" | "job_date_asc" | "salary_desc" | "salary_asc">(
+    (searchParams.get("sort") as "job_date_desc" | "job_date_asc" | "salary_asc" | "salary_desc") || "job_date_desc"
   )
 
   // Pagination
@@ -65,7 +65,7 @@ export default function JobsPage() {
     if (salaryMax) params.set("salaryMax", salaryMax)
     if (experience) params.set("experience", experience)
     if (attendance) params.set("attendance", attendance)
-    if (query) params.set("query", query)
+    if (query) params.set("search", query)
     if (sort) params.set("sort", sort)
     if (page > 1) params.set("page", page.toString())
 
@@ -103,7 +103,7 @@ export default function JobsPage() {
         setQuery(value)
         break
       case "sort":
-        setSort(value as "newest" | "oldest" | "salary_asc" | "salary_desc")
+        setSort(value as "job_date_desc" | "job_date_asc" | "salary_asc" | "salary_desc")
         break
     }
   }

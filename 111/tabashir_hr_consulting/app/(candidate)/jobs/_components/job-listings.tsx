@@ -15,8 +15,8 @@ interface JobListingsProps {
   loading: boolean
   query: string
   onQueryChange: (value: string) => void
-  sort: "newest" | "oldest" | "salary_asc" | "salary_desc"
-  onSortChange: (value: "newest" | "oldest" | "salary_asc" | "salary_desc") => void
+  sort: "job_date_desc" | "job_date_asc" | "salary_asc" | "salary_desc"
+  onSortChange: (value: "job_date_desc" | "job_date_asc" | "salary_asc" | "salary_desc") => void
   currentPage: number
   totalPages: number
   onPageChange: (page: number) => void
@@ -68,10 +68,10 @@ export function JobListings({
             <select
               className="w-full sm:w-auto border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white"
               value={sort}
-              onChange={(e) => onSortChange(e.target.value as "newest" | "oldest" | "salary_asc" | "salary_desc")}
+              onChange={(e) => onSortChange(e.target.value as "job_date_desc" | "job_date_asc" | "salary_asc" | "salary_desc")}
             >
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
+              <option value="job_date_desc">Newest First</option>
+              <option value="job_date_asc">Oldest First</option>
               <option value="salary_asc">Salary: Low to High</option>
               <option value="salary_desc">Salary: High to Low</option>
             </select>
