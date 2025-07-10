@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react"
+import { getSession, useSession } from "next-auth/react"
 
 const token = process.env.NEXT_PUBLIC_API_TOKEN;
 
@@ -15,6 +15,7 @@ export const getJobs = async (
   page: number = 1,
   limit: number = 60
 ) => {
+  const session = await getSession()
   try {
     const params = new URLSearchParams()
     // Add filters only if they have values
@@ -31,6 +32,7 @@ export const getJobs = async (
     // Add pagination parameters
     params.append("page", page.toString())
     params.append("limit", limit.toString())
+    params.append("email", session?.user?.email || "")
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs?${params.toString()}`,

@@ -25,7 +25,7 @@ export const transformJobs = (jobs: any) => {
     requirements: job.academic_qualification,
     department: job.job_title,
     team: job.entity,
-    match: job.match as any,
+    match: job.match_score as any,
   })).filter((job: any) => job.title !== "Nan" && job.title !== "nan")
   } catch (error) {
     console.error("Error transforming jobs:", error, jobs)
@@ -59,6 +59,6 @@ export const transformJob = (job: any) => {
     requirements: job.academic_qualification,
     department: job.job_title,
     team: job.entity,
-    match: job.match as any,
+    match: job.match_score as any,
   }
 }

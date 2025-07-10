@@ -14,6 +14,17 @@ interface JobCardProps {
   isSelected?: boolean;
 }
 
+// Function to determine the background color based on match percentage
+const getMatchColor = (percentage: number): string => {
+  if (percentage >= 70) {
+    return "bg-green-500"; // High match - green
+  } else if (percentage >= 40) {
+    return "bg-orange-500"; // Medium match - yellow
+  } else {
+    return "bg-red-500"; // Low match - light red
+  }
+};
+
 export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
   const [isLiked, setIsLiked] = useState(false);
 
@@ -71,7 +82,7 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
               <div className="flex items-start gap-1 flex-shrink-0">
                 {job.match && (
                   <div
-                    className={`px-2 py-1 rounded-full text-xs text-white bg-blue-500`}
+                    className={`px-2 py-1 rounded-full text-xs text-white ${getMatchColor(Number(job.match))}`}
                   >
                     {job.match}%
                   </div>
@@ -105,9 +116,9 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
             <div className="flex items-start gap-2 flex-shrink-0">
               {job.match && (
                 <div
-                  className={`px-3 py-1 rounded-full text-xs text-white bg-blue-500`}
+                  className={`px-3 py-1 rounded-full text-xs text-white ${getMatchColor(Number(job.match))}`}
                 >
-                  {job.match}%
+                  {job.match}% Match
                 </div>
               )}
 
