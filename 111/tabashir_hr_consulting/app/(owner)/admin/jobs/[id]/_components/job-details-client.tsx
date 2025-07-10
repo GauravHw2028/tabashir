@@ -56,10 +56,10 @@ export function JobDetailsClient({ job, applications, jobId }: JobDetailsClientP
           <div className="flex-1 pr-6">
             <div className="mb-6">
               <div className="prose prose-sm max-w-none text-gray-700">
-                {<JsonToHtml json={JSON.parse(job.description)} />}
+                {job.description}
               </div>
               <div className="prose prose-sm max-w-none text-gray-700">
-                {<JsonToHtml json={JSON.parse(job.requirements)} />}
+                {job.requirements}
               </div>
             </div>
 

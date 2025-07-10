@@ -40,13 +40,13 @@ export async function getAdminDashboardStats(): Promise<
     }
 
     // Check if user is an admin/owner
-    const owner = await prisma.owner.findFirst({
-      where: { userId: session.user.id }
-    })
+    // const owner = await prisma.owner.findFirst({
+    //   where: { userId: session.user.id }
+    // })
 
-    if (!owner) {
-      return { success: false, error: "Unauthorized - Admin access required" } as { success: false; error: string }
-    }
+    // if (!owner) {
+    //   return { success: false, error: "Unauthorized - Admin access required" } as { success: false; error: string }
+    // }
 
     // Get comprehensive stats in parallel
     const [
@@ -213,13 +213,14 @@ export async function getAdminJobsOverview() {
     }
 
     // Check if user is an admin/owner
-    const owner = await prisma.owner.findFirst({
-      where: { userId: session.user.id }
-    })
+    // const owner = await prisma.owner.findFirst({
+    //   where: { userId: session.user.id }
+    // })
 
-    if (!owner) {
-      return { success: false, error: "Unauthorized - Admin access required" }
-    }
+    // if (!owner) {
+
+    //   return { success: false, error: "Unauthorized - Admin access required" }
+    // }
 
     // Get jobs with detailed stats
     const jobs = await prisma.job.findMany({

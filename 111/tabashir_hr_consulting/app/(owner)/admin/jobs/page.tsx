@@ -78,11 +78,11 @@ export default function JobsPage() {
               id={job.id}
               title={job.title}
               type={job.jobType}
-              received={job.applicationsCount}
-              interviewed={0}
+              applications={job.applicationsCount}
               views={job.views.toString()}
-              activeDate={new Date(job.createdAt).toLocaleDateString()}
-              status={job.isActive ? "active" : "paused"}
+              postedDate={new Date(job.createdAt).toLocaleDateString()}
+              status={job.isActive ? "ACTIVE" : "PAUSED"}
+              company={job.company}
             />
           ))}
         </div>

@@ -11,16 +11,16 @@ export async function getJobDetails(jobId: string) {
       throw new Error("Unauthorized")
     }
 
-    const owner = await prisma.owner.findFirst({
-        where:{
-            userId:session.user.id
-        }
-    })
+    // const owner = await prisma.owner.findFirst({
+    //     where:{
+    //         userId:session.user.id
+    //     }
+    // })
 
-    if(!owner) throw new Error("Unauthorized")
+    // if(!owner) throw new Error("Unauthorized")
 
     const job = await prisma.job.findUnique({
-      where: { id: jobId, ownerId:owner.id },
+      where: { id: jobId },
       include: {
         owner: true,
         applicants: {
@@ -57,18 +57,18 @@ export async function updateJobStatus(jobId: string, status: JobStatus) {
       throw new Error("Unauthorized")
     }
 
-    const owner = await prisma.owner.findFirst({
-      where: {
-        userId: session.user.id
-      }
-    })
+    // const owner = await prisma.owner.findFirst({
+    //   where: {
+    //     userId: session.user.id
+    //   }
+    // })
 
-    if (!owner) throw new Error("Unauthorized")
+    // if (!owner) throw new Error("Unauthorized")
 
     const job = await prisma.job.update({
       where: { 
         id: jobId,
-        ownerId: owner.id 
+        // ownerId: owner.id 
       },
       data: {
         status: status

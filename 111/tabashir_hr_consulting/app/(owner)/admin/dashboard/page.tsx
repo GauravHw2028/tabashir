@@ -51,12 +51,12 @@ export default function OwnerDashboard() {
         setLoading(true)
         const result = await getAdminDashboardStats()
 
-        if (result.success && result.stats && result.recentJobs && result.applicationStatusData) {
+        if (result.success) {
           setStats(result.stats)
           setJobsData(result.recentJobs)
           setApplicationStatusData(result.applicationStatusData)
         } else {
-          setError("Failed to fetch dashboard data")
+          setError(result.error)
         }
       } catch (err) {
         setError("An unexpected error occurred")
