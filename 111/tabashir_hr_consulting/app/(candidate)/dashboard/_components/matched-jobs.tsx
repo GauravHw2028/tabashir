@@ -23,6 +23,7 @@ interface ApiJob {
   academic_qualification: string;
   job_date: string;
   logo?: string;
+  match?: any;
 }
 
 export function MatchedJobs({ jobType }: { jobType: string }) {
@@ -55,10 +56,7 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
           requirements: apiJob.academic_qualification,
           department: apiJob.job_title,
           team: apiJob.entity,
-          match: {
-            type: "percentage" as const,
-            value: 85 // Default match percentage
-          },
+          match: apiJob.match,
         }));
         setJobs(transformedJobs);
       }

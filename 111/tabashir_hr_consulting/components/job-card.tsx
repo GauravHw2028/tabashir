@@ -71,18 +71,9 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
               <div className="flex items-start gap-1 flex-shrink-0">
                 {job.match && (
                   <div
-                    className={`px-2 py-1 rounded-full text-xs text-white ${job.match.type === "top"
-                      ? "bg-orange-500"
-                      : job.match.type === "best"
-                        ? "bg-blue-500"
-                        : "bg-pink-500"
-                      }`}
+                    className={`px-2 py-1 rounded-full text-xs text-white bg-blue-500`}
                   >
-                    {job.match.type === "top"
-                      ? "Top"
-                      : job.match.type === "best"
-                        ? "Best"
-                        : `${job.match.value}%`}
+                    {job.match}%
                   </div>
                 )}
                 <button
@@ -112,22 +103,13 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
             </div>
 
             <div className="flex items-start gap-2 flex-shrink-0">
-              {/* {job.match && (
+              {job.match && (
                 <div
-                  className={`px-3 py-1 rounded-full text-xs text-white ${job.match.type === "top"
-                    ? "bg-orange-500"
-                    : job.match.type === "best"
-                      ? "bg-blue-500"
-                      : "bg-pink-500"
-                    }`}
+                  className={`px-3 py-1 rounded-full text-xs text-white bg-blue-500`}
                 >
-                  {job.match.type === "top"
-                    ? "Top Match"
-                    : job.match.type === "best"
-                      ? "Best For You"
-                      : `${job.match.value}% Match`}
+                  {job.match}%
                 </div>
-              )} */}
+              )}
 
               <button
                 className={cn("text-gray-400 hover:text-red-500", isLiked && "text-red-500")}
