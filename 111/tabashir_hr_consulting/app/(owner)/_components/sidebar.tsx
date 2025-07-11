@@ -12,6 +12,7 @@ import {
   LogOut,
   CreditCard,
   Users,
+  Mail,
 } from "lucide-react";
 import { signOut } from "@/app/utils/auth";
 import { onLogout } from "@/actions/auth";
@@ -46,6 +47,11 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
       icon: FileText,
     },
     {
+      name: "Applications",
+      href: "/admin/applications",
+      icon: Mail,
+    },
+    {
       name: "Payments",
       href: "/admin/payments",
       icon: CreditCard,
@@ -67,7 +73,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
 
   return (
     <aside
-      className={`bg-white border-r border-gray-200 w-64 fixed inset-y-0 left-0 z-50 transform ${open ? "translate-x-0" : "-translate-x-full"
+      className={`bg-white border-r border-gray-200 w-64 sticky top-0 inset-y-0 left-0 z-50 transform h-screen ${open ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:inset-auto`}
     >
       <div className="flex flex-col h-full">

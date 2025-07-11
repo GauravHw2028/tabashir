@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { useSession } from "next-auth/react"
+import { submitEasyApply } from "@/actions/job/easy-apply"
 
 interface JobDetailsProps {
   job: Job
@@ -52,12 +53,35 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
     }
   }, [isPreview])
 
-  const handleEasyApply = () => {
+  const handleEasyApply = async () => {
     if (jobApplyCount <= 1) {
       toast.error("You need more than one job apply count to use Easy Apply")
       return
     }
-    setShowResumeModal(true)
+
+    setIsApplying(true)
+    try {
+      // Use the latest resume if available
+      const selectedResumeId = resumeList.length > 0 ? resumeList[0].id : undefined
+
+      const result = await submitEasyApply(job.id, selectedResumeId)
+
+      if (result.success) {
+        toast.success(result.message || "Successfully applied for the job!")
+        setShowSuccessModal(true)
+
+        // Call the callback to refresh the page
+        if (onJobApplied) {
+          onJobApplied()
+        }
+      } else {
+        toast.error(result.error || "Failed to apply for job")
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to apply for job")
+    } finally {
+      setIsApplying(false)
+    }
   }
 
   const handleApplyWithResume = async () => {
@@ -243,18 +267,28 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
             {jobApplyCount > 1 && (
               <button
                 onClick={handleEasyApply}
-                className="w-full py-2 bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white rounded-md font-medium flex items-center justify-center gap-2"
+                disabled={isApplying}
+                className="w-full py-2 bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white rounded-md font-medium flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M13 10V3L4 14H11V21L20 10H13Z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                Easy Apply via TABASHIR
+                {isApplying ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Applying...
+                  </>
+                ) : (
+                  <>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M13 10V3L4 14H11V21L20 10H13Z"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    Easy Apply via TABASHIR
+                  </>
+                )}
               </button>
             )}
 
