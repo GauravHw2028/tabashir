@@ -50,16 +50,16 @@ export default function AdminLogin() {
       setIsLoading(true);
       // TODO: Implement admin login logic
       console.log(values);
-      const response =  await onLogin({email:values.email, password:values.password})
+      const response = await onLogin({ email: values.email, password: values.password })
       console.log("Reponse: ", response)
-      if(response?.error){
-        return toast.error("Authentication Error",{
-          description:response.message,
-          className:"bg-red-500 text-white"
+      if (response?.error) {
+        return toast.error("Authentication Error", {
+          description: response.message,
+          className: "bg-red-500 text-white"
         })
       }
-      toast.success("Successfully logged in",{
-        className:"bg-green-500 text-white "
+      toast.success("Successfully logged in", {
+        className: "bg-green-500 text-white "
       })
       router.push(response.redirectTo as string)
       // console.log("Signin Response: ", signinResponse);
@@ -89,11 +89,13 @@ export default function AdminLogin() {
                 <FormItem>
                   <FormLabel className="text-gray-900">Email</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="admin@tabashir.com"
-                      {...field}
-                      className="text-gray-900"
-                    />
+                    <div className="relative">
+                      <Input
+                        placeholder="admin@tabashir.com"
+                        {...field}
+                        className="text-gray-900"
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

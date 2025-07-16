@@ -11,17 +11,18 @@ datasource db {
 }
 
 model User {
-    id               String           @id @default(cuid())
+    id               String                      @id @default(cuid())
     name             String?
-    email            String?          @unique
+    email            String?                     @unique
     emailVerified    DateTime?
     image            String?
     password         String?
-    jobCount         Int              @default(0)
-    aiJobApplyCount  Int              @default(0)
+    jobCount         Int                         @default(0)
+    aiJobApplyCount  Int                         @default(0)
     userType         UserType?
-    createdAt        DateTime         @default(now())
-    updatedAt        DateTime         @updatedAt
+    adminRole        AdminRole?
+    createdAt        DateTime                    @default(now())
+    updatedAt        DateTime                    @updatedAt
     accounts         Account[]
     sessions         Session[]
     candidate        Candidate?
@@ -36,6 +37,7 @@ model User {
     JobLike          JobLike[]
     Recruiter        Recruiter?
     JobApplication   JobApplication[]
+    adminPermissions AdminPermissionAssignment[]
 
     @@map("users")
 }
@@ -44,6 +46,24 @@ enum UserType {
     CANDIDATE
     ADMIN
     RECURITER
+}
+
+enum AdminRole {
+    SUPER_ADMIN
+    REGULAR_ADMIN
+}
+
+enum AdminPermission {
+    MANAGE_USERS
+    MANAGE_JOBS
+    MANAGE_APPLICATIONS
+    MANAGE_PAYMENTS
+    MANAGE_DASHBOARD
+    MANAGE_INTERVIEWS
+    MANAGE_AI_CV
+    MANAGE_HELP
+    MANAGE_ACCOUNT
+    MANAGE_ADMIN_PERMISSIONS // Only for Super Admin
 }
 
 model Account {
@@ -458,6 +478,18 @@ model JobLike {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    @@index([userId])
+}
+
+model AdminPermissionAssignment {
+    id         String          @id @default(cuid())
+    userId     String
+    user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+    permission AdminPermission
+    createdAt  DateTime        @default(now())
+    updatedAt  DateTime        @updatedAt
+
+    @@unique([userId, permission])
     @@index([userId])
 }
 
