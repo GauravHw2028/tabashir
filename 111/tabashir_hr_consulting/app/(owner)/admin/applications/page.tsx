@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { toast } from "sonner"
-import { getApplications, dismissApplication, fetchJobDetailsFromAPI } from "./actions"
+import { getApplications, dismissApplication, fetchJobDetailsFromAPI, updateApplicationStatus } from "./actions"
 
 interface Application {
   id: string
@@ -28,7 +28,7 @@ interface Application {
     jobType: string
     location: string | null
     externalApiJobId: string | null
-  }
+  } | null
 }
 
 export default function ApplicationsPage() {
@@ -41,6 +41,7 @@ export default function ApplicationsPage() {
   const [selectedJobData, setSelectedJobData] = useState<any>(null)
   const [jobDetailsLoading, setJobDetailsLoading] = useState(false)
   const [jobDetailsOpen, setJobDetailsOpen] = useState(false)
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null)
 
   useEffect(() => {
     fetchApplications()
@@ -52,7 +53,7 @@ export default function ApplicationsPage() {
       const result = await getApplications(currentPage, itemsPerPage)
 
       if (result.success) {
-        setApplications(result.applications || [])
+        setApplications(result.applications as any[])
         setTotalPages(result.totalPages || 0)
         setTotalCount(result.totalCount || 0)
       } else {
@@ -77,6 +78,24 @@ export default function ApplicationsPage() {
       }
     } catch (error) {
       toast.error("Failed to dismiss application")
+    }
+  }
+
+  const handleStatusChange = async (applicationId: string, newStatus: string) => {
+    try {
+      setUpdatingStatus(applicationId)
+      const result = await updateApplicationStatus(applicationId, newStatus)
+
+      if (result.success) {
+        toast.success(result.message || "Application status updated successfully")
+        fetchApplications() // Refresh the list
+      } else {
+        toast.error(result.error || "Failed to update application status")
+      }
+    } catch (error) {
+      toast.error("Failed to update application status")
+    } finally {
+      setUpdatingStatus(null)
     }
   }
 
@@ -200,30 +219,70 @@ export default function ApplicationsPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="font-medium">{application.Job.title}</div>
-                      <div className="text-sm text-gray-500">{application.Job.jobType}</div>
+                      {application.Job ? (
+                        <>
+                          <div className="font-medium">{application.Job.title}</div>
+                          <div className="text-sm text-gray-500">{application.Job.jobType}</div>
+                        </>
+                      ) : (
+                        <div className="text-sm text-gray-500">Job not available</div>
+                      )}
                     </TableCell>
                     <TableCell>
-                      <div>{application.Job.company}</div>
-                      {application.Job.location && (
-                        <div className="text-sm text-gray-500">{application.Job.location}</div>
+                      {application.Job ? (
+                        <>
+                          <div>{application.Job.company}</div>
+                          {application.Job.location && (
+                            <div className="text-sm text-gray-500">{application.Job.location}</div>
+                          )}
+                        </>
+                      ) : (
+                        <div className="text-sm text-gray-500">Company not available</div>
                       )}
                     </TableCell>
                     <TableCell>
                       {new Date(application.appliedAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
-                      <Badge className={getStatusColor(application.status)}>
-                        {application.status}
-                      </Badge>
+                      <Select
+                        value={application.status}
+                        onValueChange={(value) => handleStatusChange(application.id, value)}
+                        disabled={updatingStatus === application.id}
+                      >
+                        <SelectTrigger className="w-[120px]">
+                          <SelectValue>
+                            {updatingStatus === application.id ? (
+                              <div className="flex items-center gap-2">
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                                <span className="text-xs">Updating...</span>
+                              </div>
+                            ) : (
+                              <Badge className={getStatusColor(application.status)}>
+                                {application.status}
+                              </Badge>
+                            )}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pending">
+                            <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>
+                          </SelectItem>
+                          <SelectItem value="approved">
+                            <Badge className="bg-green-100 text-green-800">Approved</Badge>
+                          </SelectItem>
+                          <SelectItem value="rejected">
+                            <Badge className="bg-red-100 text-red-800">Rejected</Badge>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center gap-2 justify-end">
-                        {application.Job.externalApiJobId && (
+                        {application.Job?.externalApiJobId && (
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleViewJobDetails(application.Job.externalApiJobId!)}
+                            onClick={() => handleViewJobDetails(application.Job!.externalApiJobId!)}
                           >
                             <Eye className="w-4 h-4 mr-1" />
                             View Job

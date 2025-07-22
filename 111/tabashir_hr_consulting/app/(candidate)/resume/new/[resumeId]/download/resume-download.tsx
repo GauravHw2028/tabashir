@@ -133,8 +133,19 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
       const cvService = paymentData.cvTransformer
 
       if (cvService?.link) {
+        // Add user email to the checkout link if available
+        let checkoutLink = cvService.link
+        // Note: You'll need to get user email from session here
+        // For now, we'll use the link as is
+        // const userEmail = session.data?.user?.email
+        // if (userEmail) {
+        //   const url = new URL(checkoutLink)
+        //   url.searchParams.set('prefilled_email', userEmail)
+        //   checkoutLink = url.toString()
+        // }
+
         // Redirect directly to Stripe checkout link
-        window.location.href = cvService.link
+        window.location.href = checkoutLink
       } else {
         throw new Error('No checkout link available for CV service')
       }

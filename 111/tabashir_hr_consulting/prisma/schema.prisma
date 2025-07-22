@@ -213,8 +213,8 @@ model JobApplication {
     id              String   @id @default(uuid())
     matchedScore    Int      @default(0)
     status          String   @default("pending")
-    Job             Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
-    jobId           String
+    Job             Job?     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+    jobId           String?
     userId          String?
     user            User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
     applicationType String   @default("regular") // "regular" or "easy_apply"

@@ -39,6 +39,14 @@ export function ServiceModal({ isOpen, onClose, service }: ServiceModalProps) {
       }
 
       if (checkoutLink) {
+        // Add user email to the checkout link if available
+        const userEmail = session.data?.user?.email
+        if (userEmail) {
+          const url = new URL(checkoutLink)
+          url.searchParams.set('prefilled_email', userEmail)
+          checkoutLink = url.toString()
+        }
+
         // Redirect directly to Stripe checkout link
         window.location.href = checkoutLink
       } else {

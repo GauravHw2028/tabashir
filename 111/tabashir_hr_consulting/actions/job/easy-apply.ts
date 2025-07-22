@@ -6,8 +6,10 @@ import { revalidatePath } from "next/cache"
 
 export async function submitEasyApply(jobId: string, resumeId?: string) {
   try {
+    console.log(jobId, resumeId);
     const session = await auth()
     if (!session?.user?.id) {
+      console.log("Unauthorized");
       return { success: false, error: "Unauthorized" }
     }
 
@@ -20,9 +22,13 @@ export async function submitEasyApply(jobId: string, resumeId?: string) {
       }
     })
 
+    console.log(existingApplication);
+
     if (existingApplication) {
       return { success: false, error: "You have already applied to this job via Easy Apply" }
     }
+
+    console.log("Existing application not found");
 
     // Get the job details to extract external job ID
     const job = await prisma.job.findUnique({
@@ -30,18 +36,24 @@ export async function submitEasyApply(jobId: string, resumeId?: string) {
       select: { externalApiJobId: true, title: true, company: true }
     })
 
-    if (!job) {
-      return { success: false, error: "Job not found" }
-    }
+    console.log(job);
+
+    // if (!job) {
+    //   return { success: false, error: "Job not found" }
+    // }
 
     // Create the Easy Apply application entry
     const application = await prisma.jobApplication.create({
       data: {
-        jobId,
+        ...(job && {
+          externalJobId: job.externalApiJobId,
+          title: job.title,
+          company: job.company
+        }),
         userId: session.user.id,
         applicationType: "easy_apply",
         resumeId: resumeId || null,
-        externalJobId: job.externalApiJobId,
+        externalJobId: jobId,
         status: "pending",
         matchedScore: 0
       }
@@ -65,7 +77,7 @@ export async function submitEasyApply(jobId: string, resumeId?: string) {
     return { 
       success: true, 
       applicationId: application.id,
-      message: `Successfully applied to ${job.title} at ${job.company}` 
+      message: `Successfully applied to ${job?.title} at ${job?.company}` 
     }
   } catch (error) {
     console.error("Error submitting Easy Apply:", error)

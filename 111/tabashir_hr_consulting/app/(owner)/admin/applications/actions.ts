@@ -28,16 +28,7 @@ export async function getApplications(page: number = 1, limit: number = 10) {
               image: true
             }
           },
-          Job: {
-            select: {
-              id: true,
-              title: true,
-              company: true,
-              jobType: true,
-              location: true,
-              externalApiJobId: true
-            }
-          }
+          
         },
         orderBy: {
           appliedAt: 'desc'
@@ -111,5 +102,31 @@ export async function fetchJobDetailsFromAPI(jobId: string) {
   } catch (error) {
     console.error("Error fetching job details from API:", error)
     return { success: false, error: "Failed to fetch job details from external API" }
+  }
+}
+
+export async function updateApplicationStatus(applicationId: string, status: string) {
+  try {
+    const session = await auth()
+    if (!session?.user?.id) {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    // Validate status
+    const validStatuses = ['pending', 'approved', 'rejected']
+    if (!validStatuses.includes(status.toLowerCase())) {
+      return { success: false, error: "Invalid status" }
+    }
+
+    await prisma.jobApplication.update({
+      where: { id: applicationId },
+      data: { status: status.toLowerCase() }
+    })
+
+    revalidatePath("/admin/applications")
+    return { success: true, message: "Application status updated successfully" }
+  } catch (error) {
+    console.error("Error updating application status:", error)
+    return { success: false, error: "Failed to update application status" }
   }
 } 

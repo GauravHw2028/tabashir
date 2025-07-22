@@ -32,23 +32,26 @@ interface JobDetailsProps {
 }
 
 export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0, onJobApplied, userId }: JobDetailsProps) {
+  console.log(job)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState("description")
   const [showResumeModal, setShowResumeModal] = useState(false)
   const [resumeList, setResumeList] = useState<Resume[]>([])
   const [selectedResume, setSelectedResume] = useState<Resume | null>(null)
   const [isApplying, setIsApplying] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [resumeLoading, setResumeLoading] = useState(false)
   const session = useSession()
   const token = process.env.NEXT_PUBLIC_API_TOKEN;
   const router = useRouter();
   // Fetch user resumes when component mounts
   useEffect(() => {
     async function fetchResumes() {
+      setResumeLoading(true)
       const response = await getUserResumes()
       if (response.data) {
         setResumeList(response.data)
       }
+      setResumeLoading(false)
     }
     if (!isPreview) {
       fetchResumes()
@@ -65,7 +68,6 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
     try {
       // Use the latest resume if available
       const selectedResumeId = resumeList.length > 0 ? resumeList[0].id : undefined
-
       const result = await submitEasyApply(job.id, selectedResumeId)
 
       if (result.success) {
@@ -124,6 +126,8 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
         throw new Error(errorData.error || "Failed to apply for job")
       }
 
+      handleEasyApply()
+
       // Success
       setShowResumeModal(false)
       setShowSuccessModal(true)
@@ -162,41 +166,44 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
-            {resumeList.map((resume) => (
-              <div
-                key={resume.id}
-                onClick={() => setSelectedResume(resume)}
-                className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${selectedResume?.id === resume.id
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-200 hover:border-gray-300"
-                  }`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-medium text-sm truncate">{resume.filename}</h3>
-                  {selectedResume?.id === resume.id && (
-                    <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-                <p className="text-xs text-gray-500 mb-2">
-                  Uploaded: {new Date(resume.createdAt).toLocaleDateString()}
-                </p>
-                <div className="w-full h-32 bg-gray-100 rounded flex items-center justify-center">
-                  <span className="text-gray-500 text-xs">Resume Preview</span>
-                </div>
+          {resumeLoading ? <div className="flex justify-center items-center h-full mt-5 text-lg">
+            <Loader2 className="w-6 h-6 animate-spin" /> Loading...
+          </div> : <>
+            {resumeList.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                No resumes found. Please upload a resume first.
               </div>
-            ))}
-          </div>
-
-          {resumeList.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
-              No resumes found. Please upload a resume first.
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+              {resumeList.map((resume) => (
+                <div
+                  key={resume.id}
+                  onClick={() => setSelectedResume(resume)}
+                  className={`cursor-pointer rounded-lg border-2 p-4 transition-all ${selectedResume?.id === resume.id
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-gray-200 hover:border-gray-300"
+                    }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-medium text-sm truncate">{resume.filename}</h3>
+                    {selectedResume?.id === resume.id && (
+                      <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Uploaded: {new Date(resume.createdAt).toLocaleDateString()}
+                  </p>
+                  <div className="w-full h-32 bg-gray-100 rounded flex items-center justify-center">
+                    <span className="text-gray-500 text-xs">Resume Preview</span>
+                  </div>
+                </div>
+              ))}
             </div>
-          )}
+          </>}
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowResumeModal(false)}>
@@ -269,7 +276,9 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
           <div className="flex flex-col gap-2">
             {jobApplyCount > 1 && (
               <button
-                onClick={handleEasyApply}
+                onClick={() => {
+                  setShowResumeModal(true)
+                }}
                 disabled={isApplying}
                 className="w-full py-2 bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white rounded-md font-medium flex items-center justify-center gap-2 disabled:opacity-50"
               >
