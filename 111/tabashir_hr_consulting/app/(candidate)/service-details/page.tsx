@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
+import { paymentData } from "@/lib/payment-data"
 
 export default function ServiceDetailsPage() {
   const session = useSession();
@@ -28,6 +29,7 @@ export default function ServiceDetailsPage() {
     price: number
     description: string
     features?: string[]
+    link?: string
   } | null>(null)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [successServiceId, setSuccessServiceId] = useState<string | null>(null)
@@ -68,6 +70,7 @@ export default function ServiceDetailsPage() {
     price: number
     description: string
     features?: string[]
+    link?: string
   }) => {
     setSelectedService(service)
   }
@@ -99,113 +102,8 @@ export default function ServiceDetailsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {/* Business Plan Card */}
-          {/* <Card className="shadow-md hover:shadow-lg">
-            <CardHeader>
-              <div className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mr-3">
-                  <Coin className="h-4 w-4 text-amber-500" />
-                </div>
-                <div>
-                  <CardTitle className="text-xl">100AED</CardTitle>
-                  <CardDescription className="text-lg font-semibold">Business Plan</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-start">
-                  <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Applying to 100 jobs</span>
-                </div>
-                <div className="flex items-start">
-                  <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>ATS Complaint CV Writing</span>
-                </div>
-                <div className="flex items-start">
-                  <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Tailored Cover letter for each job</span>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex flex-col gap-4">
-              <Button
-                className="w-full"
-                style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
-                onClick={() => handleServiceClick({
-                  id: "business-plan",
-                  title: "Business Plan",
-                  price: 10000,
-                  description: "Perfect for job seekers looking to make their mark in the industry",
-                  features: [
-                    "Applying to 100 jobs",
-                    "ATS Complaint CV Writing",
-                    "Tailored Cover letter for each job"
-                  ],
-                })}
-              >
-                Get Service
-              </Button>
-              <p className="text-sm text-muted-foreground text-center">Plan Description</p>
-            </CardFooter>
-          </Card> */}
 
-          {/* Pro Player Plan Card - 250AED */}
-          {/* <Card className="shadow-md hover:shadow-lg">
-            <CardHeader>
-              <div className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mr-3">
-                  <Coin className="h-4 w-4 text-amber-500" />
-                </div>
-                <div>
-                  <CardTitle className="text-xl">250AED</CardTitle>
-                  <CardDescription className="text-lg font-semibold">Pro Player Plan</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-start">
-                  <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Applying to 100 jobs</span>
-                </div>
-                <div className="flex items-start">
-                  <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Interview Training 100 mins</span>
-                </div>
-                <div className="flex items-start">
-                  <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>ATS Complaint CV Writing</span>
-                </div>
-                <div className="flex items-start">
-                  <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Tailored Cover letter for each job</span>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex flex-col gap-4">
-              <Button
-                className="w-full"
-                style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
-                onClick={() => handleServiceClick({
-                  id: "pro-player-plan",
-                  title: "Pro Player Plan",
-                  price: 25000,
-                  description: "Comprehensive package for serious job seekers",
-                  features: [
-                    "Applying to 100 jobs",
-                    "Interview Training 100 mins",
-                    "ATS Complaint CV Writing",
-                    "Tailored Cover letter for each job"
-                  ],
-                })}
-              >
-                Get Service
-              </Button>
-              <p className="text-sm text-muted-foreground text-center">Plan Description</p>
-            </CardFooter>
-          </Card> */}
-
-          {/* AI Job Apply Package - 200AED */}
+          {/* AI Job Apply Package */}
           <Card className="shadow-md hover:shadow-lg">
             <CardHeader>
               <div className="flex items-center">
@@ -213,8 +111,8 @@ export default function ServiceDetailsPage() {
                   <Coin className="h-4 w-4 text-amber-500" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl">200AED</CardTitle>
-                  <CardDescription className="text-lg font-semibold">AI Job Apply</CardDescription>
+                  <CardTitle className="text-xl">{paymentData.aiJobApply.price}AED</CardTitle>
+                  <CardDescription className="text-lg font-semibold">{paymentData.aiJobApply.title}</CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -222,7 +120,7 @@ export default function ServiceDetailsPage() {
               <div className="space-y-3">
                 <div className="flex items-start">
                   <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>AI matches your CV to the best 200 jobs from our database and applies on your behalf.</span>
+                  <span>{paymentData.aiJobApply.description}</span>
                 </div>
               </div>
             </CardContent>
@@ -231,15 +129,8 @@ export default function ServiceDetailsPage() {
                 className="w-full"
                 style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
                 onClick={() => handleServiceClick({
-                  id: "ai-job-apply",
-                  title: "AI Job Apply",
-                  price: 20000,
-                  description: "Let AI find and apply to the best jobs for you",
-                  features: [
-                    "AI matches your CV to the best 200 jobs",
-                    "Automatic job applications",
-                    "Smart job matching algorithm"
-                  ],
+                  ...paymentData.aiJobApply,
+                  link: paymentData.aiJobApply.link
                 })}
               >
                 Get Service
@@ -256,21 +147,19 @@ export default function ServiceDetailsPage() {
             {/* LinkedIn Optimization */}
             <Card className="shadow-md hover:shadow-lg">
               <CardHeader>
-                <CardTitle className="text-xl">LinkedIn Optimization</CardTitle>
-                <CardDescription className="text-lg font-semibold">70AED</CardDescription>
+                <CardTitle className="text-xl">{paymentData.linkedinOptimization.title}</CardTitle>
+                <CardDescription className="text-lg font-semibold">{paymentData.linkedinOptimization.price}AED</CardDescription>
               </CardHeader>
               <CardContent>
-                <p>Enhance your professional presence with a profile that stands out to recruiters.</p>
+                <p>{paymentData.linkedinOptimization.description}</p>
               </CardContent>
               <CardFooter>
                 <Button
                   className="w-full"
                   style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
                   onClick={() => handleServiceClick({
-                    id: "linkedin-optimization",
-                    title: "LinkedIn Optimization",
-                    price: 7000,
-                    description: "Enhance your professional presence with a profile that stands out to recruiters",
+                    ...paymentData.linkedinOptimization,
+                    link: paymentData.linkedinOptimization.link
                   })}
                 >
                   Get Service
@@ -281,11 +170,11 @@ export default function ServiceDetailsPage() {
             {/* ATS CV */}
             <Card className="shadow-md hover:shadow-lg">
               <CardHeader>
-                <CardTitle className="text-xl">ATS CV</CardTitle>
-                <CardDescription className="text-lg font-semibold">40AED</CardDescription>
+                <CardTitle className="text-xl">{paymentData.cvTransformer.title}</CardTitle>
+                <CardDescription className="text-lg font-semibold">{paymentData.cvTransformer.price}AED</CardDescription>
               </CardHeader>
               <CardContent>
-                <p>Optimize your CV for Applicant Tracking Systems to increase your chances of getting noticed.</p>
+                <p>{paymentData.cvTransformer.description}</p>
               </CardContent>
               <CardFooter>
                 <Button
@@ -303,21 +192,19 @@ export default function ServiceDetailsPage() {
             {/* Interview Training */}
             <Card className="shadow-md hover:shadow-lg">
               <CardHeader>
-                <CardTitle className="text-xl">Interview Training</CardTitle>
-                <CardDescription className="text-lg font-semibold">150AED</CardDescription>
+                <CardTitle className="text-xl">{paymentData.interview.title}</CardTitle>
+                <CardDescription className="text-lg font-semibold">{paymentData.interview.price}AED</CardDescription>
               </CardHeader>
               <CardContent>
-                <p>Gain confidence and skills with tailored interview preparation and strategies.</p>
+                <p>{paymentData.interview.description}</p>
               </CardContent>
               <CardFooter>
                 <Button
                   className="w-full"
                   style={{ background: "linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)" }}
                   onClick={() => handleServiceClick({
-                    id: "interview-training",
-                    title: "Interview Training",
-                    price: 15000,
-                    description: "Gain confidence and skills with tailored interview preparation and strategies",
+                    ...paymentData.interview,
+                    link: paymentData.interview.link
                   })}
                 >
                   Get Service

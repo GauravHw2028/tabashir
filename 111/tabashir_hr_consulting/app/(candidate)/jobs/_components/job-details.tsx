@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { useSession } from "next-auth/react"
 import { submitEasyApply } from "@/actions/job/easy-apply"
+import { useRouter } from "next/navigation"
 
 interface JobDetailsProps {
   job: Job
@@ -40,6 +41,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const session = useSession()
   const token = process.env.NEXT_PUBLIC_API_TOKEN;
+  const router = useRouter();
   // Fetch user resumes when component mounts
   useEffect(() => {
     async function fetchResumes() {
@@ -73,6 +75,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
         // Call the callback to refresh the page
         if (onJobApplied) {
           onJobApplied()
+          router.refresh()
         }
       } else {
         toast.error(result.error || "Failed to apply for job")

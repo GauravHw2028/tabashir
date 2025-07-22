@@ -125,21 +125,24 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
     a.click();
   }
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     setPaymentProcessing(true)
-    // Simulate payment processing
-    setTimeout(() => {
+    try {
+      // Get the CV transformer service link from payment data
+      const { paymentData } = await import('@/lib/payment-data')
+      const cvService = paymentData.cvTransformer
+
+      if (cvService?.link) {
+        // Redirect directly to Stripe checkout link
+        window.location.href = cvService.link
+      } else {
+        throw new Error('No checkout link available for CV service')
+      }
+    } catch (error) {
+      console.error('Payment error:', error)
       setPaymentProcessing(false)
-      setPaymentSuccess(true)
-      // After successful payment, close modal and turn off editor mode
-      setTimeout(() => {
-        setShowPaymentModal(false)
-        setEditorMode(false)
-        setIsPaid(true)
-        // Update payment status in store
-        setPaymentCompleted(true)
-      }, 1500)
-    }, 2000)
+      // You can add toast notification here
+    }
   }
 
   return (

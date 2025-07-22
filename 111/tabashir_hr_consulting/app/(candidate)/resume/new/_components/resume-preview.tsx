@@ -90,18 +90,24 @@ export function ResumePreview({ isOpen, onClose, resumeName, resumeScore, resume
     }
   }
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     setPaymentProcessing(true)
-    // Simulate payment processing
-    setTimeout(() => {
+    try {
+      // Get the CV transformer service link from payment data
+      const { paymentData } = await import('@/lib/payment-data')
+      const cvService = paymentData.cvTransformer
+
+      if (cvService?.link) {
+        // Redirect directly to Stripe checkout link
+        window.location.href = cvService.link
+      } else {
+        throw new Error('No checkout link available for CV service')
+      }
+    } catch (error) {
+      console.error('Payment error:', error)
       setPaymentProcessing(false)
-      setPaymentSuccess(true)
-      // After successful payment, close modal and turn off editor mode
-      setTimeout(() => {
-        setShowPaymentModal(false)
-        setEditorMode(false)
-      }, 1500)
-    }, 2000)
+      // You can add toast notification here
+    }
   }
 
   return (
@@ -245,7 +251,11 @@ export function ResumePreview({ isOpen, onClose, resumeName, resumeScore, resume
             >
               {/* Resume Page */}
               <div
-                ref={(el) => (pageRefs.current[0] = el)}
+                ref={(el) => {
+                  if (el) {
+                    pageRefs.current[0] = el;
+                  }
+                }}
                 className="bg-white shadow-md text-black"
                 style={{
                   width: `${A4_WIDTH_PX}px`,
@@ -467,11 +477,10 @@ function SidebarNavItem({
 }) {
   return (
     <div
-      className={`p-3 rounded-md cursor-pointer transition-colors ${
-        isActive
-          ? "bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white"
-          : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 shadow-sm"
-      }`}
+      className={`p-3 rounded-md cursor-pointer transition-colors ${isActive
+        ? "bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white"
+        : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 shadow-sm"
+        }`}
       onClick={onClick}
     >
       <h3 className="font-medium text-sm">{title}</h3>

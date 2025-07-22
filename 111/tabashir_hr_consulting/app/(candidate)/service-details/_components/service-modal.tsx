@@ -17,6 +17,7 @@ interface ServiceModalProps {
     price: number
     description: string
     features?: string[]
+    link?: string
   }
 }
 
@@ -26,19 +27,28 @@ export function ServiceModal({ isOpen, onClose, service }: ServiceModalProps) {
 
   async function handlePay() {
     setLoading(true)
-    const res = await fetch('/api/payment-intent', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        amount: service.price,  // AED 50 → 5000 fils
-        currency: 'AED',
-        successUrl: `${window.location.origin}/service-details?payment_completed=true&service_id=${service.id}&user_info=${session.data?.user?.id}`,
-        cancelUrl: `${window.location.origin}/service-details`,
-      }),
-    })
+    try {
+      // Use the link from the service prop if available, otherwise get from paymentData
+      let checkoutLink = service.link
 
-    const { redirect_url } = await res.json()
-    window.location.href = redirect_url
+      if (!checkoutLink) {
+        // Fallback to paymentData
+        const { paymentData } = await import('@/lib/payment-data')
+        const serviceData = Object.values(paymentData).find(s => s.id === service.id)
+        checkoutLink = serviceData?.link
+      }
+
+      if (checkoutLink) {
+        // Redirect directly to Stripe checkout link
+        window.location.href = checkoutLink
+      } else {
+        throw new Error('No checkout link available for this service')
+      }
+    } catch (error) {
+      console.error('Payment error:', error)
+      setLoading(false)
+      // You can add toast notification here
+    }
   }
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -51,7 +61,7 @@ export function ServiceModal({ isOpen, onClose, service }: ServiceModalProps) {
 
         <div className="mt-4 space-y-6">
           <div className="bg-gray-50 p-4 rounded-lg">
-            <div className="text-3xl font-bold text-primary mb-2">{service.price / 100} AED</div>
+            <div className="text-3xl font-bold text-primary mb-2">{service.price} AED</div>
             <p className="text-gray-600">{service.description}</p>
           </div>
 

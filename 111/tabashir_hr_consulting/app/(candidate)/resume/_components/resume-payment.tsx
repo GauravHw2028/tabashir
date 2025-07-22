@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 export default function ResumePayment({
   resumeId,
@@ -14,22 +15,26 @@ export default function ResumePayment({
 }) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const session = useSession()
 
   async function handlePay() {
     setLoading(true)
-    const res = await fetch('/api/payment-intent', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        amount: 4000,  // AED 50 → 5000 fils
-        currency: 'AED',
-        successUrl: successUrl || `${window.location.origin}/resume/new/${resumeId}/skills?intent_id={PAYMENT_INTENT_ID}&payment_completed=true`,
-        cancelUrl: `${window.location.origin}/canceled`,
-      }),
-    })
+    try {
+      // Get the CV transformer service link from payment data
+      const { paymentData } = await import('@/lib/payment-data')
+      const cvService = paymentData.cvTransformer
 
-    const { redirect_url } = await res.json()
-    window.location.href = redirect_url
+      if (cvService?.link) {
+        // Redirect directly to Stripe checkout link
+        window.location.href = cvService.link
+      } else {
+        throw new Error('No checkout link available for CV service')
+      }
+    } catch (error) {
+      console.error('Payment error:', error)
+      setLoading(false)
+      // You can add toast notification here
+    }
   }
 
   if (!isOpened) return null
@@ -54,7 +59,7 @@ export default function ResumePayment({
             disabled={loading}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Processing...' : 'Pay with Ziina'}
+            {loading ? 'Processing...' : 'Pay with Stripe'}
           </button>
         </div>
       </div>

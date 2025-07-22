@@ -451,7 +451,7 @@ model Payment {
     amount         Float
     currency       String        @default("AED")
     status         PaymentStatus @default(PENDING)
-    paymentMethod  String        @default("ziina")
+    paymentMethod  String        @default("stripe")
     transactionId  String?       @unique
     paymentDate    DateTime?
     createdAt      DateTime      @default(now())
