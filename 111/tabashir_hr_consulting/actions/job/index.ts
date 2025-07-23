@@ -173,8 +173,8 @@ export async function createRecruiterJob(formData: {
       }
     })
 
-    revalidatePath("/recruiter/recruiter/jobs")
-    revalidatePath("/recruiter/recruiter/dashboard")
+    revalidatePath("/recruiter/jobs")
+    revalidatePath("/recruiter/dashboard")
     return { success: true, jobId: job.id, apiData: apiResult.data }
   } catch (error) {
     console.error("Error creating job:", error)
@@ -370,8 +370,8 @@ export async function updateRecruiterJob(jobId: string, formData: {
       }
     })
 
-    revalidatePath("/recruiter/recruiter/jobs")
-    revalidatePath("/recruiter/recruiter/dashboard")
+    revalidatePath("/recruiter/jobs")
+    revalidatePath("/recruiter/dashboard")
     return { success: true, job: updatedJob }
   } catch (error) {
     console.error("Error updating job:", error)

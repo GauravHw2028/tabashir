@@ -136,7 +136,7 @@ export default function EditJobPage() {
             description: result.error || "Failed to load job data",
             className: "bg-red-500 text-white",
           })
-          router.push("/recruiter/recruiter/jobs")
+          router.push("/recruiter/jobs")
         }
       } catch (error) {
         console.error("Error loading job:", error)
@@ -144,7 +144,7 @@ export default function EditJobPage() {
           description: "Failed to load job data. Please try again.",
           className: "bg-red-500 text-white",
         })
-        router.push("/recruiter/recruiter/jobs")
+        router.push("/recruiter/jobs")
       } finally {
         setIsLoadingJob(false)
       }
@@ -196,7 +196,7 @@ export default function EditJobPage() {
           description: "Your job posting has been updated.",
           className: "bg-green-500 text-white",
         })
-        router.push("/recruiter/recruiter/jobs")
+        router.push("/recruiter/jobs")
       } else {
         toast.error("Error updating job", {
           description: result.error || "There was an error updating your job posting. Please try again.",
@@ -230,7 +230,7 @@ export default function EditJobPage() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <div className="mb-6">
-        <Link href="/recruiter/recruiter/jobs">
+        <Link href="/recruiter/jobs">
           <Button variant="ghost" className="mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Jobs
@@ -714,7 +714,7 @@ export default function EditJobPage() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => router.push("/recruiter/recruiter/jobs")}
+              onClick={() => router.push("/recruiter/jobs")}
             >
               Cancel
             </Button>

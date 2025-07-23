@@ -102,7 +102,7 @@ export default function RecruiterDashboard() {
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-600">Welcome back! Here's what's happening with your jobs.</p>
         </div>
-        <Link href="/recruiter/recruiter/jobs/new">
+        <Link href="/recruiter/jobs/new">
           <Button className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:from-[#0D57E1] hover:to-[#042052] text-white">
             <Plus className="h-4 w-4 mr-2" />
             Create New Job
@@ -140,7 +140,7 @@ export default function RecruiterDashboard() {
                 Your recently posted job listings and their performance
               </CardDescription>
             </div>
-            <Link href="/recruiter/recruiter/jobs">
+            <Link href="/recruiter/jobs">
               <Button variant="outline" size="sm">
                 View All Jobs
               </Button>
@@ -152,7 +152,7 @@ export default function RecruiterDashboard() {
             {recentJobs.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-gray-500">No jobs posted yet</p>
-                <Link href="/recruiter/recruiter/jobs/new">
+                <Link href="/recruiter/jobs/new">
                   <Button className="mt-4">
                     <Plus className="h-4 w-4 mr-2" />
                     Create Your First Job
@@ -188,7 +188,7 @@ export default function RecruiterDashboard() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Link href={`/recruiter/recruiter/jobs/${job.id}/edit`}>
+                    <Link href={`/recruiter/jobs/${job.id}/edit`}>
                       <Button variant="ghost" size="sm">
                         <Edit className="h-4 w-4" />
                       </Button>
