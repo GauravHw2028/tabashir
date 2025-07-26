@@ -3,6 +3,7 @@
 import { Filter, Search } from "lucide-react";
 import type { Job } from "./types";
 import JobCard from "@/components/job-card";
+import { useTranslation } from "@/lib/use-translation";
 
 
 interface JobListingsProps {
@@ -38,42 +39,44 @@ export function JobListings({
   totalPages,
   onPageChange
 }: JobListingsProps) {
+  const { t, isRTL } = useTranslation()
+
   return (
-    <div className="h-full flex flex-col">
+    <div className={`h-full flex flex-col ${isRTL ? 'text-right' : ''}`}>
       {/* Header */}
       <div className="p-4 sm:p-6 border-b">
-        <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
-          <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:gap-4 sm:space-y-0">
+        <div className={`flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 ${isRTL ? 'lg:flex-row-reverse' : ''}`}>
+          <div className={`flex flex-col space-y-3 sm:flex-row sm:items-center sm:gap-4 sm:space-y-0 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
             <button
               onClick={setShowFilter}
-              className="flex items-center justify-center sm:justify-start gap-2 text-gray-600 hover:text-gray-900 py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors"
+              className={`flex items-center justify-center sm:justify-start gap-2 text-gray-600 hover:text-gray-900 py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
             >
               <Filter className="w-4 h-4" />
               <span className="text-sm font-medium">
-                {showFilters ? "Hide Filters" : "Show Filters"}
+                {showFilters ? t("hideFilters") : t("showFilters")}
               </span>
             </button>
             <div className="relative flex-1 sm:flex-initial">
               <input
                 type="text"
-                placeholder="Search jobs..."
-                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                placeholder={t("searchJobs")}
+                className={`w-full ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'} py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm ${isRTL ? 'text-right' : ''}`}
                 value={query}
                 onChange={(e) => onQueryChange(e.target.value)}
               />
-              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Search className={`w-4 h-4 absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 transform -translate-y-1/2 text-gray-400`} />
             </div>
           </div>
-          <div className="flex justify-end lg:justify-start">
+          <div className={`flex ${isRTL ? 'justify-start lg:justify-end' : 'justify-end lg:justify-start'}`}>
             <select
-              className="w-full sm:w-auto border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white"
+              className={`w-full sm:w-auto border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white ${isRTL ? 'text-right' : ''}`}
               value={sort}
               onChange={(e) => onSortChange(e.target.value as "job_date_desc" | "job_date_asc" | "salary_asc" | "salary_desc")}
             >
-              <option value="job_date_desc">Newest First</option>
-              <option value="job_date_asc">Oldest First</option>
-              <option value="salary_asc">Salary: Low to High</option>
-              <option value="salary_desc">Salary: High to Low</option>
+              <option value="job_date_desc">{t("newest")}</option>
+              <option value="job_date_asc">{t("oldest")}</option>
+              <option value="salary_asc">{t("salaryAsc")}</option>
+              <option value="salary_desc">{t("salaryDesc")}</option>
             </select>
           </div>
         </div>

@@ -8,6 +8,7 @@ import { Plus, MapPin, Clock, DollarSign, Users, Edit, Trash2 } from "lucide-rea
 import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { getRecruiterJobs } from "@/actions/job"
+import { useTranslation } from "@/lib/use-translation"
 
 interface Job {
   id: string
@@ -25,6 +26,7 @@ export default function RecruiterJobsPage() {
   const [jobs, setJobs] = useState<Job[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const { data: session } = useSession()
+  const { t, isRTL } = useTranslation()
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -68,13 +70,13 @@ export default function RecruiterJobsPage() {
 
   if (isLoading) {
     return (
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">My Jobs</h1>
+      <div className={`p-6 ${isRTL ? 'text-right' : ''}`}>
+        <div className={`flex justify-between items-center mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <h1 className="text-2xl font-bold">{t('myJobs')}</h1>
           <Link href="/recruiter/jobs/new">
             <Button className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:from-[#0D57E1] hover:to-[#042052] text-white">
-              <Plus className="h-4 w-4 mr-2" />
-              Create New Job
+              <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+              {t('createNewJob')}
             </Button>
           </Link>
         </div>
@@ -84,7 +86,7 @@ export default function RecruiterJobsPage() {
               <CardContent className="p-6">
                 <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
                 <div className="h-3 bg-gray-200 rounded w-1/2 mb-4"></div>
-                <div className="flex gap-2">
+                <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div className="h-6 bg-gray-200 rounded w-16"></div>
                   <div className="h-6 bg-gray-200 rounded w-20"></div>
                 </div>
@@ -97,35 +99,35 @@ export default function RecruiterJobsPage() {
   }
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className={`p-6 ${isRTL ? 'text-right' : ''}`}>
+      <div className={`flex justify-between items-center mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
         <div>
-          <h1 className="text-2xl font-bold">My Jobs</h1>
-          <p className="text-gray-600">Manage your job postings and applications</p>
+          <h1 className="text-2xl font-bold">{t('myJobs')}</h1>
+          <p className="text-gray-600">{t('manageJobPostings')}</p>
         </div>
         <Link href="/recruiter/jobs/new">
           <Button className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:from-[#0D57E1] hover:to-[#042052] text-white">
-            <Plus className="h-4 w-4 mr-2" />
-            Create New Job
+            <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+            {t('createNewJob')}
           </Button>
         </Link>
       </div>
 
       {jobs.length === 0 ? (
         <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
+          <CardContent className={`flex flex-col items-center justify-center py-12 ${isRTL ? 'text-right' : ''}`}>
             <div className="text-center">
               <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                 <Users className="h-12 w-12 text-gray-400" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">No jobs posted yet</h3>
+              <h3 className="text-lg font-semibold mb-2">{t('noJobsPosted')}</h3>
               <p className="text-gray-600 mb-4">
-                Start by creating your first job posting to attract top talent
+                {t('startByCreating')}
               </p>
               <Link href="/recruiter/jobs/new">
                 <Button className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:from-[#0D57E1] hover:to-[#042052] text-white">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Your First Job
+                  <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+                  {t('createFirstJob')}
                 </Button>
               </Link>
             </div>
@@ -136,51 +138,51 @@ export default function RecruiterJobsPage() {
           {jobs.map((job) => (
             <Card key={job.id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
+                <div className={`flex justify-between items-start mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                  <div className={isRTL ? 'text-right' : ''}>
                     <h3 className="text-lg font-semibold mb-1">{job.title}</h3>
                     <p className="text-gray-600 mb-2">{job.company}</p>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <span className="flex items-center gap-1">
+                    <div className={`flex items-center gap-4 text-sm text-gray-500 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <span className={`flex items-center gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                         <MapPin className="h-4 w-4" />
-                        {job.location || "Not specified"}
+                        {job.location || t('notSpecified')}
                       </span>
-                      <span className="flex items-center gap-1">
+                      <span className={`flex items-center gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                         <Clock className="h-4 w-4" />
                         {new Date(job.createdAt).toLocaleDateString()}
                       </span>
-                      <span className="flex items-center gap-1">
+                      <span className={`flex items-center gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                         <DollarSign className="h-4 w-4" />
                         {formatSalary(job.salaryMin, job.salaryMax)}
                       </span>
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <Link href={`/recruiter/jobs/${job.id}/edit`}>
                       <Button variant="outline" size="sm">
-                        <Edit className="h-4 w-4 mr-1" />
-                        Edit
+                        <Edit className={`h-4 w-4 ${isRTL ? 'ml-1' : 'mr-1'}`} />
+                        {t('edit')}
                       </Button>
                     </Link>
                     <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
-                      <Trash2 className="h-4 w-4 mr-1" />
-                      Delete
+                      <Trash2 className={`h-4 w-4 ${isRTL ? 'ml-1' : 'mr-1'}`} />
+                      {t('delete')}
                     </Button>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-2">
+                <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+                  <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <Badge className={getJobTypeColor(job.jobType)}>
-                      {job.jobType}
+                      {t(job.jobType.replace(' ', '').toLowerCase())}
                     </Badge>
-                    <Badge variant="outline" className="flex items-center gap-1">
+                    <Badge variant="outline" className={`flex items-center gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Users className="h-3 w-3" />
-                      {job.applicants?.length || 0} applications
+                      {job.applicants?.length || 0} {t('applications')}
                     </Badge>
                   </div>
                   <Button variant="outline" size="sm">
-                    View Applications
+                    {t('viewApplications')}
                   </Button>
                 </div>
               </CardContent>

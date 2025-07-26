@@ -18,6 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { FileText } from "lucide-react"
 import { useResumeStore } from "../../store/resume-store"
 import { renderAsync } from "docx-preview"
+import { useTranslation } from "@/lib/use-translation"
 
 // A4 dimensions in pixels at 96 DPI
 const A4_WIDTH_PX = 794 // 210mm at 96 DPI
@@ -36,6 +37,7 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
   const docxContainerRef = useRef<HTMLDivElement>(null)
 
   const { setPaymentCompleted, isPaymentCompleted, setSidebarVisibility, getResumeScore, editorMode, setEditorMode } = useResumeStore()
+  const { t, isRTL } = useTranslation()
 
   // Initialize isPaid from store
   useEffect(() => {
@@ -159,8 +161,8 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
   return (
     <div className="w-full min-h-screen">
       <div className="flex justify-end items-center mb-6 gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-700">Editor Mode</span>
+        <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <span className="text-sm text-gray-700">{t('editorMode')}</span>
           <Switch checked={editorMode} onCheckedChange={handleEditorModeToggle} />
         </div>
 
@@ -168,24 +170,24 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
           <PopoverTrigger asChild>
 
             <Button className="bg-[#002B6B] hover:bg-[#042052] text-gray-50 gap-2">
-              Export As <ChevronRight size={16} className="ml-1" />
+              {t('exportAs')} <ChevronRight size={16} className={isRTL ? "mr-1" : "ml-1"} />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-48 p-0">
             <div className="flex flex-col">
               <button
                 onClick={() => handleExport("pdf")}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors text-gray-700"
+                className={`flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors text-gray-700 ${isRTL ? 'flex-row-reverse' : ''}`}
               >
                 <FileText size={16} />
                 <span>PDF</span>
               </button>
               <button
                 onClick={() => handleExport("docx")}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors text-gray-700"
+                className={`flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors text-gray-700 ${isRTL ? 'flex-row-reverse' : ''}`}
               >
                 <FileText size={16} />
-                <span>Word Document</span>
+                <span>{t('wordDocument')}</span>
               </button>
             </div>
           </PopoverContent>
@@ -273,10 +275,10 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
       {/* Payment Modal */}
       <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
         <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="text-gray-900">Unlock Full Resume View</DialogTitle>
+          <DialogHeader className={isRTL ? 'text-right' : ''}>
+            <DialogTitle className="text-gray-900">{t('unlockFullResumeView')}</DialogTitle>
             <DialogDescription className="text-gray-600">
-              To view and download your resume without blur, please complete the payment.
+              {t('completePaymentToUnlock')}
             </DialogDescription>
           </DialogHeader>
 
@@ -285,50 +287,50 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
               <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
                 <Check className="h-6 w-6 text-green-600" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-1">Payment Successful!</h3>
-              <p className="text-gray-600 text-center">Your resume is now unlocked.</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-1">{t('paymentSuccessful')}</h3>
+              <p className="text-gray-600 text-center">{t('resumeNowUnlocked')}</p>
             </div>
           ) : (
             <>
               <div className="grid gap-4 py-4">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-gray-700">Resume Unlock Fee:</span>
-                  <span className="font-bold text-gray-900">40 AED</span>
+                <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+                  <span className="font-medium text-gray-700">{t('resumeUnlockFee')}:</span>
+                  <span className="font-bold text-gray-900">40 {t('aed')}</span>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="cardNumber" className="text-gray-700">
-                    Card Number
+                  <Label htmlFor="cardNumber" className={`text-gray-700 ${isRTL ? 'text-right' : ''}`}>
+                    {t('cardNumber')}
                   </Label>
-                  <Input id="cardNumber" placeholder="1234 5678 9012 3456" className="text-gray-900" />
+                  <Input id="cardNumber" placeholder="1234 5678 9012 3456" className={`text-gray-900 ${isRTL ? 'text-right' : ''}`} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="expiry" className="text-gray-700">
-                      Expiry Date
+                    <Label htmlFor="expiry" className={`text-gray-700 ${isRTL ? 'text-right' : ''}`}>
+                      {t('expiryDate')}
                     </Label>
-                    <Input id="expiry" placeholder="MM/YY" className="text-gray-900" />
+                    <Input id="expiry" placeholder="MM/YY" className={`text-gray-900 ${isRTL ? 'text-right' : ''}`} />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="cvc" className="text-gray-700">
+                    <Label htmlFor="cvc" className={`text-gray-700 ${isRTL ? 'text-right' : ''}`}>
                       CVC
                     </Label>
-                    <Input id="cvc" placeholder="123" className="text-gray-900" />
+                    <Input id="cvc" placeholder="123" className={`text-gray-900 ${isRTL ? 'text-right' : ''}`} />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-gray-700">
-                    Cardholder Name
+                  <Label htmlFor="name" className={`text-gray-700 ${isRTL ? 'text-right' : ''}`}>
+                    {t('cardholderName')}
                   </Label>
-                  <Input id="name" placeholder="John Doe" className="text-gray-900" />
+                  <Input id="name" placeholder="John Doe" className={`text-gray-900 ${isRTL ? 'text-right' : ''}`} />
                 </div>
               </div>
 
-              <DialogFooter>
+              <DialogFooter className={isRTL ? 'flex-row-reverse' : ''}>
                 <Button variant="outline" onClick={() => setShowPaymentModal(false)} className="text-gray-700">
-                  Cancel
+                  {t('cancel')}
                 </Button>
                 <Button
                   onClick={handlePayment}
@@ -336,9 +338,9 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
                   disabled={paymentProcessing}
                 >
                   {paymentProcessing ? (
-                    <span className="flex items-center gap-2">
+                    <span className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <svg
-                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-50"
+                        className={`animate-spin h-4 w-4 text-gray-50 ${isRTL ? '-mr-1 ml-2' : '-ml-1 mr-2'}`}
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -357,12 +359,12 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
                           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                         ></path>
                       </svg>
-                      Processing...
+                      {t('processing')}
                     </span>
                   ) : (
-                    <span className="flex items-center gap-2">
+                    <span className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <CreditCard className="h-4 w-4" />
-                      Pay 40 AED
+                      {t('pay')} 40 {t('aed')}
                     </span>
                   )}
                 </Button>

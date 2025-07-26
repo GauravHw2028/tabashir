@@ -242,9 +242,9 @@ export default function LikedJobsPage() {
             applicationsCount: 0, // Not available from API
             views: 0, // Not available from API
             salary: {
-              amount: jobResult.data.salary || "Not specified",
+              amount: jobResult.data.salary || t('notSpecified'),
               currency: "AED",
-              period: "month"
+              period: t('month')
             },
             description: jobResult.data.job_description,
             requirements: jobResult.data.academic_qualification,
@@ -267,7 +267,7 @@ export default function LikedJobsPage() {
       setJobs(validJobs);
     } catch (error) {
       console.error("Error fetching liked jobs:", error);
-      toast.error("Failed to fetch liked jobs");
+      toast.error(t('failedToLoad'));
     } finally {
       setLoading(false);
     }

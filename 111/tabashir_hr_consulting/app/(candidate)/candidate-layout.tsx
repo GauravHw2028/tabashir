@@ -28,7 +28,7 @@ export default function CandidateLayout({
               <div className={`flex items-center mb-2 ${isRTL ? 'flex-row-reverse' : 'flex-row'} ${pathname.startsWith("/resume") ? 'max-md:flex-col justify-between' : 'justify-end'}`}>
                 {pathname.startsWith("/resume") && <h1 className="text-4xl font-bold text-gray-900 mb-6">TABASHIR</h1>}
                 <div className="flex items-center gap-[8px]">
-                  <Button variant="outline" asChild className="flex items-center gap-3 bg-white pl-[7px] pr-4 py-5 rounded-full border border-gray-200">
+                  <Button variant="outline" asChild className="flex items-center gap-3 bg-white pl-[7px] pr-4 py-5 rounded-full border text-gray-900 border-gray-200">
                     <Link href="/account">
                       {session.user.image ? <img src={session.user.image} alt="logo" className="w-8 h-8 rounded-full border border-gray-200" /> : <User className="w-8 h-8" />}
                       <span className="text-[14px] font-medium">{session.user.name}</span>

@@ -8,27 +8,28 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getUserProfile, updateUserProfile, updatePassword } from "./actions"
 import { toast } from "sonner"
+import { useTranslation } from "@/lib/use-translation"
 
 const GENDER_OPTIONS = [
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-  { value: "other", label: "Other" },
+  { value: "male", label: "male" },
+  { value: "female", label: "female" },
+  { value: "other", label: "other" },
 ]
 
 const EXPERIENCE_OPTIONS = [
-  { value: "0-1", label: "0-1 years" },
-  { value: "1-3", label: "1-3 years" },
-  { value: "3-5", label: "3-5 years" },
-  { value: "5-10", label: "5-10 years" },
-  { value: "10+", label: "10+ years" },
+  { value: "0-1", label: "zeroToOne" },
+  { value: "1-3", label: "oneToThree" },
+  { value: "3-5", label: "threeToFive" },
+  { value: "5-10", label: "fiveToTen" },
+  { value: "10+", label: "tenPlus" },
 ]
 
 const EDUCATION_OPTIONS = [
-  { value: "high_school", label: "High School" },
-  { value: "bachelors", label: "Bachelor's Degree" },
-  { value: "masters", label: "Master's Degree" },
-  { value: "phd", label: "PhD" },
-  { value: "other", label: "Other" },
+  { value: "high_school", label: "highSchool" },
+  { value: "bachelors", label: "bachelors" },
+  { value: "masters", label: "masters" },
+  { value: "phd", label: "phd" },
+  { value: "other", label: "other" },
 ]
 
 export default function AccountPage() {
@@ -42,358 +43,314 @@ export default function AccountPage() {
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [isChangingPassword, setIsChangingPassword] = useState(false)
+  const { t, isRTL } = useTranslation()
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const data = await getUserProfile()
         setUserData(data)
-        setSkills(data.candidate?.profile?.skills || [])
+        if (data?.skills) {
+          setSkills(data.skills.split(',').map((skill: string) => skill.trim()).filter(Boolean))
+        }
       } catch (error) {
         console.error('Error fetching user data:', error)
-        toast.error("Failed to load user data")
+        toast.error(t('error'), {
+          description: t('somethingWentWrong')
+        })
       } finally {
         setLoading(false)
       }
     }
 
     fetchUserData()
-  }, [])
+  }, [t])
 
-  const startEditing = (field: string, value: string) => {
+  const handleEdit = (field: string, currentValue: string) => {
     setEditingField(field)
-    setEditValue(value)
+    setEditValue(currentValue || "")
   }
 
-  const cancelEditing = () => {
+  const handleSave = async (field: string) => {
+    try {
+      const updateData = { [field]: editValue }
+
+      if (field === 'skills') {
+        updateData.skills = skills.join(', ')
+      }
+
+      const result = await updateUserProfile(updateData)
+
+      if (result.success) {
+        setUserData({ ...userData, [field]: editValue })
+        setEditingField(null)
+        toast.success(t('success'), {
+          description: t('profileUpdated')
+        })
+      } else {
+        toast.error(t('error'), {
+          description: result.message || t('somethingWentWrong')
+        })
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error)
+      toast.error(t('error'), {
+        description: t('somethingWentWrong')
+      })
+    }
+  }
+
+  const handleCancel = () => {
     setEditingField(null)
     setEditValue("")
   }
 
-  const saveEdit = async (field: string) => {
-    try {
-      const updateData: any = {}
-      updateData[field] = editValue
-
-      await updateUserProfile(updateData)
-
-      // Update local state
-      if (field === 'name' || field === 'image') {
-        setUserData((prev: any) => ({
-          ...prev,
-          [field]: editValue
-        }))
-      } else {
-        setUserData((prev: any) => ({
-          ...prev,
-          candidate: {
-            ...prev.candidate,
-            profile: {
-              ...prev.candidate?.profile,
-              [field]: editValue
-            }
-          }
-        }))
-      }
-
-      toast.success("Profile updated successfully")
-      setEditingField(null)
-      setEditValue("")
-    } catch (error) {
-      console.error('Error updating profile:', error)
-      toast.error("Failed to update profile")
-    }
-  }
-
-  const handleSelectChange = async (field: string, value: string) => {
-    try {
-      const updateData: any = {}
-      updateData[field] = value
-
-      await updateUserProfile(updateData)
-
-      setUserData((prev: any) => ({
-        ...prev,
-        candidate: {
-          ...prev.candidate,
-          profile: {
-            ...prev.candidate?.profile,
-            [field]: value
-          }
-        }
-      }))
-
-      toast.success("Profile updated successfully")
-    } catch (error) {
-      console.error('Error updating profile:', error)
-      toast.error("Failed to update profile")
-    }
-  }
-
-  const addSkill = async () => {
-    if (newSkill.trim() !== "" && !skills.includes(newSkill.trim())) {
+  const addSkill = () => {
+    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
       const updatedSkills = [...skills, newSkill.trim()]
-      try {
-        await updateUserProfile({ skills: updatedSkills })
-        setSkills(updatedSkills)
-        setNewSkill("")
-        toast.success("Skill added successfully")
-      } catch (error) {
-        console.error('Error adding skill:', error)
-        toast.error("Failed to add skill")
-      }
+      setSkills(updatedSkills)
+      setNewSkill("")
     }
   }
 
-  const removeSkill = async (skillToRemove: string) => {
-    const updatedSkills = skills.filter((skill) => skill !== skillToRemove)
-    try {
-      await updateUserProfile({ skills: updatedSkills })
-      setSkills(updatedSkills)
-      toast.success("Skill removed successfully")
-    } catch (error) {
-      console.error('Error removing skill:', error)
-      toast.error("Failed to remove skill")
-    }
+  const removeSkill = (skillToRemove: string) => {
+    setSkills(skills.filter(skill => skill !== skillToRemove))
   }
 
   const handlePasswordChange = async () => {
     if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match")
+      toast.error(t('error'), {
+        description: t('passwordsDoNotMatch')
+      })
       return
     }
 
     if (newPassword.length < 8) {
-      toast.error("Password must be at least 8 characters long")
+      toast.error(t('error'), {
+        description: t('passwordTooShort')
+      })
       return
     }
 
+    setIsChangingPassword(true)
+
     try {
-      setIsChangingPassword(true)
-      await updatePassword(newPassword)
-      setNewPassword("")
-      setConfirmPassword("")
-      setIsChangingPassword(false)
-      toast.success("Password updated successfully")
+      const result = await updatePassword({ newPassword })
+
+      if (result.success) {
+        toast.success(t('success'), {
+          description: t('passwordUpdated')
+        })
+        setNewPassword("")
+        setConfirmPassword("")
+        setShowPassword(false)
+      } else {
+        toast.error(t('error'), {
+          description: result.message || t('somethingWentWrong')
+        })
+      }
     } catch (error) {
       console.error('Error updating password:', error)
-      toast.error("Failed to update password")
+      toast.error(t('error'), {
+        description: t('somethingWentWrong')
+      })
+    } finally {
       setIsChangingPassword(false)
     }
   }
 
+  const renderEditableField = (label: string, field: string, type = "text", options?: Array<{ value: string, label: string }>) => {
+    const currentValue = userData?.[field] || ""
+    const isEditing = editingField === field
+
+    return (
+      <div className={`space-y-2 ${isRTL ? 'text-right' : ''}`}>
+        <label className="text-sm font-medium text-gray-700">{t(label)}</label>
+        <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          {isEditing ? (
+            <>
+              {options ? (
+                <Select value={editValue} onValueChange={setEditValue}>
+                  <SelectTrigger className="flex-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {options.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {t(option.label)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input
+                  type={type}
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  className={`flex-1 ${isRTL ? 'text-right' : ''}`}
+                />
+              )}
+              <button
+                onClick={() => handleSave(field)}
+                className="p-2 text-green-600 hover:bg-green-50 rounded"
+              >
+                <Check className="h-4 w-4" />
+              </button>
+              <button
+                onClick={handleCancel}
+                className="p-2 text-gray-500 hover:bg-gray-50 rounded"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </>
+          ) : (
+            <>
+              <span className="flex-1 py-2">
+                {options ?
+                  t(options.find(opt => opt.value === currentValue)?.label || 'other') :
+                  (currentValue || t('notSpecified'))
+                }
+              </span>
+              <button
+                onClick={() => handleEdit(field, currentValue)}
+                className="p-2 text-blue-600 hover:bg-blue-50 rounded"
+              >
+                <Pencil className="h-4 w-4" />
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    )
+  }
+
   if (loading) {
-    return <div className="p-6">Loading...</div>
-  }
-
-  if (!userData) {
-    return <div className="p-6">User data not found</div>
-  }
-
-  const renderEditableField = (field: string, value: string, label: string) => (
-    <div className="grid grid-cols-1 gap-4 items-center">
-      <label className="text-black font-medium">{label}</label>
-      <div className="col-span-3">
-        {editingField === field ? (
-          <div className="flex items-center gap-2">
-            <Input
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              className="flex-1"
-            />
-            <button
-              onClick={() => saveEdit(field)}
-              className="text-green-600 hover:text-green-700"
-            >
-              <Check size={16} />
-            </button>
-            <button
-              onClick={cancelEditing}
-              className="text-red-600 hover:text-red-700"
-            >
-              <X size={16} />
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center border rounded-md p-2">
-            <span className="flex-1 text-gray-900">{value || 'Not set'}</span>
-            <button
-              onClick={() => startEditing(field, value)}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              <Pencil size={16} />
-            </button>
-          </div>
-        )}
+    return (
+      <div className={`bg-white rounded-lg p-6 min-h-[calc(100vh-35px)] flex items-center justify-center ${isRTL ? 'text-right' : ''}`}>
+        <p>{t('loading')}</p>
       </div>
-    </div>
-  )
-
-  const renderSelectField = (field: string, value: string, label: string, options: { value: string; label: string }[]) => (
-    <div className="grid grid-cols-1 gap-4 items-center">
-      <label className="text-black font-medium">{label}</label>
-      <div className="col-span-3">
-        <Select
-          value={value || ""}
-          onValueChange={(value) => handleSelectChange(field, value)}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select an option" />
-          </SelectTrigger>
-          <SelectContent>
-            {options.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
-  )
+    )
+  }
 
   return (
-    <div className="flex-1 p-6 max-lg:p-0 text-gray-900 rounded-lg max-w-3xl">
-      <div className="space-y-6">
-        {/* Personal Information */}
-        <Card>
-          <CardHeader>
-            <h2 className="text-xl font-bold">Personal Information</h2>
-          </CardHeader>
-          <CardContent className="max-w-4xl mx-auto">
-            <div className="space-y-4">
-              {renderEditableField('name', userData.name, 'Username')}
-              {renderSelectField('gender', userData.candidate?.profile?.gender, 'Gender', GENDER_OPTIONS)}
+    <div className={`bg-white rounded-lg p-6 min-h-[calc(100vh-35px)] space-y-6 ${isRTL ? 'text-right' : ''}`}>
+      <h1 className="text-2xl font-bold text-gray-900">{t('account')}</h1>
 
-              <div className="grid grid-cols-1 gap-4 items-center">
-                <label className="text-black font-medium">Profile Picture</label>
-                <div className="col-span-3">
-                  <div className="flex items-center border rounded-md p-2">
-                    <span className="flex-1 text-gray-900">Profile Picture</span>
-                    {userData.image ? (
-                      <img src={userData.image} alt="Profile" className="h-6 w-6 rounded-full object-cover" />
-                    ) : (
-                      <div className="h-6 w-6 rounded-full bg-gray-300"></div>
-                    )}
-                    <button
-                      onClick={() => startEditing('image', userData.image || '')}
-                      className="ml-2 text-gray-500 hover:text-gray-700"
-                    >
-                      <Pencil size={16} />
-                    </button>
-                  </div>
-                </div>
-              </div>
+      {/* Personal Details Section */}
+      <Card>
+        <CardHeader>
+          <h2 className="text-lg font-semibold">{t('personalDetails')}</h2>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {renderEditableField('firstName', 'firstName')}
+          {renderEditableField('lastName', 'lastName')}
+          {renderEditableField('email', 'email', 'email')}
+          {renderEditableField('phone', 'phone', 'tel')}
+          {renderEditableField('gender', 'gender', 'text', GENDER_OPTIONS)}
+        </CardContent>
+      </Card>
+
+      {/* Contact Information */}
+      <Card>
+        <CardHeader>
+          <h2 className="text-lg font-semibold">{t('contactInformation')}</h2>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {renderEditableField('address', 'address')}
+          {renderEditableField('city', 'city')}
+          {renderEditableField('country', 'country')}
+        </CardContent>
+      </Card>
+
+      {/* Professional Information */}
+      <Card>
+        <CardHeader>
+          <h2 className="text-lg font-semibold">{t('professionalInformation')}</h2>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {renderEditableField('experienceLevel', 'experience', 'text', EXPERIENCE_OPTIONS)}
+          {renderEditableField('educationLevel', 'education', 'text', EDUCATION_OPTIONS)}
+
+          {/* Skills Section */}
+          <div className={`space-y-2 ${isRTL ? 'text-right' : ''}`}>
+            <label className="text-sm font-medium text-gray-700">{t('skills')}</label>
+            <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <Input
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+                placeholder={t('addSkill')}
+                className={`flex-1 ${isRTL ? 'text-right' : ''}`}
+                onKeyPress={(e) => e.key === 'Enter' && addSkill()}
+              />
+              <button
+                onClick={addSkill}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                {t('add')}
+              </button>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Account Information */}
-        <Card>
-          <CardHeader>
-            <h2 className="text-xl font-bold">Account Information</h2>
-          </CardHeader>
-          <CardContent className="max-w-4xl mx-auto">
-            <div className="space-y-4">
-              {renderEditableField('email', userData.email, 'Email')}
-              {renderEditableField('phone', userData.candidate?.profile?.phone, 'Phone')}
-
-              <div className="grid grid-cols-1 gap-4 items-center">
-                <label className="text-black font-medium">Change Password</label>
-                <div className="col-span-3 space-y-4">
-                  <div className="relative">
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="New password"
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                    >
-                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
-                  </div>
-                  <div className="relative">
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Confirm new password"
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                    >
-                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
-                  </div>
-                  <button
-                    onClick={handlePasswordChange}
-                    disabled={isChangingPassword || !newPassword || !confirmPassword}
-                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isChangingPassword ? "Updating..." : "Update Password"}
-                  </button>
-                </div>
-              </div>
+            <div className={`flex flex-wrap gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              {skills.map((skill) => (
+                <Badge
+                  key={skill}
+                  variant="secondary"
+                  className="cursor-pointer hover:bg-red-100"
+                  onClick={() => removeSkill(skill)}
+                >
+                  {skill} ×
+                </Badge>
+              ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Professional Information */}
-        <Card>
-          <CardHeader>
-            <h2 className="text-xl font-bold">Professional Information</h2>
-          </CardHeader>
-          <CardContent className="max-w-4xl mx-auto">
-            <div className="space-y-4">
-              {renderEditableField('jobType', userData.candidate?.profile?.jobType, 'Title')}
-
-              <div className="grid grid-cols-1 gap-4 items-start">
-                <label className="text-gray-700 pt-2">Your top skills and tools</label>
-                <div className="col-span-3">
-                  <div className="flex items-start justify-between max-lg:flex-col max-lg:items-start max-lg:gap-4">
-                    <div className="flex flex-wrap gap-2">
-                      {skills.map((skill, index) => (
-                        <Badge
-                          key={index}
-                          className="bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-md py-1 px-3 cursor-pointer"
-                          onClick={() => removeSkill(skill)}
-                        >
-                          {skill}
-                        </Badge>
-                      ))}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        value={newSkill}
-                        onChange={(e) => setNewSkill(e.target.value)}
-                        placeholder="Add new skill"
-                        className="w-40"
-                      />
-                      <button
-                        onClick={addSkill}
-                        className="text-gray-500 hover:text-gray-700"
-                      >
-                        <Check size={16} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {renderSelectField('experience', userData.candidate?.profile?.experience, 'How much work experience do you have?', EXPERIENCE_OPTIONS)}
-              {renderSelectField('education', userData.candidate?.profile?.education, 'Education', EDUCATION_OPTIONS)}
+      {/* Password Change Section */}
+      <Card>
+        <CardHeader>
+          <h2 className="text-lg font-semibold">{t('changePassword')}</h2>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className={`space-y-2 ${isRTL ? 'text-right' : ''}`}>
+            <label className="text-sm font-medium text-gray-700">{t('newPassword')}</label>
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder={t('enterNewPassword')}
+                className={isRTL ? 'text-right pr-10' : 'pr-10'}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className={`absolute ${isRTL ? 'left-0' : 'right-0'} top-0 h-full px-3 py-2 text-gray-400 hover:text-gray-600`}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+
+          <div className={`space-y-2 ${isRTL ? 'text-right' : ''}`}>
+            <label className="text-sm font-medium text-gray-700">{t('confirmNewPassword')}</label>
+            <Input
+              type={showPassword ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder={t('confirmNewPassword')}
+              className={isRTL ? 'text-right' : ''}
+            />
+          </div>
+
+          <button
+            onClick={handlePasswordChange}
+            disabled={isChangingPassword || !newPassword || !confirmPassword}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isChangingPassword ? t('updating') : t('updatePassword')}
+          </button>
+        </CardContent>
+      </Card>
     </div>
   )
 }

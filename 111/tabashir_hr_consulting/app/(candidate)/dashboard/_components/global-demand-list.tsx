@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslation } from "@/lib/use-translation"
 
 interface GlobalDemandListProps {
   jobTitle: string
@@ -21,28 +22,28 @@ interface CountryDemand {
   count: number
 }
 
-const getCityMapping = (city: string): { country: string; flag: string } => {
+const getCityMapping = (city: string, t: (key: string) => string): { country: string; flag: string } => {
   const cityLower = city.toLowerCase()
 
   if (cityLower.includes('dubai') || cityLower.includes('uae') || cityLower.includes('abu dhabi') ||
     cityLower.includes('sharjah') || cityLower.includes('emirates')) {
-    return { country: "UAE", flag: "🇦🇪" }
+    return { country: t("uae"), flag: "🇦🇪" }
   }
   if (cityLower.includes('taipei') || cityLower.includes('taiwan')) {
-    return { country: "Taiwan", flag: "🇹🇼" }
+    return { country: t("taiwan"), flag: "🇹🇼" }
   }
   if (cityLower.includes('bangalore') || cityLower.includes('india')) {
-    return { country: "India", flag: "🇮🇳" }
+    return { country: t("india"), flag: "🇮🇳" }
   }
   if (cityLower.includes('المدينة المنورة') || cityLower.includes('saudi')) {
-    return { country: "Saudi Arabia", flag: "🇸🇦" }
+    return { country: t("saudiArabia"), flag: "🇸🇦" }
   }
   if (cityLower.includes('remote') || cityLower.includes('wfh')) {
-    return { country: "Remote", flag: "🌐" }
+    return { country: t("remote"), flag: "🌐" }
   }
 
   // Default for unknown/unspecified locations
-  return { country: "Other", flag: "🌍" }
+  return { country: t("other"), flag: "🌍" }
 }
 
 export function GlobalDemandList({ jobTitle, skills }: GlobalDemandListProps) {
@@ -50,6 +51,7 @@ export function GlobalDemandList({ jobTitle, skills }: GlobalDemandListProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedSkill, setSelectedSkill] = useState(skills[0])
+  const { t, isRTL } = useTranslation()
 
   const token = process.env.NEXT_PUBLIC_API_TOKEN;
 
@@ -83,7 +85,7 @@ export function GlobalDemandList({ jobTitle, skills }: GlobalDemandListProps) {
             return
           }
 
-          const { country, flag } = getCityMapping(item.vacancy_city)
+          const { country, flag } = getCityMapping(item.vacancy_city, t)
 
           if (countryMap.has(country)) {
             countryMap.get(country)!.count += item.count
@@ -116,10 +118,15 @@ export function GlobalDemandList({ jobTitle, skills }: GlobalDemandListProps) {
   }, [selectedSkill])
 
   return (
-    <div>
+    <div className={isRTL ? 'text-right' : ''}>
       <h2 className="text-xl font-medium text-gray-800 mb-6">
-        Global Demand for
-        <select name="" id="" className="border rounded-md px-3 py-1.5 text-sm cursor-pointer bg-white appearance-none pr-8 ml-3" onChange={(e) => setSelectedSkill(e.target.value)}>
+        {t('globalDemandFor')}
+        <select
+          name=""
+          id=""
+          className={`border rounded-md px-3 py-1.5 text-sm cursor-pointer bg-white appearance-none pr-8 ${isRTL ? 'mr-3' : 'ml-3'} ${isRTL ? 'text-right' : ''}`}
+          onChange={(e) => setSelectedSkill(e.target.value)}
+        >
           {skills.map((skill) => (
             <option key={skill} value={skill}>{skill}</option>
           ))}
@@ -129,20 +136,20 @@ export function GlobalDemandList({ jobTitle, skills }: GlobalDemandListProps) {
       <div className="space-y-4">
         {loading ? (
           <div className="flex items-center justify-center py-8">
-            <div className="text-gray-500">Loading...</div>
+            <div className="text-gray-500">{t('loading')}</div>
           </div>
         ) : error ? (
           <div className="flex items-center justify-center py-8">
-            <div className="text-red-500">Error: {error}</div>
+            <div className="text-red-500">{t('error')}: {error}</div>
           </div>
         ) : countries.length === 0 ? (
           <div className="flex items-center justify-center py-8">
-            <div className="text-gray-500">No data available</div>
+            <div className="text-gray-500">{t('noData')}</div>
           </div>
         ) : (
           countries.map((item) => (
-            <div key={item.country} className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div key={item.country} className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <span className="text-xl">{item.flag}</span>
                 <span className="text-sm">{item.country}</span>
               </div>

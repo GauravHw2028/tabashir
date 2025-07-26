@@ -9,6 +9,7 @@ import AdminJobCard from "../../_components/admin-job-card"
 import CreateJobCard from "../../_components/create-job-card"
 import { getJobs } from "./actions"
 import Loading from "./loading"
+import { useTranslation } from "@/lib/use-translation"
 
 export default function JobsPage() {
   const [currentPage, setCurrentPage] = useState(1)
@@ -17,6 +18,7 @@ export default function JobsPage() {
   const [totalJobs, setTotalJobs] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [loading, setLoading] = useState(true)
+  const { t, isRTL } = useTranslation()
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -40,106 +42,86 @@ export default function JobsPage() {
   }
 
   return (
-    <div className="p-6 text-gray-900">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Jobs Management</h1>
+    <div className={`p-6 text-gray-900 ${isRTL ? 'text-right' : ''}`}>
+      <div className={`flex justify-between items-center mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
+        <h1 className="text-2xl font-bold">{t('jobsManagement')}</h1>
         <Link href="/admin/jobs/new">
           <Button className="bg-gradient-to-r from-[#042052] to-[#0D57E1]">
-            <Plus className="mr-2 h-4 w-4" /> Create New Job
+            <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} /> {t('createNewJob')}
           </Button>
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        {/* Sort dropdown */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center">
-            <span className="mr-2 text-gray-700">Sort</span>
-            <Select defaultValue="latest">
-              <SelectTrigger className="w-[180px] border border-gray-200">
-                <SelectValue placeholder="Latest Posted" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="latest">Latest Posted</SelectItem>
-                <SelectItem value="oldest">Oldest Posted</SelectItem>
-                <SelectItem value="most-applications">Most Applications</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      <div className={`mb-6 flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+        <div className={`text-sm text-gray-500 ${isRTL ? 'text-right' : ''}`}>
+          {t('showing')} {(currentPage - 1) * itemsPerPage + 1} {t('to')} {Math.min(currentPage * itemsPerPage, totalJobs)} {t('of')} {totalJobs} {t('results')}
         </div>
-
-        {/* Job cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-          <CreateJobCard />
-
-          {jobs.map((job) => (
-            <AdminJobCard
-              key={job.id}
-              id={job.id}
-              title={job.title}
-              type={job.jobType}
-              applications={job.applicationsCount}
-              views={job.views.toString()}
-              postedDate={new Date(job.createdAt).toLocaleDateString()}
-              status={job.isActive ? "ACTIVE" : "PAUSED"}
-              company={job.company}
-            />
-          ))}
-        </div>
-
-        {/* Pagination */}
-        <div className="flex justify-between items-center text-sm text-gray-600">
-          <div className="flex items-center">
-            <span>Showing</span>
-            <Select
-              defaultValue="10"
-              onValueChange={(value) => {
-                setItemsPerPage(Number(value))
-                setCurrentPage(1) // Reset to first page when changing items per page
-              }}
-            >
-              <SelectTrigger className="w-[60px] mx-2 h-8">
-                <SelectValue placeholder="10" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="5">5</SelectItem>
-                <SelectItem value="10">10</SelectItem>
-                <SelectItem value="20">20</SelectItem>
-              </SelectContent>
-            </Select>
-            <span>of {totalJobs}</span>
-          </div>
-
-          <div className="flex items-center space-x-1">
-            <button
-              className="p-1 rounded-md hover:bg-gray-100 disabled:opacity-50"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <button
-                key={index}
-                className={`w-8 h-8 rounded-md ${currentPage === index + 1 ? "bg-blue-950 text-white" : "hover:bg-gray-100 text-gray-700"
-                  }`}
-                onClick={() => setCurrentPage(index + 1)}
-              >
-                {index + 1}
-              </button>
-            ))}
-
-            <button
-              className="p-1 rounded-md hover:bg-gray-100 disabled:opacity-50"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
+        <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <span className="text-sm text-gray-500">{t('itemsPerPage')}:</span>
+          <Select value={itemsPerPage.toString()} onValueChange={(value) => setItemsPerPage(Number(value))}>
+            <SelectTrigger className="w-20">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="5">5</SelectItem>
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="20">20</SelectItem>
+              <SelectItem value="50">50</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
+        <CreateJobCard />
+        {jobs.map((job) => (
+          <AdminJobCard key={job.id} job={job} />
+        ))}
+      </div>
+
+      {totalPages > 1 && (
+        <div className={`flex justify-center items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+            className={`flex items-center gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}
+          >
+            <ChevronLeft className="h-4 w-4" />
+            {t('previous')}
+          </Button>
+
+          <div className={`flex items-center gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              const pageNumber = i + 1
+              const isActive = pageNumber === currentPage
+              return (
+                <Button
+                  key={pageNumber}
+                  variant={isActive ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setCurrentPage(pageNumber)}
+                  className="w-8 h-8 p-0"
+                >
+                  {pageNumber}
+                </Button>
+              )
+            })}
+          </div>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+            disabled={currentPage === totalPages}
+            className={`flex items-center gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}
+          >
+            {t('next')}
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

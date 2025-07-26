@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import type { Job } from "../../jobs/_components/types";
 import { getAiJobApplyStatus } from "@/actions/ai-resume";
 import { toast } from "sonner";
+import { useTranslation } from "@/lib/use-translation";
 
 // Define the job interface based on API response
 interface ApiJob {
@@ -33,6 +34,7 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
   const [jobApplyCount, setJobApplyCount] = useState(0);
   const session = useSession();
   const router = useRouter();
+  const { t, isRTL } = useTranslation();
   const token = process.env.NEXT_PUBLIC_API_TOKEN;
   const fetchJobs = async () => {
     try {
@@ -123,7 +125,7 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
     return (
       <div className="px-0 max-sm:pt-5">
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center sm:space-y-0 mb-6">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Matched Jobs</h2>
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">{t('matchedJobs')}</h2>
         </div>
         <div className="flex flex-col xl:flex-row gap-6">
           <div className="w-full xl:w-[60%] 2xl:w-[58%]">
@@ -145,7 +147,7 @@ export function MatchedJobs({ jobType }: { jobType: string }) {
   return (
     <div className="px-0 max-sm:pt-5">
       <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center sm:space-y-0 mb-6">
-        <h2 className="text-lg sm:text-2xl font-semibold text-gray-800 px-3">Matched Jobs</h2>
+        <h2 className="text-lg sm:text-2xl font-semibold text-gray-800 px-3">{t('matchedJobs')}</h2>
       </div>
       <div className="flex flex-col xl:flex-row gap-6 mb-5">
         <div className="w-full xl:w-[72%] 2xl:w-[70%]">

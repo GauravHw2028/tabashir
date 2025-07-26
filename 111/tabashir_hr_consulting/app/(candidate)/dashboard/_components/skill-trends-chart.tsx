@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { ChevronDown, DivideCircleIcon } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { useTranslation } from "@/lib/use-translation"
 
 interface SkillTrendsChartProps {
   jobTitle: string
@@ -27,6 +28,7 @@ export function SkillTrendsChart({ jobTitle, skills }: SkillTrendsChartProps) {
   const [chartData, setChartData] = useState<ChartData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { t, isRTL } = useTranslation()
   const token = process.env.NEXT_PUBLIC_API_TOKEN;
   const formatMonthName = (monthString: string): string => {
     const date = new Date(monthString + "-01")
@@ -80,12 +82,17 @@ export function SkillTrendsChart({ jobTitle, skills }: SkillTrendsChartProps) {
   }, [selectedSkill])
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-medium text-gray-800">Skill Trends</h2>
-        <select name="" id="" className="border rounded-md px-3 py-1.5 text-sm cursor-pointer bg-white appearance-none pr-8" onChange={(e) => setSelectedSkill(e.target.value)}>
+    <div className={isRTL ? 'text-right' : ''}>
+      <div className={`flex justify-between items-center mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
+        <h2 className="text-xl font-medium text-gray-800">{t('skillTrends')}</h2>
+        <select
+          name=""
+          id=""
+          className={`border rounded-md px-3 py-1.5 text-sm cursor-pointer bg-white appearance-none pr-8 ${isRTL ? 'text-right' : ''}`}
+          onChange={(e) => setSelectedSkill(e.target.value)}
+        >
           {skills.map((skill) => (
-            <option value={skill}>{skill}</option>
+            <option key={skill} value={skill}>{skill}</option>
           ))}
         </select>
       </div>
@@ -93,11 +100,11 @@ export function SkillTrendsChart({ jobTitle, skills }: SkillTrendsChartProps) {
       <div className="h-64">
         {loading ? (
           <div className="flex items-center justify-center h-full">
-            <div className="text-gray-500">Loading...</div>
+            <div className="text-gray-500">{t('loading')}</div>
           </div>
         ) : error ? (
           <div className="flex items-center justify-center h-full">
-            <div className="text-red-500">Error: {error}</div>
+            <div className="text-red-500">{t('error')}: {error}</div>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
