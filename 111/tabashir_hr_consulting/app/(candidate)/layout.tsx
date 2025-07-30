@@ -10,8 +10,7 @@ export default async function CandidateLayoutPage({
   children: React.ReactNode
 }) {
   const session = await auth();
-  const candidate = await onGetUserProfile();
-  console.log("Session form candidata layout: ", session)
+  // const candidate = await onGetUserProfile();
   if (!session?.user) {
     redirect("/candidate/login")
   }
