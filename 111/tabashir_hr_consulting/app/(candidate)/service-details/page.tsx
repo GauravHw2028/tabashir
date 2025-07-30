@@ -257,20 +257,20 @@ export default function ServiceDetailsPage() {
       <TermsModal
         isOpen={showTermsModal}
         onClose={() => setShowTermsModal(false)}
-        onAccept={handleAcceptTerms}
+      // onAccept={handleAcceptTerms}
       />
 
-      <ServiceModal
+      {selectedService && <ServiceModal
         isOpen={!!selectedService}
         onClose={() => setSelectedService(null)}
         service={selectedService}
-      />
+      />}
 
-      <PaymentSuccessModal
+      {successServiceId && <PaymentSuccessModal
         isOpen={showSuccessModal}
         onClose={() => setShowSuccessModal(false)}
         serviceId={successServiceId}
-      />
+      />}
     </div>
   )
 }
