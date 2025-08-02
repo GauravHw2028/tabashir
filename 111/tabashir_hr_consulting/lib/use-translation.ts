@@ -177,189 +177,61 @@ const translations = {
     viewDetails: "View Details",
     applyToJob: "Apply to Job",
     downloading: "Downloading...",
-  },
-  ar: {
-    // Navigation
-    dashboard: "لوحة التحكم",
-    jobs: "الوظائف",
-    resume: "السيرة الذاتية",
-    appliedJobs: "الوظائف المتقدم لها",
-    likedJobs: "الوظائف المفضلة",
-    account: "الحساب",
-    interview: "تدريب المقابلات",
-    courses: "دورات مجانية",
-    community: "مجتمع الواتساب",
-    services: "تفاصيل الخدمات",
-    aiJobApply: "التقديم الذكي للوظائف",
     
-    // Buttons
-    login: "تسجيل الدخول",
-    register: "التسجيل",
-    logout: "تسجيل الخروج",
-    save: "حفظ",
-    cancel: "إلغاء",
-    apply: "تقدم",
-    submit: "إرسال",
-    edit: "تعديل",
-    delete: "حذف",
-    view: "عرض",
-    download: "تحميل",
-    upload: "رفع",
-    next: "التالي",
-    previous: "السابق",
-    back: "رجوع",
-    continue: "متابعة",
-    finish: "إنهاء",
-    close: "إغلاق",
-    confirm: "تأكيد",
-    search: "بحث",
-    filter: "تصفية",
-    clear: "مسح",
-    refresh: "تحديث",
+    // Job Status
+    newJob: "New Job",
+    featuredJob: "Featured Job",
+    urgentHiring: "Urgent Hiring",
+    fullTime: "Full Time",
+    partTime: "Part Time",
+    contract: "Contract",
+    remote: "Remote",
+    onSite: "On Site",
     
-    // Forms
-    firstName: "الاسم الأول",
-    lastName: "اسم العائلة",
-    email: "البريد الإلكتروني",
-    password: "كلمة المرور",
-    phone: "رقم الهاتف",
-    address: "العنوان",
-    city: "المدينة",
-    country: "البلد",
+    // Resume Sections
+    personalInfo: "Personal Information",
+    workExperience: "Work Experience",
+    education: "Education",
+    skills: "Skills",
+    languages: "Languages",
+    certifications: "Certifications",
     
-    // Status
-    loading: "جاري التحميل...",
-    success: "نجح",
-    error: "خطأ",
-    pending: "في الانتظار",
+    // Application States
+    easyApply: "Easy Apply",
+    saved: "Saved",
     
-    // Messages
-    welcome: "مرحباً",
-    noData: "لا توجد بيانات متاحة",
-    noResults: "لم يتم العثور على نتائج",
+    // Common Phrases
+    seeMore: "See More",
+    readMore: "Read More",
+    showLess: "Show Less",
+    learnMore: "Learn More",
+    getStarted: "Get Started",
+    tryNow: "Try Now",
     
-    // Language
-    selectLanguage: "اختر اللغة",
-    english: "English",
-    arabic: "العربية",
-    languagePreference: "سيتم حفظ تفضيل اللغة لزيارتك القادمة",
-    chooseLanguage: "اختر لغتك المفضلة لواجهة الموقع.",
+    // Time
+    today: "Today",
+    yesterday: "Yesterday",
+    thisWeek: "This Week",
+    lastWeek: "Last Week",
+    thisMonth: "This Month",
+    lastMonth: "Last Month",
+    daysAgo: "days ago",
+    hoursAgo: "hours ago",
+    minutesAgo: "minutes ago",
     
-    // Navigation
-    toggleMenu: "تبديل القائمة",
-    whatsappCommunity: "مجتمع الواتساب",
-    
-    // Job-related
-    topMatch: "أفضل مطابقة",
-    bestForYou: "الأفضل لك",
-    match: "مطابقة",
-    views: "مشاهدات",
-    applied: "متقدم",
-    applicationsCount: "طلبات",
-    postedTime: "تم النشر",
-    jobType: "نوع الوظيفة",
-    salary: "الراتب",
-    location: "الموقع",
-    company: "الشركة",
-    department: "القسم",
-    team: "الفريق",
-    requirements: "المتطلبات",
-    description: "الوصف",
-    
-    // Applied Jobs
-    appliedDate: "تاريخ التقديم",
-    position: "المنصب",
-    status: "الحالة",
-    jobTitle: "عنوان الوظيفة",
-    jobId: "معرف الوظيفة",
-    totalApplied: "إجمالي المتقدمين",
-    searchJobs: "البحث عن الوظائف...",
-    itemsPerPage: "عناصر في الصفحة",
-    showingResults: "عرض النتائج",
-    of: "من",
-    to: "إلى",
-    results: "نتائج",
-    loadingJobs: "جاري تحميل الوظائف...",
-    noJobsFound: "لم يتم العثور على وظائف",
-    tryAgain: "حاول مرة أخرى",
-    failedToLoad: "فشل في تحميل الوظائف المتقدم لها",
-    
-    // AI Job Apply
-    selectResume: "اختر السيرة الذاتية",
-    pleaseSelectResume: "يرجى اختيار سيرة ذاتية",
-    preferredPositions: "المناصب المفضلة",
-    addPosition: "إضافة منصب",
-    preferredLocations: "المواقع المفضلة",
-    nationality: "الجنسية",
-    gender: "الجنس",
-    male: "ذكر",
-    female: "أنثى",
-    submitApplication: "تقديم الطلب",
-    processingApplication: "جاري معالجة الطلب...",
-    applicationSubmitted: "تم تقديم الطلب بنجاح!",
-    
-    // Free Courses
-    freeCourses: "دورات مجانية",
-    recommendedVideos: "مقاطع فيديو موصى بها",
-    topPicksForYou: "أفضل الاختيارات لك",
-    searchInVideos: "البحث في الفيديوهات",
-    bestSeller: "الأكثر مبيعاً",
-    new: "جديد",
-    
-    // Interview Training
-    interviewTraining: "تدريب المقابلات",
-    comingSoon: "قريباً",
-    masterInterviewSkills: "أتقن مهارات المقابلة من خلال جلسات التدريب المدعومة بالذكاء الاصطناعي",
-    prepareForSuccess: "استعد للنجاح مع محاكي المقابلات المتقدم",
-    interviewPlatformDescription: "نحن نبني منصة متطورة لمساعدتك في التدريب وإتقان مهارات المقابلة مع أسئلة خاصة بالصناعة وتعليقات فورية.",
-    enterYourEmail: "أدخل بريدك الإلكتروني",
-    notifyMe: "أخبرني",
-    
-    // WhatsApp Community
-    latestUpdateFrom: "للحصول على أحدث التحديثات من تبشير",
-    joinWhatsappCommunity: "انضم إلى مجتمع الواتساب",
-    letMeJoinCommunity: "دعني أنضم للمجتمع",
-    
-    // Job Details
-    applyNow: "قدم الآن",
-    aboutJob: "عن الوظيفة",
-    jobDetails: "تفاصيل الوظيفة",
-    workingDays: "أيام العمل",
-    experienceLevel: "مستوى الخبرة",
-    qualifications: "المؤهلات",
-    
-    // Search & Filters
-    searchPreferences: "تفضيلات البحث",
-    filters: "المرشحات",
-    sortBy: "ترتيب حسب",
-    newest: "الأحدث",
-    oldest: "الأقدم",
-    salaryAsc: "الراتب (من الأقل إلى الأعلى)",
-    salaryDesc: "الراتب (من الأعلى إلى الأقل)",
-    salaryRange: "نطاق الراتب",
-    minSalary: "الحد الأدنى للراتب",
-    maxSalary: "الحد الأقصى للراتب",
-    
-    // Pagination
-    page: "صفحة",
-    previousPage: "الصفحة السابقة",
-    nextPage: "الصفحة التالية",
-    
-    // Common Actions
-    likeJob: "إعجاب بالوظيفة",
-    unlikeJob: "إلغاء الإعجاب بالوظيفة",
-    viewDetails: "عرض التفاصيل",
-    applyToJob: "تقدم للوظيفة",
-    downloading: "جاري التحميل...",
+    // Additional Filters and Sorting
+    filterBy: "Filter By",
+    allJobs: "All Jobs",
+    relevance: "Relevance",
+    datePosted: "Date Posted",
     
     // Recruiter Section
     myJobs: "My Jobs",
-    manageJobPostings: "Manage your job postings and applications",
+    manageJobPostings: "Manage job postings and applications",
     createNewJob: "Create New Job",
     noJobsPosted: "No jobs posted yet",
     startByCreating: "Start by creating your first job posting to attract top talent",
     createFirstJob: "Create Your First Job",
-    notSpecified: "Not specified",
     applications: "applications",
     viewApplications: "View Applications",
     jobsManagement: "Jobs Management",
@@ -379,39 +251,23 @@ const translations = {
     confirmPassword: "Confirm Password",
     forgotPassword: "Forgot Password",
     resetPassword: "Reset Password",
-    rememberMe: "Remember me",
+    rememberMe: "Remember Me",
     dontHaveAccount: "Don't have an account?",
     alreadyHaveAccount: "Already have an account?",
     signUp: "Sign Up",
     signIn: "Sign In",
     createAccount: "Create Account",
     
-    // Job Related
-    jobTitle: "Job Title",
-    company: "Company",
-    location: "Location",
-    jobType: "Job Type",
-    salary: "Salary",
-    description: "Description",
-    requirements: "Requirements",
+    // Additional Job Fields
     benefits: "Benefits",
-    fullTime: "Full Time",
-    partTime: "Part Time",
-    contract: "Contract",
-    internship: "Internship",
-    remote: "Remote",
-    onsite: "Onsite",
-    hybrid: "Hybrid",
     
     // Application Status
-    applied: "Applied",
-    pending: "Pending",
     reviewing: "Reviewing",
-    interview: "Interview",
+    interviewStatus: "Interview",
     hired: "Hired",
     rejected: "Rejected",
     
-    // Common Actions
+    // Common Actions Extended
     create: "Create",
     update: "Update",
     remove: "Remove",
@@ -424,25 +280,26 @@ const translations = {
     support: "Support",
     
     // Time & Dates
-    today: "Today",
-    yesterday: "Yesterday",
-    thisWeek: "This Week",
-    thisMonth: "This Month",
-    lastMonth: "Last Month",
-    createdAt: "Created",
-    updatedAt: "Updated",
+    createdAt: "Created At",
+    updatedAt: "Updated At",
+
+    selectGender: "Select Gender",
+    selectNationalities: "Select Nationalities",
+    selectCities: "Select Cities",
+    selectPositions: "Select Positions",
     
     // Status Messages
-    successfullyCreated: "Successfully created",
-    successfullyUpdated: "Successfully updated",
-    successfullyDeleted: "Successfully deleted",
-    operationFailed: "Operation failed",
+    successfullyCreated: "Successfully Created",
+    successfullyUpdated: "Successfully Updated",
+    successfullyDeleted: "Successfully Deleted",
+    operationFailed: "Operation Failed",
     pleaseTryAgain: "Please try again",
+    action: "Action",
     
     // Navigation & UI
     home: "Home",
     about: "About",
-    contact: "Contact",
+    contact: "Contact Us",
     privacy: "Privacy",
     terms: "Terms",
     menu: "Menu",
@@ -450,16 +307,12 @@ const translations = {
     header: "Header",
     footer: "Footer",
     
-    // Pagination & Lists
+    // Pagination & Lists Extended
     showing: "Showing",
-    to: "to",
-    of: "of",
-    results: "results",
-    itemsPerPage: "Items per page",
     
-    // Forms & Registration
+    // Forms & Registration Extended
     enterDetailsToCreateAccount: "Enter your details to create your account",
-    enterYourEmail: "Enter your email address",
+    enterEmailAddress: "Enter your email address",
     enterYourUsername: "Enter your username",
     enterYourPassword: "Enter your password",
     creatingAccount: "Creating account...",
@@ -469,6 +322,9 @@ const translations = {
     checkEmailForVerification: "Please check your email for verification instructions",
     somethingWentWrong: "Something went wrong. Please try again.",
     
+    whichJobPositionYouPrefer: "Which job position you prefer?",
+    citiesYouPrefer: "Cities you prefer?",
+
     // Account & Profile
     personalDetails: "Personal Details",
     contactInformation: "Contact Information",
@@ -482,7 +338,7 @@ const translations = {
     profileUpdated: "Profile updated successfully",
     passwordUpdated: "Password updated successfully",
     
-    // Resume
+    // Resume Extended
     myResumes: "My Resumes",
     uploadResume: "Upload Resume",
     downloadResume: "Download Resume",
@@ -493,9 +349,9 @@ const translations = {
     resumeDeletedSuccessfully: "Resume deleted successfully",
     confirmDeleteResume: "Are you sure you want to delete this resume?",
     
-    // Jobs & Search
+    // Jobs & Search Extended
     findJobs: "Find Jobs",
-    searchForJobs: "Search for jobs",
+    searchForJobs: "Search for Jobs",
     searchPlaceholder: "Search for jobs, companies, or keywords",
     jobSearch: "Job Search",
     searchResults: "Search Results",
@@ -503,7 +359,7 @@ const translations = {
     adjustFilters: "Try adjusting your filters or search terms",
     
     // Experience Levels
-    experienceLevel: "Experience Level",
+    experienceLevelFilter: "Experience Level",
     zeroToOne: "0-1 years",
     oneToThree: "1-3 years",
     threeToFive: "3-5 years",
@@ -518,22 +374,16 @@ const translations = {
     phd: "PhD",
     other: "Other",
     
-    // Gender
-    gender: "Gender",
-    male: "Male",
-    female: "Female",
-    other: "Other",
-    
     // Additional Form Fields
-    addSkill: "Add a skill",
+    addSkill: "Add Skill",
     add: "Add",
     enterNewPassword: "Enter new password",
     passwordsDoNotMatch: "Passwords do not match",
-    passwordTooShort: "Password must be at least 8 characters long",
+    passwordTooShort: "Password must be at least 8 characters",
     updating: "Updating...",
     
-    // Resume Management
-    noResumesFound: "No resumes found",
+    // Resume Management Extended
+    noResumesFound: "No resumes found. Please upload a resume first.",
     uploadFirstResume: "Upload your first resume to get started",
     resumeDownloadedSuccessfully: "Resume downloaded successfully",
     failedToDownloadResume: "Failed to download resume",
@@ -541,24 +391,24 @@ const translations = {
     cvUploadedSuccessfully: "CV uploaded successfully",
     failedToUploadCV: "Failed to upload CV",
     
-    // Job Loading
+    // Job Loading Extended
     failedToLoadJobs: "Failed to load jobs",
     
     // Services
     tabashirServices: "Tabashir Services",
-    tabashirServicesDesc: "Boost your career with our AI-powered professional services designed to help you stand out in the job market",
+    tabashirServicesDesc: "Elevate your career with our AI-powered professional services designed to help you stand out in the job market",
     aiResumeOptimization: "AI Resume Optimization",
     aiResumeOptimizationDesc: "Transform your resume with AI-powered analysis and optimization",
-    coverLetterGeneration: "Cover Letter Generation", 
-    coverLetterGenerationDesc: "Create compelling, personalized cover letters for any job",
+    coverLetterGeneration: "Cover Letter Generation",
+    coverLetterGenerationDesc: "Craft compelling and tailored cover letters for any job",
     interviewPreparation: "Interview Preparation",
     interviewPreparationDesc: "Master interview skills with AI-powered practice sessions",
     careerCoaching: "Career Coaching",
-    careerCoachingDesc: "One-on-one personalized career guidance from experts",
+    careerCoachingDesc: "Personalized one-on-one career guidance from experts",
     mostPopular: "Most Popular",
     selectService: "Select Service",
-    needCustomSolution: "Need a Custom Solution?",
-    needCustomSolutionDesc: "Contact our team for personalized services tailored to your specific career needs",
+    needCustomSolution: "Need a custom solution?",
+    needCustomSolutionDesc: "Contact our team for customized services tailored to your specific career needs",
     contactUs: "Contact Us",
     recentPayment: "Recent Payment",
     aed: "AED",
@@ -567,7 +417,7 @@ const translations = {
     aiAnalysisMatching: "AI Analysis & Job Matching",
     professionalFormatting: "Professional Formatting",
     keywordOptimization: "Keyword Optimization",
-    atsCompatibility: "ATS Compatibility",
+    atsCompatibility: "ATS Compatible",
     instantDownload: "Instant Download",
     personalizedCoverLetter: "Personalized Cover Letter",
     jobSpecificContent: "Job-Specific Content",
@@ -583,14 +433,14 @@ const translations = {
     careerGoalSetting: "Career Goal Setting",
     skillAssessment: "Skill Assessment",
     personalizedPlan: "Personalized Action Plan",
-    followUpSupport: "Follow-up Support",
+    followUpSupport: "Follow-Up Support",
     
     // Time Periods
-    month: "month",
-    year: "year",
-    week: "week",
-    day: "day",
-    hour: "hour",
+    month: "Month",
+    year: "Year",
+    week: "Week",
+    day: "Day",
+    hour: "Hour",
     
     // Dashboard & Charts
     totalMatchingJobs: "Total Matching Jobs",
@@ -599,16 +449,16 @@ const translations = {
     flexible: "Flexible",
     
     // Countries
-    uae: "UAE",
+    uae: "United Arab Emirates",
     taiwan: "Taiwan",
     india: "India",
     saudiArabia: "Saudi Arabia",
     
-    // Search & Job Filters
+    // Search & Job Filters Extended
     filterJobsChoice: "Filter the jobs of your choice",
-    selectLocation: "Select location",
-    selectJobType: "Select job type",
-    yearsExperience: "2 years",
+    selectLocation: "Select Location",
+    selectJobType: "Select Job Type",
+    yearsExperience: "2 Years",
     attendance: "Attendance",
     freelance: "Freelance",
     hideFilters: "Hide Filters",
@@ -623,7 +473,7 @@ const translations = {
     resumeScore: "Resume Score",
     tips: "Tips",
     generatingYourResume: "Generating Your Resume",
-    pleaseWaitWhileGenerating: "Please wait while we create your professional resume...",
+    pleaseWaitWhileGenerating: "Please wait while we generate your professional resume...",
     analyzingInformation: "Analyzing your information...",
     formattingResume: "Formatting your resume...",
     applyingProfessionalStyling: "Applying professional styling...",
@@ -643,6 +493,38 @@ const translations = {
     cardholderName: "Cardholder Name",
     processing: "Processing...",
     pay: "Pay",
+    
+    // Job Details Component
+    selectResumeToApply: "Select Resume to Apply",
+    chooseResumeForJob: "Choose which resume you'd like to use for applying to",
+    at: "at",
+    applying: "Applying...",
+    applicationSubmittedSuccessfully: "Application Submitted Successfully!",
+    applicationSubmittedMessage: "Your application for {jobTitle} at {company} has been submitted successfully. You will receive notifications about the status of your application.",
+    easyApplyViaTabashir: "Easy Apply via TABASHIR",
+    applyThroughCompanyWebsite: "Apply through Company Website",
+    forMale: "For Male",
+    forFemale: "For Female", 
+    forAll: "For all",
+    jobDescription: "Job Description",
+    noDescriptionProvided: "No description provided.",
+    noNationalityRequired: "No nationality required",
+    noExperienceRequired: "No experience required",
+    noRequirementsProvided: "No requirements provided.",
+    aboutTheCompany: "About the Company",
+    noCompanyDescriptionProvided: "No company description provided.",
+    resumePreview: "Resume Preview",
+    uploaded: "Uploaded",
+    entity: "Entity",
+    private: "Private",
+    government: "Government",
+    semiGovernment: "Semi-Government",
+    notSpecified: "Not Specified",
+    tbd: "TBD",
+    
+    // Terms and Conditions
+    termsAndConditionsText: "By accessing or using Tabashir's website, app, or related services (\"Services\"), you agree to comply with and be bound by these Terms and Conditions. We reserve the right to update or modify these Terms at any time without prior notice, and your continued use of the Services constitutes acceptance of those changes. You must be at least 18 years old or have parental consent to use our Services. You are responsible for maintaining the confidentiality of your account and for all activities under it. All content provided is owned by Tabashir and protected by intellectual property laws. You may not misuse our Services or interfere with their operation. The Services are provided \"as is\" without warranties, and Tabashir is not liable for any damages resulting from your use. We may include third-party links, which we do not control or endorse. These Terms are governed by the laws of [Your Country/State], and any disputes will be handled in the courts of that jurisdiction. We reserve the right to suspend or terminate your access at any time. For questions, contact us at [support@tabashir.ae].",
+    agreeToTermsAndConditions: "I agree on all terms and conditions",
   },
   ar: {
     // Navigation
@@ -715,6 +597,11 @@ const translations = {
     toggleMenu: "تبديل القائمة",
     whatsappCommunity: "مجتمع واتساب",
     
+    // WhatsApp Community
+    latestUpdateFrom: "للحصول على آخر التحديثات من تبشير",
+    joinWhatsappCommunity: "انضم لمجتمع واتساب هذا",
+    letMeJoinCommunity: "دعني أنضم للمجتمع",
+    
     // Job-related
     topMatch: "أفضل مطابقة",
     bestForYou: "الأفضل لك",
@@ -749,6 +636,23 @@ const translations = {
     learnMore: "تعلم المزيد",
     getStarted: "ابدأ الآن",
     tryNow: "جرب الآن",
+    comingSoon: "قريباً",
+    
+    // Free Courses
+    freeCourses: "دورات مجانية",
+    recommendedVideos: "فيديوهات موصى بها",
+    topPicksForYou: "أفضل الاختيارات لك",
+    searchInVideos: "البحث في الفيديوهات",
+    bestSeller: "الأكثر مبيعاً",
+    new: "جديد",
+    
+    // Interview Training
+    interviewTraining: "تدريب المقابلة",
+    masterInterviewSkills: "أتقن مهارات المقابلة من خلال جلسات تدريب مدعومة بالذكاء الاصطناعي",
+    prepareForSuccess: "استعد للنجاح مع محاكي المقابلات المتطور",
+    interviewPlatformDescription: "نحن نبني منصة متطورة لمساعدتك على التدرب وإتقان مهارات المقابلة مع أسئلة خاصة بالصناعة وتعليقات فورية.",
+    enterYourEmail: "أدخل بريدك الإلكتروني",
+    notifyMe: "أخطرني",
     
     // Time
     today: "اليوم",
@@ -792,7 +696,6 @@ const translations = {
     noJobsPosted: "لم يتم نشر وظائف بعد",
     startByCreating: "ابدأ بإنشاء أول إعلان وظيفة لجذب أفضل المواهب",
     createFirstJob: "إنشاء وظيفتك الأولى",
-    notSpecified: "غير محدد",
     applications: "طلبات",
     viewApplications: "عرض الطلبات",
     jobsManagement: "إدارة الوظائف",
@@ -806,6 +709,10 @@ const translations = {
     systemSettings: "إعدادات النظام",
     reports: "التقارير",
     analytics: "التحليلات",
+    selectGender: "اختر الجنس",
+    selectNationalities: "اختر الجنسية",
+    selectCities: "اختر المدن",
+    selectPositions: "اختر المناصب",
     
     // Forms & Validation
     username: "اسم المستخدم",
@@ -819,7 +726,7 @@ const translations = {
     signIn: "تسجيل الدخول",
     createAccount: "إنشاء حساب",
     
-    // Job Related
+    // Job Related - duplicate entries removed
     jobTitle: "عنوان الوظيفة",
     company: "الشركة",
     location: "الموقع",
@@ -828,19 +735,13 @@ const translations = {
     description: "الوصف",
     requirements: "المتطلبات",
     benefits: "المميزات",
-    fullTime: "دوام كامل",
-    partTime: "دوام جزئي",
-    contract: "عقد",
-    internship: "تدريب",
-    remote: "عن بُعد",
-    onsite: "في الموقع",
-    hybrid: "هجين",
+    // fullTime, partTime, contract, internship, remote, onsite, hybrid already defined earlier
+    searchJobs: "البحث عن الوظائف",
     
-    // Application Status
-    applied: "تم التقديم",
-    pending: "قيد الانتظار",
+    // Application Status - duplicate entries removed
+    // applied, pending already defined earlier
     reviewing: "قيد المراجعة",
-    interview: "مقابلة",
+    interviewStatus: "مقابلة",
     hired: "تم التوظيف",
     rejected: "مرفوض",
     
@@ -855,15 +756,14 @@ const translations = {
     notifications: "الإشعارات",
     help: "المساعدة",
     support: "الدعم",
+    searchPreferences: "البحث عن الوظائف",
     
-    // Time & Dates
-    today: "اليوم",
-    yesterday: "أمس",
-    thisWeek: "هذا الأسبوع",
-    thisMonth: "هذا الشهر",
-    lastMonth: "الشهر الماضي",
+    // Time & Dates - duplicate entries removed
+    // today, yesterday, thisWeek, thisMonth, lastMonth already defined earlier
     createdAt: "تم الإنشاء",
     updatedAt: "تم التحديث",
+
+    appliedDate: "تاريخ التقديم",
     
     // Status Messages
     successfullyCreated: "تم الإنشاء بنجاح",
@@ -871,6 +771,9 @@ const translations = {
     successfullyDeleted: "تم الحذف بنجاح",
     operationFailed: "فشلت العملية",
     pleaseTryAgain: "يرجى المحاولة مرة أخرى",
+    position: "المنصب",
+    status: "الحالة",
+    action: "الإجراء",
     
     // Navigation & UI
     home: "الرئيسية",
@@ -889,10 +792,12 @@ const translations = {
     of: "من",
     results: "نتائج",
     itemsPerPage: "عناصر لكل صفحة",
+    loadingJobs: "جاري تحميل الوظائف...",
     
     // Forms & Registration
     enterDetailsToCreateAccount: "أدخل بياناتك لإنشاء حسابك",
-    enterYourEmail: "أدخل عنوان بريدك الإلكتروني",
+    enterEmailAddress: "أدخل عنوان بريدك الإلكتروني",
+    jobId: "رقم الوظيفة",
     enterYourUsername: "أدخل اسم المستخدم",
     enterYourPassword: "أدخل كلمة المرور",
     creatingAccount: "جاري إنشاء الحساب...",
@@ -936,7 +841,7 @@ const translations = {
     adjustFilters: "جرب تعديل المرشحات أو مصطلحات البحث",
     
     // Experience Levels
-    experienceLevel: "مستوى الخبرة",
+    experienceLevelFilter: "مستوى الخبرة",
     zeroToOne: "0-1 سنة",
     oneToThree: "1-3 سنوات",
     threeToFive: "3-5 سنوات",
@@ -951,11 +856,8 @@ const translations = {
     phd: "درجة الدكتوراه",
     other: "أخرى",
     
-    // Gender
-    gender: "الجنس",
-    male: "ذكر",
-    female: "أنثى",
-    other: "أخرى",
+    // Gender - duplicate entries removed
+    // gender, male, female, other already defined earlier
     
     // Additional Form Fields
     addSkill: "أضف مهارة",
@@ -966,7 +868,7 @@ const translations = {
     updating: "جاري التحديث...",
     
     // Resume Management
-    noResumesFound: "لم يتم العثور على سير ذاتية",
+    noResumesFound: "لم يتم العثور على سير ذاتية. يرجى رفع سيرة ذاتية أولاً.",
     uploadFirstResume: "ارفع سيرتك الذاتية الأولى للبدء",
     resumeDownloadedSuccessfully: "تم تحميل السيرة الذاتية بنجاح",
     failedToDownloadResume: "فشل في تحميل السيرة الذاتية",
@@ -975,6 +877,8 @@ const translations = {
     failedToUploadCV: "فشل في رفع السيرة الذاتية",
     
     // Job Loading
+    whichJobPositionYouPrefer: "ما هي المناصب الوظيفية التي تفضلها؟",
+    citiesYouPrefer: "ما هي المدن التي تفضلها؟",
     failedToLoadJobs: "فشل في تحميل الوظائف",
     
     // Services
@@ -995,6 +899,13 @@ const translations = {
     contactUs: "اتصل بنا",
     recentPayment: "دفعة حديثة",
     aed: "درهم",
+    experience: "الخبرة",
+
+    applicationsCount: "التقديمات",
+    postedTime: "تاريخ النشر",
+    department: "القسم",
+    team: "الفريق",
+    nationality: "الجنسية",
     
     // Service Features
     aiAnalysisMatching: "تحليل الذكاء الاصطناعي ومطابقة الوظائف",
@@ -1009,6 +920,7 @@ const translations = {
     editableTemplate: "قالب قابل للتعديل",
     commonQuestions: "أسئلة شائعة في المقابلات",
     industrySpecificQuestions: "أسئلة خاصة بالصناعة",
+    gender: "الجنس",
     answerTemplates: "قوالب إجابات",
     confidenceBuilding: "نصائح بناء الثقة",
     practiceSimulations: "محاكاة التدريب",
@@ -1076,6 +988,39 @@ const translations = {
     cardholderName: "اسم حامل البطاقة",
     processing: "جاري المعالجة...",
     pay: "ادفع",
+    
+    // Job Details Component
+    selectResumeToApply: "اختر السيرة الذاتية للتقديم",
+    chooseResumeForJob: "اختر السيرة الذاتية التي تريد استخدامها للتقديم على",
+    at: "في",
+    applying: "جاري التقديم...",
+    applicationSubmittedSuccessfully: "تم إرسال الطلب بنجاح!",
+    applicationSubmittedMessage: "تم إرسال طلبك لوظيفة {jobTitle} في {company} بنجاح. ستتلقى إشعارات حول حالة طلبك.",
+    easyApplyViaTabashir: "تقديم سهل عبر تبشير",
+    applyThroughCompanyWebsite: "تقدم عبر موقع الشركة",
+    forMale: "للذكور",
+    forFemale: "للإناث",
+    forAll: "للجميع",
+    jobDescription: "وصف الوظيفة",
+    noDescriptionProvided: "لم يتم توفير وصف.",
+    noNationalityRequired: "لا يوجد متطلب جنسية",
+    noExperienceRequired: "لا يوجد متطلب خبرة",
+    noRequirementsProvided: "لم يتم توفير متطلبات.",
+    aboutTheCompany: "حول الشركة",
+    noCompanyDescriptionProvided: "لم يتم توفير وصف للشركة.",
+    resumePreview: "معاينة السيرة الذاتية",
+    uploaded: "تم الرفع",
+    entity: "الكيان",
+    private: "خاص",
+    selectResume: "اختر السيرة الذاتية",
+    government: "حكومي",
+    semiGovernment: "شبه حكومي",
+    notSpecified: "غير محدد",
+    tbd: "سيتم تحديده",
+    
+    // Terms and Conditions
+    termsAndConditionsText: "من خلال الوصول إلى أو استخدام موقع تبشير الإلكتروني أو التطبيق أو الخدمات ذات الصلة (\"الخدمات\")، فإنك توافق على الامتثال لهذه الشروط والأحكام والالتزام بها. نحتفظ بالحق في تحديث أو تعديل هذه الشروط في أي وقت دون إشعار مسبق، واستمرار استخدامك للخدمات يشكل قبولاً لتلك التغييرات. يجب أن تكون بعمر 18 عاماً على الأقل أو تحصل على موافقة الوالدين لاستخدام خدماتنا. أنت مسؤول عن الحفاظ على سرية حسابك وعن جميع الأنشطة التي تتم تحته. جميع المحتويات المقدمة مملوكة لتبشير ومحمية بقوانين الملكية الفكرية. لا يجوز لك إساءة استخدام خدماتنا أو التدخل في تشغيلها. يتم توفير الخدمات \"كما هي\" دون ضمانات، وتبشير غير مسؤولة عن أي أضرار ناتجة عن استخدامك. قد نتضمن روابط لأطراف ثالثة، والتي لا نتحكم فيها أو نؤيدها. تخضع هذه الشروط لقوانين [بلدك/ولايتك]، وستتم معالجة أي نزاعات في محاكم تلك الولاية القضائية. نحتفظ بالحق في تعليق أو إنهاء وصولك في أي وقت. للأسئلة، اتصل بنا على [support@tabashir.ae].",
+    agreeToTermsAndConditions: "أوافق على جميع الشروط والأحكام",
   }
 };
 

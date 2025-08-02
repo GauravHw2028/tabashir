@@ -6,6 +6,7 @@ import { X, Upload } from "lucide-react"
 import { Sparkles } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { onCandidateResumeUpload, onUploadResume, processResumeWithAIAfterUpload } from "@/actions/resume"
+import { useTranslation } from "@/lib/use-translation"
 
 interface ResumeUploadModalProps {
   isOpen: boolean
@@ -15,6 +16,7 @@ interface ResumeUploadModalProps {
 }
 
 export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess, onAiEnhance }: ResumeUploadModalProps) {
+  const { t } = useTranslation()
   const router = useRouter()
   const [isDragging, setIsDragging] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -91,7 +93,7 @@ export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess, onAiEnhanc
       }
     } catch (error) {
       setUploadStatus("error")
-      setErrorMessage(error instanceof Error ? error.message : "Failed to upload resume")
+      setErrorMessage(error instanceof Error ? error.message : t("failedToUploadResume"))
     } finally {
       setIsLoading(false)
     }
@@ -109,15 +111,15 @@ export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess, onAiEnhanc
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
-          aria-label="Close"
+          aria-label={t("close")}
         >
           <X size={20} />
         </button>
 
         {/* Modal content */}
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-1 text-gray-900">Upload Your Resume</h2>
-          <p className="text-sm text-gray-600 mb-6">Help recruiter know about you</p>
+          <h2 className="text-2xl font-bold mb-1 text-gray-900">{t("uploadYourResume")}</h2>
+          <p className="text-sm text-gray-600 mb-6">{t("helpRecruiterKnowAboutYou")}</p>
 
           {/* Upload area */}
           <div
@@ -138,13 +140,13 @@ export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess, onAiEnhanc
             <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-4">
               <Upload className="text-gray-500" size={24} />
             </div>
-            <p className="text-sm text-gray-600 mb-4">Drag and drop or click to upload</p>
+            <p className="text-sm text-gray-600 mb-4">{t("dragAndDropOrClickToUpload")}</p>
 
             {/* Loading overlay */}
             {isLoading && (
               <div className="absolute inset-0 bg-white/80 flex flex-col items-center justify-center rounded-lg z-10">
                 <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin mb-4"></div>
-                <p className="text-sm text-gray-700">Uploading your resume...</p>
+                <p className="text-sm text-gray-700">{t("uploadingYourResume")}</p>
               </div>
             )}
 
@@ -162,7 +164,7 @@ export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess, onAiEnhanc
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <p className="text-sm text-green-700">Resume uploaded successfully!</p>
+                <p className="text-sm text-green-700">{t("resumeUploadedSuccessfully")}</p>
               </div>
             )}
 
@@ -188,7 +190,7 @@ export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess, onAiEnhanc
           {/* Divider */}
           <div className="flex items-center mb-6">
             <div className="flex-grow h-px bg-gray-200"></div>
-            <span className="px-4 text-sm text-gray-500">Or</span>
+            <span className="px-4 text-sm text-gray-500">{t("or")}</span>
             <div className="flex-grow h-px bg-gray-200"></div>
           </div>
 
@@ -198,7 +200,7 @@ export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess, onAiEnhanc
             className="w-full py-3 bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white rounded-md font-medium flex items-center justify-center gap-2 hover:opacity-90"
           >
             <Sparkles size={16} className="text-yellow-300" />
-            Create new using AI
+            {t("createNewUsingAI")}
           </button>
 
           <button
@@ -206,7 +208,7 @@ export function ResumeUploadModal({ isOpen, onClose, onUploadSuccess, onAiEnhanc
             className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 rounded-md flex items-center gap-2 hover:opacity-90 w-full mt-3 text-center justify-center py-3 font-medium"
           >
             <Sparkles size={20} />
-            <span >Upload & Enhance</span>
+            <span>{t("uploadAndEnhance")}</span>
           </button>
         </div>
       </div>

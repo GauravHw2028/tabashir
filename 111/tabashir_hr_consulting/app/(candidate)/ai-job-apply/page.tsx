@@ -40,18 +40,18 @@ import { useSession } from "next-auth/react"
 import { ResumeUploadModal } from "../resume/_components/resume-upload-modal"
 import { useTranslation } from "@/lib/use-translation"
 
-// Define the form schema with Zod
-const formSchema = z.object({
+// Define the form schema with Zod (using translated messages)
+const createFormSchema = (t: (key: string) => string) => z.object({
   resume: z
     .string()
     .nullable()
     .refine((val) => val !== null, {
-      message: "Please select a resume",
+      message: t("pleaseSelectResume"),
     }),
-  positions: z.array(z.string()).min(1, "Please add at least one preferred position"),
-  locations: z.array(z.string()).min(1, "Please select at least one preferred location"),
-  nationality: z.array(z.string()).min(1, "Please select at least one nationality"),
-  gender: z.string().min(1, "Please select a gender"),
+  positions: z.array(z.string()).min(1, t("pleaseAddAtLeastOnePosition")),
+  locations: z.array(z.string()).min(1, t("pleaseSelectAtLeastOneLocation")),
+  nationality: z.array(z.string()).min(1, t("pleaseSelectAtLeastOneNationality")),
+  gender: z.string().min(1, t("pleaseSelectGender")),
 })
 
 type FormValues = {
@@ -302,7 +302,7 @@ export default function AIJobApplyPage() {
 
   // Initialize the form
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(createFormSchema(t)),
     defaultValues: {
       resume: null,
       positions: [],
@@ -333,7 +333,7 @@ export default function AIJobApplyPage() {
       // Find the selected resume object
       const selectedResumeObj = resumeList?.find(r => r.id === data.resume)
       if (!selectedResumeObj) {
-        toast.error("Please select a valid resume.")
+        toast.error(t("pleaseSelectValidResume"))
         setLoading(false)
         return
       }
@@ -345,12 +345,12 @@ export default function AIJobApplyPage() {
       try {
         const fileResponse = await fetch(selectedResumeObj.originalUrl)
         if (!fileResponse.ok) {
-          throw new Error("Failed to fetch resume file.")
+          throw new Error(t("failedToFetchResumeFile"))
         }
         const fileBlob = await fileResponse.blob()
         file = new File([fileBlob], selectedResumeObj.filename, { type: fileBlob.type })
       } catch (fetchErr: any) {
-        toast.error(fetchErr.message || "Could not fetch the resume file.")
+        toast.error(fetchErr.message || t("couldNotFetchResumeFile"))
         setLoading(false)
         return
       }
@@ -383,13 +383,13 @@ export default function AIJobApplyPage() {
         if (!res.ok) {
           const errorData = await res.json()
           console.log("errorData", errorData);
-          toast.error(errorData.error || "Failed to apply. Please try again.")
+          toast.error(errorData.error || t("failedToApplyTryAgain"))
           setLoading(false)
           return
         }
 
       } catch (networkErr: any) {
-        toast.error(networkErr.message || "Could not reach the server.")
+        toast.error(networkErr.message || t("couldNotReachServer"))
         setLoading(false)
         return
       } finally {
@@ -399,7 +399,7 @@ export default function AIJobApplyPage() {
       }
 
       if (!res.ok) {
-        let errorMsg = "Failed to apply. Please try again."
+        let errorMsg = t("failedToApplyTryAgain")
         try {
           const errorData = await res.json()
           if (errorData?.message) errorMsg = errorData.message
@@ -409,11 +409,11 @@ export default function AIJobApplyPage() {
         return
       }
 
-      toast.success("Your AI-powered job application has been sent to multiple employers. You'll receive notifications when employers respond to your applications.")
+      toast.success(t("aiJobApplicationSentSuccess"))
 
     } catch (error: any) {
       console.log("error", error);
-      toast.error(error.message || "Something went wrong.")
+      toast.error(error.message || t("somethingWentWrong"))
     } finally {
       setLoading(false)
     }
@@ -493,7 +493,7 @@ export default function AIJobApplyPage() {
                                     <div className="flex-1">
                                       <p className="font-medium text-sm">{item.filename.split(".")[0].slice(0, 15) + (item.filename.split(".")[0].length > 15 ? "..." : "") + item.filename.split(".")[1]}</p>
                                       <p className="text-xs text-gray-500 mt-1">
-                                        Created on: {new Date(item.createdAt).toLocaleDateString()}
+                                        {t("createdOn")}: {new Date(item.createdAt).toLocaleDateString()}
                                       </p>
                                     </div>
                                   </div>
@@ -508,7 +508,7 @@ export default function AIJobApplyPage() {
                                   <div className="flex-1">
                                     <p className="font-medium text-sm">{item.filename.split(".")[0].slice(0, 15) + (item.filename.split(".")[0].length > 15 ? "..." : "") + item.filename.split(".")[1]}</p>
                                     <p className="text-xs text-gray-500 mt-1">
-                                      Created on: {new Date(item.createdAt).toLocaleDateString()}
+                                      {t("createdOn")}: {new Date(item.createdAt).toLocaleDateString()}
                                     </p>
                                   </div>
                                 </div>
@@ -517,8 +517,8 @@ export default function AIJobApplyPage() {
                           ))
                         ) : (
                           <div className="col-span-3 text-center py-8">
-                            <div className="text-gray-500 mb-2">No resumes found</div>
-                            <p className="text-sm text-gray-400">Please upload a resume to get started</p>
+                            <div className="text-gray-500 mb-2">{t("noResumesFoundUpload")}</div>
+                            <p className="text-sm text-gray-400">{t("pleaseUploadResumeToGetStarted")}</p>
                           </div>
                         )}
                       </div>
@@ -536,8 +536,8 @@ export default function AIJobApplyPage() {
                   2
                 </div>
                 <div className="flex items-center max-lg:flex-col max-lg:items-start max-lg:gap-2">
-                  <h2 className="text-xl font-semibold max-lg:text-lg">Which Job Position you prefer</h2>
-                  <span className="text-xs text-gray-500 ml-2 max-lg:ml-0">min 5 and max 30</span>
+                  <h2 className="text-xl font-semibold max-lg:text-lg">{t("whichJobPositionYouPrefer")}</h2>
+                  <span className="text-xs text-gray-500 ml-2 max-lg:ml-0">{t("minMaxPositions")}</span>
                 </div>
               </div>
 
@@ -555,15 +555,15 @@ export default function AIJobApplyPage() {
                             className="w-full justify-between"
                           >
                             {field.value.length > 0
-                              ? `${field.value.length} positions selected`
-                              : "Select positions..."}
+                              ? `${field.value.length} ${t("positionsSelected")}`
+                              : t("selectPositions")}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-full p-0">
                           <Command>
-                            <CommandInput placeholder="Search positions..." />
-                            <CommandEmpty>No positions found.</CommandEmpty>
+                            <CommandInput placeholder={t("searchPositions")} />
+                            <CommandEmpty>{t("noPositionsFound")}</CommandEmpty>
                             <CommandGroup className="max-h-64 overflow-auto">
                               {JOB_POSITIONS.map((position) => (
                                 <CommandItem
@@ -618,7 +618,7 @@ export default function AIJobApplyPage() {
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3 max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0">
                   3
                 </div>
-                <h2 className="text-xl font-semibold max-lg:text-lg">Cities you Prefer</h2>
+                <h2 className="text-xl font-semibold max-lg:text-lg">{t("citiesYouPrefer")}</h2>
               </div>
 
               <FormField
@@ -635,15 +635,15 @@ export default function AIJobApplyPage() {
                             className="w-full justify-between"
                           >
                             {field.value.length > 0
-                              ? `${field.value.length} cities selected`
-                              : "Select cities..."}
+                              ? `${field.value.length} ${t("citiesSelected")}`
+                              : t("selectCities")}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-full p-0">
                           <Command>
-                            <CommandInput placeholder="Search cities..." />
-                            <CommandEmpty>No cities found.</CommandEmpty>
+                            <CommandInput placeholder={t("searchCities")} />
+                            <CommandEmpty>{t("noCitiesFound")}</CommandEmpty>
                             <CommandGroup className="max-h-64 overflow-auto">
                               {CITIES.map((city) => (
                                 <CommandItem
@@ -701,7 +701,7 @@ export default function AIJobApplyPage() {
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3 max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0">
                   4
                 </div>
-                <h2 className="text-xl font-semibold max-lg:text-lg">Nationality</h2>
+                <h2 className="text-xl font-semibold max-lg:text-lg">{t("nationality")}</h2>
               </div>
               <FormField
                 control={form.control}
@@ -717,15 +717,15 @@ export default function AIJobApplyPage() {
                             className="w-full justify-between"
                           >
                             {field.value.length > 0
-                              ? `${field.value.length} nationalities selected`
-                              : "Select nationalities..."}
+                              ? `${field.value.length} ${t("nationalitiesSelected")}`
+                              : t("selectNationalities")}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-full p-0">
                           <Command>
-                            <CommandInput placeholder="Search nationalities..." />
-                            <CommandEmpty>No nationalities found.</CommandEmpty>
+                            <CommandInput placeholder={t("searchNationalities")} />
+                            <CommandEmpty>{t("noNationalitiesFound")}</CommandEmpty>
                             <CommandGroup className="max-h-64 overflow-auto">
                               {NATIONALITIES.map((nat) => (
                                 <CommandItem
@@ -783,7 +783,7 @@ export default function AIJobApplyPage() {
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3 max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0">
                   5
                 </div>
-                <h2 className="text-xl font-semibold max-lg:text-lg">Gender</h2>
+                <h2 className="text-xl font-semibold max-lg:text-lg">{t("gender")}</h2>
               </div>
               <FormField
                 control={form.control}
@@ -798,14 +798,14 @@ export default function AIJobApplyPage() {
                             role="combobox"
                             className="w-full justify-between"
                           >
-                            {field.value || "Select gender..."}
+                            {field.value || t("selectGender")}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-full p-0">
                           <Command>
-                            <CommandInput placeholder="Search gender..." />
-                            <CommandEmpty>No gender found.</CommandEmpty>
+                            <CommandInput placeholder={t("searchGender")} />
+                            <CommandEmpty>{t("noGenderFound")}</CommandEmpty>
                             <CommandGroup className="max-h-32 overflow-auto">
                               {GENDERS.map((gender) => (
                                 <CommandItem
@@ -841,17 +841,17 @@ export default function AIJobApplyPage() {
               {loading ? (
                 <span className="flex items-center justify-center">
                   <Loader2 className="animate-spin mr-2 h-5 w-5" />
-                  Submitting...
+                  {t("submitting")}
                 </span>
               ) : (
-                "Start Applying my Application"
+                t("startApplyingMyApplication")
               )}
             </Button>
 
             {/* Show overall form error if any */}
             {Object.keys(formState.errors).length > 0 && (
               <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-                <p className="text-red-600 font-medium">Please fix the following errors:</p>
+                <p className="text-red-600 font-medium">{t("pleaseFixFollowingErrors")}</p>
                 <ul className="list-disc pl-5 mt-1 text-red-500 text-sm">
                   {formState.errors.resume && <li>{formState.errors.resume.message}</li>}
                   {formState.errors.positions && <li>{formState.errors.positions.message}</li>}
@@ -877,11 +877,10 @@ export default function AIJobApplyPage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-yellow-400" />
-              AI Job Apply Required
+              {t("aiJobApplyRequired")}
             </DialogTitle>
             <DialogDescription className="text-base pt-2">
-              You need to purchase the AI Job Apply service to automatically apply for jobs.
-              This feature will help you apply to multiple positions efficiently with your customized preferences.
+              {t("aiJobApplyRequiredDesc")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex gap-2 sm:gap-0">
@@ -890,13 +889,13 @@ export default function AIJobApplyPage() {
               onClick={() => setShowPurchaseModal(false)}
               className="flex-1 sm:flex-none"
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               onClick={handleGoToServiceDetails}
               className="flex-1 sm:flex-none bg-gradient-to-r from-blue-950 to-blue-700 hover:from-blue-900 hover:to-blue-600"
             >
-              View Service Details
+              {t("viewServiceDetails")}
             </Button>
           </DialogFooter>
         </DialogContent>

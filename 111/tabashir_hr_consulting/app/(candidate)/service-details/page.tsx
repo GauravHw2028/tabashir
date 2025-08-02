@@ -151,8 +151,6 @@ export default function ServiceDetailsPage() {
 
   return (
     <div className={`bg-white rounded-lg p-6 min-h-[calc(100vh-35px)] ${isRTL ? 'text-right' : ''}`}>
-      <UserProfileHeader />
-
       {latestPayment && (
         <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
           <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>

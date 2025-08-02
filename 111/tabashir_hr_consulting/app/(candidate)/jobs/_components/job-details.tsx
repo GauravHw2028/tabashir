@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button"
 import { useSession } from "next-auth/react"
 import { submitEasyApply } from "@/actions/job/easy-apply"
 import { useRouter } from "next/navigation"
+import { useTranslation } from "@/lib/use-translation"
 
 interface JobDetailsProps {
   job: Job
@@ -32,7 +33,7 @@ interface JobDetailsProps {
 }
 
 export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0, onJobApplied, userId }: JobDetailsProps) {
-  console.log(job)
+  const { t } = useTranslation()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [showResumeModal, setShowResumeModal] = useState(false)
   const [resumeList, setResumeList] = useState<Resume[]>([])
@@ -160,18 +161,18 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
       <Dialog open={showResumeModal} onOpenChange={setShowResumeModal}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Select Resume to Apply</DialogTitle>
+            <DialogTitle>{t('selectResumeToApply')}</DialogTitle>
             <DialogDescription>
-              Choose which resume you'd like to use for applying to {job.title} at {job.company}
+              {t('chooseResumeForJob')} {job.title} {t('at')} {job.company}
             </DialogDescription>
           </DialogHeader>
 
           {resumeLoading ? <div className="flex justify-center items-center h-full mt-5 text-lg">
-            <Loader2 className="w-6 h-6 animate-spin" /> Loading...
+            <Loader2 className="w-6 h-6 animate-spin" /> {t('loading')}
           </div> : <>
             {resumeList.length === 0 && (
               <div className="text-center py-8 text-gray-500">
-                No resumes found. Please upload a resume first.
+                {t('noResumesFound')}
               </div>
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
@@ -195,10 +196,10 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
                     )}
                   </div>
                   <p className="text-xs text-gray-500 mb-2">
-                    Uploaded: {new Date(resume.createdAt).toLocaleDateString()}
+                    {t('uploaded')}: {new Date(resume.createdAt).toLocaleDateString()}
                   </p>
                   <div className="w-full h-32 bg-gray-100 rounded flex items-center justify-center">
-                    <span className="text-gray-500 text-xs">Resume Preview</span>
+                    <span className="text-gray-500 text-xs">{t('resumePreview')}</span>
                   </div>
                 </div>
               ))}
@@ -207,7 +208,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowResumeModal(false)}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               onClick={handleApplyWithResume}
@@ -216,10 +217,10 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
               {isApplying ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Applying...
+                  {t('applying')}
                 </>
               ) : (
-                "Apply Now"
+                t('applyNow')
               )}
             </Button>
           </DialogFooter>
@@ -230,15 +231,14 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
       <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-green-600">Application Submitted Successfully!</DialogTitle>
+            <DialogTitle className="text-green-600">{t('applicationSubmittedSuccessfully')}</DialogTitle>
             <DialogDescription>
-              Your application for {job.title} at {job.company} has been submitted successfully.
-              You will receive notifications about the status of your application.
+              {t('applicationSubmittedMessage').replace('{jobTitle}', job.title).replace('{company}', job.company)}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button onClick={() => setShowSuccessModal(false)}>
-              Close
+              {t('close')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -248,7 +248,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100">
             <Image
-              src={getJobEntity(job.entity) === "Government" ? "/government_image.png" : "/private_image.png"}
+              src={getJobEntity(job.entity, t) === (t ? t('government') : 'Government') ? "/government_image.png" : "/private_image.png"}
               alt={job.company ? job.company + ' logo' : 'Company logo'}
               width={48}
               height={48}
@@ -258,8 +258,8 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
           <div>
             <h2 className="font-semibold text-lg text-gray-900">{job.title}</h2>
             <p className="text-sm text-gray-600">
-              {job.company === "Nan" ? "Private" : job.company}
-              {job.location === "Nan" ? ' • Not Specified' : ` • ${job.location}`}
+              {job.company === "Nan" ? t('private') : job.company}
+              {job.location === "Nan" ? ` • ${t('notSpecified')}` : ` • ${job.location}`}
             </p>
           </div>
         </div>
@@ -285,7 +285,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
                 {isApplying ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Applying...
+                    {t('applying')}
                   </>
                 ) : (
                   <>
@@ -298,7 +298,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
                         strokeLinejoin="round"
                       />
                     </svg>
-                    Easy Apply via TABASHIR
+                    {t('easyApplyViaTabashir')}
                   </>
                 )}
               </button>
@@ -307,7 +307,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
             {job.applyUrl && (
               <button onClick={() => window.open(job.applyUrl, '_blank')} className="w-full py-2 border border-gray-300 rounded-md font-medium flex items-center justify-center gap-2 text-gray-700">
                 <Globe size={16} />
-                Apply through Company Website
+                {t('applyThroughCompanyWebsite')}
               </button>
             )}
             {job.email && (
@@ -323,48 +323,48 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
           <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
             <Building2 size={20} className="text-gray-500" />
             <div>
-              <p className="text-sm text-gray-500">Company</p>
-              <p className="font-medium text-gray-900">{job.company === "Nan" ? "Private" : job.company}</p>
+              <p className="text-sm text-gray-500">{t('company')}</p>
+              <p className="font-medium text-gray-900">{job.company === "Nan" ? t('private') : job.company}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
             <Briefcase size={20} className="text-gray-500" />
             <div>
-              <p className="text-sm text-gray-500">Job Type</p>
+              <p className="text-sm text-gray-500">{t('jobType')}</p>
               <p className="font-medium text-gray-900">{job.jobType || "-"}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
             <DollarSign size={20} className="text-gray-500" />
             <div>
-              <p className="text-sm text-gray-500">Salary</p>
+              <p className="text-sm text-gray-500">{t('salary')}</p>
               <p className="font-medium text-gray-900">
-                {job.salary.amount ? job.salary.amount : "TBD"}
+                {job.salary.amount ? job.salary.amount : t('tbd')}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
             <Calendar size={20} className="text-gray-500" />
             <div>
-              <p className="text-sm text-gray-500">Posted</p>
+              <p className="text-sm text-gray-500">{t('postedTime')}</p>
               <p className="font-medium text-gray-900">{job.postedTime || "-"}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
             <User size={20} className="text-gray-500" />
             <div>
-              <p className="text-sm text-gray-500">Gender</p>
+              <p className="text-sm text-gray-500">{t('gender')}</p>
               <p className="font-medium text-gray-900">
-                {job.gender === "Male" ? "For Male" : job.gender === "Female" ? "For Female" : "For all"}
+                {job.gender === "Male" ? t('forMale') : job.gender === "Female" ? t('forFemale') : t('forAll')}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
             <Contact size={20} className="text-gray-500" />
             <div>
-              <p className="text-sm text-gray-500">Entity</p>
+              <p className="text-sm text-gray-500">{t('entity')}</p>
               <p className="font-medium text-gray-900">
-                {getJobEntity(job.entity || "")}
+                {getJobEntity(job.entity || "", t)}
               </p>
             </div>
           </div>
@@ -372,47 +372,47 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
 
         <Tabs defaultValue="description" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="description">Description</TabsTrigger>
-            <TabsTrigger value="company">Company</TabsTrigger>
+            <TabsTrigger value="description">{t('description')}</TabsTrigger>
+            <TabsTrigger value="company">{t('company')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="description" className="space-y-6 mt-6">
             <div>
-              <h3 className="font-medium mb-3 text-gray-900">Job Description</h3>
+              <h3 className="font-medium mb-3 text-gray-900">{t('jobDescription')}</h3>
               <div className="prose prose-sm max-w-none text-gray-700">
                 {/* Removing all the links https or http from description */}
-                {job.description ? job.description.replace(/https?:\/\/[^\s]+/g, '') : <span className="text-gray-400">No description provided.</span>}
+                {job.description ? job.description.replace(/https?:\/\/[^\s]+/g, '') : <span className="text-gray-400">{t('noDescriptionProvided')}</span>}
               </div>
             </div>
 
             <div>
-              <h3 className="font-medium mb-3 text-gray-900">Nationality</h3>
+              <h3 className="font-medium mb-3 text-gray-900">{t('nationality')}</h3>
               <div className="prose prose-sm max-w-none text-gray-700">
-                {job.nationality || "No nationality required"}
+                {job.nationality || t('noNationalityRequired')}
               </div>
             </div>
 
             <div>
-              <h3 className="font-medium mb-3 text-gray-900">Experience</h3>
+              <h3 className="font-medium mb-3 text-gray-900">{t('experience')}</h3>
               <div className="prose prose-sm max-w-none text-gray-700">
-                {job.experience || "No experience required"}
+                {job.experience || t('noExperienceRequired')}
               </div>
             </div>
 
             <div>
-              <h3 className="font-medium mb-3 text-gray-900">Requirements</h3>
+              <h3 className="font-medium mb-3 text-gray-900">{t('requirements')}</h3>
               <div className="prose prose-sm max-w-none text-gray-700">
-                {job.requirements ? job.requirements : <span className="text-gray-400">No requirements provided.</span>}
+                {job.requirements ? job.requirements : <span className="text-gray-400">{t('noRequirementsProvided')}</span>}
               </div>
             </div>
 
             <div>
-              <h3 className="font-medium mb-3 text-gray-900">Department</h3>
+              <h3 className="font-medium mb-3 text-gray-900">{t('department')}</h3>
               <div className="text-sm text-gray-700">{job.department || "-"}</div>
             </div>
 
             <div>
-              <h3 className="font-medium mb-3 text-gray-900">Team</h3>
+              <h3 className="font-medium mb-3 text-gray-900">{t('team')}</h3>
               <div className="text-sm text-gray-700">{job.team || "-"}</div>
             </div>
           </TabsContent>
@@ -436,10 +436,10 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
               </div>
 
               <div>
-                <h3 className="font-medium mb-3 text-gray-900">About the Company</h3>
+                <h3 className="font-medium mb-3 text-gray-900">{t('aboutTheCompany')}</h3>
                 <p className="text-sm text-gray-700">
                   {/* Removing all the links https or http from companyDescription */}
-                  {job.companyDescription ? job.companyDescription.replace(/https?:\/\/[^\s]+/g, '') : <span className="text-gray-400">No company description provided.</span>}
+                  {job.companyDescription ? job.companyDescription.replace(/https?:\/\/[^\s]+/g, '') : <span className="text-gray-400">{t('noCompanyDescriptionProvided')}</span>}
                 </p>
               </div>
             </div>
@@ -451,13 +451,26 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
 }
 
 
-export function getJobEntity(entity: string | null) {
-  if (!entity) return "Private"
+export function getJobEntity(entity: string | null, t: (key: string) => string) {
+  // Safety check to ensure t is a function
+  if (!t || typeof t !== 'function') {
+    console.warn('Translation function is not available');
+    if (!entity) return 'Private'
+    if (entity.toLowerCase().includes("government") || entity.toLowerCase().includes("govt") || entity.toLowerCase().includes("gov") || entity.toLowerCase().includes("governmental")) {
+      return 'Government'
+    } else if (entity.toLowerCase().includes("semi-government") || entity.toLowerCase().includes("semi-govt") || entity.toLowerCase().includes("semi-gov") || entity.toLowerCase().includes("semi governmental")) {
+      return 'Semi-Government'
+    } else {
+      return 'Private'
+    }
+  }
+
+  if (!entity) return t('private')
   if (entity.toLowerCase().includes("government") || entity.toLowerCase().includes("govt") || entity.toLowerCase().includes("gov") || entity.toLowerCase().includes("governmental")) {
-    return "Government"
+    return t('government')
   } else if (entity.toLowerCase().includes("semi-government") || entity.toLowerCase().includes("semi-govt") || entity.toLowerCase().includes("semi-gov") || entity.toLowerCase().includes("semi governmental")) {
-    return "Semi-Government"
+    return t('semiGovernment')
   } else {
-    return "Private"
+    return t('private')
   }
 }
