@@ -525,6 +525,9 @@ const translations = {
     // Terms and Conditions
     termsAndConditionsText: "By accessing or using Tabashir's website, app, or related services (\"Services\"), you agree to comply with and be bound by these Terms and Conditions. We reserve the right to update or modify these Terms at any time without prior notice, and your continued use of the Services constitutes acceptance of those changes. You must be at least 18 years old or have parental consent to use our Services. You are responsible for maintaining the confidentiality of your account and for all activities under it. All content provided is owned by Tabashir and protected by intellectual property laws. You may not misuse our Services or interfere with their operation. The Services are provided \"as is\" without warranties, and Tabashir is not liable for any damages resulting from your use. We may include third-party links, which we do not control or endorse. These Terms are governed by the laws of [Your Country/State], and any disputes will be handled in the courts of that jurisdiction. We reserve the right to suspend or terminate your access at any time. For questions, contact us at [support@tabashir.ae].",
     agreeToTermsAndConditions: "I agree on all terms and conditions",
+
+    noResumesFoundUpload: "No resumes found. Please upload a resume first.",
+    pleaseUploadResumeToGetStarted: "Please upload a resume to get started",
   },
   ar: {
     // Navigation
@@ -1021,6 +1024,10 @@ const translations = {
     // Terms and Conditions
     termsAndConditionsText: "من خلال الوصول إلى أو استخدام موقع تبشير الإلكتروني أو التطبيق أو الخدمات ذات الصلة (\"الخدمات\")، فإنك توافق على الامتثال لهذه الشروط والأحكام والالتزام بها. نحتفظ بالحق في تحديث أو تعديل هذه الشروط في أي وقت دون إشعار مسبق، واستمرار استخدامك للخدمات يشكل قبولاً لتلك التغييرات. يجب أن تكون بعمر 18 عاماً على الأقل أو تحصل على موافقة الوالدين لاستخدام خدماتنا. أنت مسؤول عن الحفاظ على سرية حسابك وعن جميع الأنشطة التي تتم تحته. جميع المحتويات المقدمة مملوكة لتبشير ومحمية بقوانين الملكية الفكرية. لا يجوز لك إساءة استخدام خدماتنا أو التدخل في تشغيلها. يتم توفير الخدمات \"كما هي\" دون ضمانات، وتبشير غير مسؤولة عن أي أضرار ناتجة عن استخدامك. قد نتضمن روابط لأطراف ثالثة، والتي لا نتحكم فيها أو نؤيدها. تخضع هذه الشروط لقوانين [بلدك/ولايتك]، وستتم معالجة أي نزاعات في محاكم تلك الولاية القضائية. نحتفظ بالحق في تعليق أو إنهاء وصولك في أي وقت. للأسئلة، اتصل بنا على [support@tabashir.ae].",
     agreeToTermsAndConditions: "أوافق على جميع الشروط والأحكام",
+
+    noResumesFoundUpload: "لم يتم العثور على سيرة ذاتية. يرجى رفع سيرة ذاتية أولاً.",
+
+    pleaseUploadResumeToGetStarted: "يرجى رفع سيرة ذاتية أولاً للبدء",
   }
 };
 

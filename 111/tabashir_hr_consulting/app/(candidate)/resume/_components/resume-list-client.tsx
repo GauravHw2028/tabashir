@@ -68,7 +68,7 @@ export function ResumeListClient({
     try {
       const result = await deleteResume(selectedResume.id)
 
-      if (result.success) {
+      if (!result.error) {
         setResumes(prev => prev.filter(r => r.id !== selectedResume.id))
         toast.success(t('success'), {
           description: t('resumeDeletedSuccessfully')
@@ -95,9 +95,9 @@ export function ResumeListClient({
     try {
       const result = await downloadResume(resumeId)
 
-      if (result.success && result.data) {
+      if (result.data) {
         // Create blob and download
-        const blob = new Blob([result.data], { type: 'application/pdf' })
+        const blob = new Blob([result.data.url], { type: 'application/pdf' })
         const url = window.URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
@@ -128,9 +128,9 @@ export function ResumeListClient({
   const handleAiEnhanceUpload = async (file: File) => {
     setIsLoading(true)
     try {
-      const result = await uploadCVFile(file)
+      const result = await uploadCVFile(file, "ai-enhance")
 
-      if (result.success) {
+      if (result.data) {
         toast.success(t('success'), {
           description: t('cvUploadedSuccessfully')
         })
@@ -154,7 +154,6 @@ export function ResumeListClient({
 
   return (
     <div className={`bg-white rounded-lg p-6 min-h-[calc(100vh-35px)] ${isRTL ? 'text-right' : ''}`}>
-      <UserProfileHeader />
 
       <div className="mt-6">
         <div className={`flex justify-between items-center mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
@@ -193,15 +192,15 @@ export function ResumeListClient({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {resumes.map((resume) => (
-              <div key={resume.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+              <div key={resume.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow overflow-hidden">
                 <div className={`flex items-start justify-between mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div className={`flex items-center gap-3 flex-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <div className="p-2 bg-blue-100 rounded-lg">
                       <FileText className="h-6 w-6 text-blue-600" />
                     </div>
                     <div className={`min-w-0 flex-1 ${isRTL ? 'text-right' : ''}`}>
-                      <h3 className="font-semibold text-gray-900 truncate">
-                        {resume.filename}
+                      <h3 className="font-semibold text-gray-900 truncate text-sm">
+                        {resume.filename.split(".")[0].slice(0, 15) + (resume.filename.split(".")[0].length > 15 ? "..." : "") + resume.filename.split(".")[1]}
                       </h3>
                       <p className="text-sm text-gray-500">
                         {new Date(resume.createdAt).toLocaleDateString()}
@@ -241,13 +240,12 @@ export function ResumeListClient({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onUploadSuccess={handleUploadSuccess}
+        onAiEnhance={handleAiEnhance}
       />
 
       <AiEnhanceUploadModal
         isOpen={isAiEnhanceModalOpen}
         onClose={() => setIsAiEnhanceModalOpen(false)}
-        onUpload={handleAiEnhanceUpload}
-        isLoading={isLoading}
       />
 
       <DeleteConfirmationModal
@@ -255,7 +253,7 @@ export function ResumeListClient({
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
         title={t('deleteResume')}
-        message={t('confirmDeleteResume')}
+        description={t('confirmDeleteResume')}
       />
     </div>
   )
