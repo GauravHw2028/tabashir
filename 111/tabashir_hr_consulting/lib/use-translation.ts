@@ -557,6 +557,8 @@ const translations = {
     uploadAndEnhance: "Upload & Enhance with AI",
     failedToUploadResume: "Failed to upload resume",
     or: "or",
+
+    startApplyingMyApplication: "Start Applying My Application",
   },
   ar: {
     // Navigation
@@ -1085,6 +1087,8 @@ const translations = {
     uploadAndEnhance: "رفع وتحسين بالذكاء الاصطناعي",
     failedToUploadResume: "فشل في رفع السيرة الذاتية",
     or: "أو",
+
+    startApplyingMyApplication: "ابدأ التقديم على سيرتي",
   }
 };
 
