@@ -75,11 +75,6 @@ export default function ServiceDetailsPage() {
     fetchLatestPayment()
   }, [searchParams])
 
-  const handleAcceptTerms = () => {
-    localStorage.setItem("tabashir-terms-accepted", "true")
-    setShowTermsModal(false)
-  }
-
   const handleServiceSelect = (service: {
     id: string
     title: string
@@ -92,6 +87,20 @@ export default function ServiceDetailsPage() {
   }
 
   const services = [
+    {
+      id: "ai-job-apply",
+      title: t('aiJobApply'),
+      price: 200,
+      description: t('aiJobApplyDesc'),
+      features: [
+        t('aiJobSearch'),
+        t('aiJobApplication'),
+        t('aiJobTracking'),
+        t('aiJobInterview'),
+        t('aiJobOffer')
+      ],
+      popular: true,
+    },
     {
       id: "ai-resume-optimization",
       title: t('aiResumeOptimization'),
@@ -106,17 +115,30 @@ export default function ServiceDetailsPage() {
       ],
       popular: true,
     },
+    // {
+    //   id: "cover-letter-generation",
+    //   title: t('coverLetterGeneration'),
+    //   price: 25,
+    //   description: t('coverLetterGenerationDesc'),
+    //   features: [
+    //     t('personalizedCoverLetter'),
+    //     t('jobSpecificContent'),
+    //     t('professionalTone'),
+    //     t('multipleFormats'),
+    //     t('editableTemplate')
+    //   ],
+    // },
     {
-      id: "cover-letter-generation",
-      title: t('coverLetterGeneration'),
-      price: 25,
-      description: t('coverLetterGenerationDesc'),
+      id: "linkedin-enhancement",
+      title: t('linkedinEnhancement'),
+      price: 70,
+      description: t('linkedinEnhancementDesc'),
       features: [
-        t('personalizedCoverLetter'),
-        t('jobSpecificContent'),
-        t('professionalTone'),
-        t('multipleFormats'),
-        t('editableTemplate')
+        t('profileCompletion'),
+        t('contentOptimization'),
+        t('engagementBoost'),
+        t('visibilityEnhancement'),
+        t('instantDownload')
       ],
     },
     {
@@ -130,20 +152,6 @@ export default function ServiceDetailsPage() {
         t('answerTemplates'),
         t('confidenceBuilding'),
         t('practiceSimulations')
-      ],
-      comingSoon: true,
-    },
-    {
-      id: "career-coaching",
-      title: t('careerCoaching'),
-      price: 100,
-      description: t('careerCoachingDesc'),
-      features: [
-        t('oneOnOneSession'),
-        t('careerGoalSetting'),
-        t('skillAssessment'),
-        t('personalizedPlan'),
-        t('followUpSupport')
       ],
       comingSoon: true,
     },
@@ -254,8 +262,10 @@ export default function ServiceDetailsPage() {
 
       <TermsModal
         isOpen={showTermsModal}
-        onClose={() => setShowTermsModal(false)}
-      // onAccept={handleAcceptTerms}
+        onClose={() => {
+          setShowTermsModal(false)
+          localStorage.setItem("tabashir-terms-accepted", "true")
+        }}
       />
 
       {selectedService && <ServiceModal

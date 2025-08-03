@@ -28,6 +28,13 @@ export const paymentData = {
     priceId: "price_1Rm5F9CuDksz8I2d0dwabF35",
     description: "Optimize your CV for Applicant Tracking Systems to increase your chances of getting noticed."
   },
+  // coverLetterGeneration: {
+  //   id: "cover-letter-generation",
+  //   title: "Cover Letter Generation",
+  //   price: 25,
+  //   link: "https://buy.stripe.com/eVqdR834dagF4Wp9vR2Ji00",
+  //   priceId: "price_1Rm5F9CuDksz8I2d0dwabF35",
+  // },
   interview: {
     id: "interview-training",
     title: "Interview Training",

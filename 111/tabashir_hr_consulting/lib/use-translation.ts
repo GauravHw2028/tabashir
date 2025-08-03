@@ -522,12 +522,41 @@ const translations = {
     notSpecified: "Not Specified",
     tbd: "TBD",
     
+    
     // Terms and Conditions
     termsAndConditionsText: "By accessing or using Tabashir's website, app, or related services (\"Services\"), you agree to comply with and be bound by these Terms and Conditions. We reserve the right to update or modify these Terms at any time without prior notice, and your continued use of the Services constitutes acceptance of those changes. You must be at least 18 years old or have parental consent to use our Services. You are responsible for maintaining the confidentiality of your account and for all activities under it. All content provided is owned by Tabashir and protected by intellectual property laws. You may not misuse our Services or interfere with their operation. The Services are provided \"as is\" without warranties, and Tabashir is not liable for any damages resulting from your use. We may include third-party links, which we do not control or endorse. These Terms are governed by the laws of [Your Country/State], and any disputes will be handled in the courts of that jurisdiction. We reserve the right to suspend or terminate your access at any time. For questions, contact us at [support@tabashir.ae].",
     agreeToTermsAndConditions: "I agree on all terms and conditions",
 
     noResumesFoundUpload: "No resumes found. Please upload a resume first.",
     pleaseUploadResumeToGetStarted: "Please upload a resume to get started",
+
+    profileCompletion: "Profile Completion",
+    contentOptimization: "Content Optimization",
+    engagementBoost: "Engagement Boost",
+    visibilityEnhancement: "Visibility Enhancement",
+    linkedinEnhancement: "LinkedIn Enhancement",
+    linkedinEnhancementDesc: "Enhance your LinkedIn profile with AI",
+
+    aiJobSearch: "Search for jobs with AI",
+    aiJobApplication: "Apply for jobs with AI",
+    aiJobTracking: "Track job applications with AI",
+    aiJobInterview: "Interview for jobs with AI",
+    aiJobOffer: "Offer jobs with AI",
+
+    aiJobApplyDesc: "Apply for jobs with AI",
+    aiJobSearchDesc: "Search for jobs with AI",
+    aiJobApplicationDesc: "Apply for jobs with AI",
+    aiJobTrackingDesc: "Track job applications with AI",
+    
+    // Resume Upload Modal
+    uploadYourResume: "Upload Your Resume",
+    helpRecruiterKnowAboutYou: "Help recruiters know about you",
+    dragAndDropOrClickToUpload: "Drag and drop your resume here or click to browse",
+    uploadingYourResume: "Uploading your resume...",
+    createNewUsingAI: "Create New Using AI",
+    uploadAndEnhance: "Upload & Enhance with AI",
+    failedToUploadResume: "Failed to upload resume",
+    or: "or",
   },
   ar: {
     // Navigation
@@ -1028,6 +1057,34 @@ const translations = {
     noResumesFoundUpload: "لم يتم العثور على سيرة ذاتية. يرجى رفع سيرة ذاتية أولاً.",
 
     pleaseUploadResumeToGetStarted: "يرجى رفع سيرة ذاتية أولاً للبدء",
+
+    profileCompletion: "تكملة الملف الشخصي",
+    contentOptimization: "تحسين المحتوى",
+    engagementBoost: "تعزيز التفاعل",
+    visibilityEnhancement: "تعزيز الظهور",
+    linkedinEnhancement: "تحسين ملفك الشخصي على LinkedIn",
+    linkedinEnhancementDesc: "تحسين ملفك الشخصي على LinkedIn بالذكاء الاصطناعي",
+
+    aiJobSearch: "بحث عن وظائف بالذكاء الاصطناعي",
+    aiJobApplication: "تقديم طلبات وظائف بالذكاء الاصطناعي",
+    aiJobTracking: "تتبع طلبات الوظائف بالذكاء الاصطناعي",
+    aiJobInterview: "مقابلات وظائف بالذكاء الاصطناعي",
+    aiJobOffer: "عروض وظائف بالذكاء الاصطناعي",
+    
+    aiJobApplyDesc: "تقديم طلبات وظائف بالذكاء الاصطناعي",
+    aiJobSearchDesc: "بحث عن وظائف بالذكاء الاصطناعي",
+    aiJobApplicationDesc: "تقديم طلبات وظائف بالذكاء الاصطناعي",
+    aiJobTrackingDesc: "تتبع طلبات الوظائف بالذكاء الاصطناعي",
+    
+    // Resume Upload Modal
+    uploadYourResume: "ارفع سيرتك الذاتية",
+    helpRecruiterKnowAboutYou: "ساعد أصحاب العمل على معرفة المزيد عنك",
+    dragAndDropOrClickToUpload: "اسحب وأفلت سيرتك الذاتية هنا أو انقر للتصفح",
+    uploadingYourResume: "جاري رفع سيرتك الذاتية...",
+    createNewUsingAI: "إنشاء جديد باستخدام الذكاء الاصطناعي",
+    uploadAndEnhance: "رفع وتحسين بالذكاء الاصطناعي",
+    failedToUploadResume: "فشل في رفع السيرة الذاتية",
+    or: "أو",
   }
 };
 

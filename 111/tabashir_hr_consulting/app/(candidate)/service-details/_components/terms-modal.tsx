@@ -12,6 +12,7 @@ interface TermsModalProps {
 
 export function TermsModal({ isOpen, onClose }: TermsModalProps) {
   const [agreed, setAgreed] = useState(false)
+
   const { t, isRTL } = useTranslation()
 
   if (!isOpen) return null
