@@ -51,8 +51,6 @@ export async function POST(request: Request) {
 }
 
 async function handleCheckoutSessionCompleted(session: any) {
-  console.log('Checkout session completed:', session.id);
-  
   const { serviceId, userId, resumeId, serviceTitle } = session.metadata;
   const amount = session.amount_total / 100; // Convert from cents
   const currency = session.currency.toUpperCase();

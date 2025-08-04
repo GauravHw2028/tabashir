@@ -45,16 +45,13 @@ export function JobListings({
     <div className={`h-full flex flex-col ${isRTL ? 'text-right' : ''}`}>
       {/* Header */}
       <div className="p-4 sm:p-6 border-b">
-        <div className={`flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 ${isRTL ? 'lg:flex-row-reverse' : ''}`}>
+        <div className={`flex flex-col gap-2 space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 ${isRTL ? 'lg:flex-row-reverse' : ''}`}>
           <div className={`flex flex-col space-y-3 sm:flex-row sm:items-center sm:gap-4 sm:space-y-0 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
             <button
               onClick={setShowFilter}
               className={`flex items-center justify-center sm:justify-start gap-2 text-gray-600 hover:text-gray-900 py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
             >
               <Filter className="w-4 h-4" />
-              <span className="text-sm font-medium">
-                {showFilters ? t("hideFilters") : t("showFilters")}
-              </span>
             </button>
             <div className="relative flex-1 sm:flex-initial">
               <input
@@ -69,7 +66,7 @@ export function JobListings({
           </div>
           <div className={`flex ${isRTL ? 'justify-start lg:justify-end' : 'justify-end lg:justify-start'}`}>
             <select
-              className={`w-full sm:w-auto border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white ${isRTL ? 'text-right' : ''}`}
+              className={`w-full sm:w-auto border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white text-black ${isRTL ? 'text-right' : ''}`}
               value={sort}
               onChange={(e) => onSortChange(e.target.value as "job_date_desc" | "job_date_asc" | "salary_asc" | "salary_desc")}
             >

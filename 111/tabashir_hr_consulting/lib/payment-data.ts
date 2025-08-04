@@ -13,15 +13,15 @@ export const paymentData = {
     ]
   },
   linkedinOptimization: {
-    id: "linkedin-optimization",
+    id: "linkedin-enhancement",
     title: "LinkedIn Optimization",
-    price: 70,
+    price: 60,
     priceId: "price_1RmrmgCuDksz8I2d7NljczWE",
     description: "Enhance your professional presence with a profile that stands out to recruiters.",
     link: "https://buy.stripe.com/14A5kC6gpcoN60tazV2Ji01",
   },
   cvTransformer: {
-    id: "cv-transformer",
+    id: "ai-resume-optimization",
     title: "ATS CV",
     price: 40,
     link: "https://buy.stripe.com/eVqdR834dagF4Wp9vR2Ji00",

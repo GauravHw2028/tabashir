@@ -131,7 +131,7 @@ export default function ServiceDetailsPage() {
     {
       id: "linkedin-enhancement",
       title: t('linkedinEnhancement'),
-      price: 70,
+      price: 60,
       description: t('linkedinEnhancementDesc'),
       features: [
         t('profileCompletion'),
