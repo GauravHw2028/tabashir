@@ -763,11 +763,46 @@ export async function submitAiJobApply(jobCount: boolean, aiJobApplyCount: boole
       id: session.user.id,
     },
     data: {
-      jobCount: jobCount ? dbUser.jobCount - 1 : dbUser.jobCount,
       aiJobApplyCount: aiJobApplyCount ? dbUser.aiJobApplyCount - 1 : dbUser.aiJobApplyCount,
     },
   });
 
+  if (!updatedUser) {
+    return { error: true, message: "Failed to update user" };
+  }
+
+  return {
+    error: false,
+    message: "User updated successfully!",
+  };
+}
+
+export async function submitJobApply(userId: string) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { error: true, message: "Unauthenticated" };
+  }
+
+  const dbUser = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!dbUser) {
+    return { error: true, message: "User not found" };
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      jobCount: dbUser.jobCount - 1,
+    },
+  });
+  
   if (!updatedUser) {
     return { error: true, message: "Failed to update user" };
   }

@@ -64,7 +64,7 @@ export default function JobsPage() {
     if (session.data?.user?.email) {
       const result = await getAiJobApplyStatus()
       if (!result.error) {
-        setJobApplyCount(result.data?.aiJobApplyCount || 0)
+        setJobApplyCount(result.data?.jobCount || 0)
       }
     }
   }
@@ -162,7 +162,7 @@ export default function JobsPage() {
             jobApplyCount={jobApplyCount}
             onJobApplied={() => {
               // Refresh the page after successful job application
-              // window.location.reload()
+              window.location.reload()
             }}
             userId={session.data?.user?.id || ""}
           />
