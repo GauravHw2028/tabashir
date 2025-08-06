@@ -23,6 +23,7 @@ import { submitEasyApply } from "@/actions/job/easy-apply"
 import { useRouter } from "next/navigation"
 import { useTranslation } from "@/lib/use-translation"
 import { submitAiJobApply, submitJobApply } from "@/actions/ai-resume"
+import Link from "next/link"
 
 interface JobDetailsProps {
   job: Job
@@ -278,7 +279,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
       <div className="space-y-4">
         {!isPreview && (
           <div className="flex flex-col gap-2">
-            {jobApplyCount >= 1 && (
+            {jobApplyCount <= 1 ? (
               <button
                 onClick={() => {
                   setShowResumeModal(true)
@@ -306,7 +307,21 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
                   </>
                 )}
               </button>
-            )}
+            ) : <Link
+              href={`/service-details`}
+              className="w-full py-2 bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white rounded-md font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M13 10V3L4 14H11V21L20 10H13Z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {t('easyApplyViaTabashir')}
+            </Link>}
 
             {job.applyUrl && (
               <button onClick={() => window.open(job.applyUrl, '_blank')} className="w-full py-2 border border-gray-300 rounded-md font-medium flex items-center justify-center gap-2 text-gray-700">
