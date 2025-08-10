@@ -97,15 +97,8 @@ export function ResumeListClient({
 
       if (result.data) {
         // Create blob and download
-        const blob = new Blob([result.data.url], { type: 'application/pdf' })
-        const url = window.URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = filename
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        window.URL.revokeObjectURL(url)
+        const url = result.data.url
+        window.open(url, '_blank')
 
         toast.success(t('success'), {
           description: t('resumeDownloadedSuccessfully')
