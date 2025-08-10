@@ -40,12 +40,24 @@ export function ServiceModal({ isOpen, onClose, service }: ServiceModalProps) {
 
       if (checkoutLink) {
         // Add user email to the checkout link if available
-        const userEmail = session.data?.user?.email
-        if (userEmail) {
-          const url = new URL(checkoutLink)
-          url.searchParams.set('prefilled_email', userEmail)
-          checkoutLink = url.toString()
+        const response = await fetch('/api/stripe/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            serviceId: service.id,
+            userId: session.data?.user?.id,
+          }),
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}))
+          throw new Error(errorData?.error || 'Failed to start checkout')
         }
+
+        const data = await response.json()
+        if (!data?.url) throw new Error('No checkout URL returned')
+
+        window.location.href = data.url
 
         // Redirect directly to Stripe checkout link
         window.location.href = checkoutLink

@@ -31,6 +31,10 @@ export async function POST(request: Request) {
     if(enhancedResumeId){
       finalSuccessUrl = `${process.env.NEXT_PUBLIC_APP_URL}/resume/enhanced?id=${enhancedResumeId}`;
     }
+
+    if(serviceId === "ai-job-apply"){
+      finalSuccessUrl = `${process.env.NEXT_PUBLIC_APP_URL}/ai-job-apply?payment_completed=true`;
+    }
     
     // Build cancel URL
     const finalCancelUrl = cancelUrl || `${process.env.NEXT_PUBLIC_APP_URL}/service-details`;

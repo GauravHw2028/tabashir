@@ -203,9 +203,6 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
                   <p className="text-xs text-gray-500 mb-2">
                     {t('uploaded')}: {new Date(resume.createdAt).toLocaleDateString()}
                   </p>
-                  <div className="w-full h-32 bg-gray-100 rounded flex items-center justify-center">
-                    <span className="text-gray-500 text-xs">{t('resumePreview')}</span>
-                  </div>
                 </div>
               ))}
             </div>
@@ -279,7 +276,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
       <div className="space-y-4">
         {!isPreview && (
           <div className="flex flex-col gap-2">
-            {jobApplyCount <= 1 ? (
+            {jobApplyCount >= 1 ? (
               <button
                 onClick={() => {
                   setShowResumeModal(true)

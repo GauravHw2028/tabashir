@@ -337,6 +337,8 @@ const translations = {
     updatePassword: "Update Password",
     profileUpdated: "Profile updated successfully",
     passwordUpdated: "Password updated successfully",
+    aiJobApplyRequired: "AI Job Apply is required to apply for jobs",
+
     
     // Resume Extended
     myResumes: "My Resumes",
@@ -493,6 +495,7 @@ const translations = {
     cardholderName: "Cardholder Name",
     processing: "Processing...",
     pay: "Pay",
+    aiJobApplicationSentSuccess: "AI Job Application Sent Successfully!",
     
     // Job Details Component
     selectResumeToApply: "Select Resume to Apply",
@@ -547,7 +550,16 @@ const translations = {
     aiJobSearchDesc: "Search for jobs with AI",
     aiJobApplicationDesc: "Apply for jobs with AI",
     aiJobTrackingDesc: "Track job applications with AI",
+
+    nationalitiesSelected: "Nationalities Selected",
+    positionsSelected: "Positions Selected",
+    locationsSelected: "Locations Selected",
+    genderSelected: "Gender Selected",
+    citiesSelected: "Cities Selected",
     
+    aiJobApplyRequiredDesc: "Please complete all required fields to apply for jobs with AI.",
+    viewServiceDetails: "View Service Details",
+
     // Resume Upload Modal
     uploadYourResume: "Upload Your Resume",
     helpRecruiterKnowAboutYou: "Help recruiters know about you",
@@ -626,10 +638,18 @@ const translations = {
     arabic: "العربية",
     languagePreference: "سيتم حفظ تفضيل اللغة لزيارتك القادمة",
     chooseLanguage: "اختر اللغة المفضلة لديك لواجهة الموقع.",
-    
+    aiJobApplicationSentSuccess: "تم إرسال طلب التقديم بالذكاء الاصطناعي بنجاح!",
+    nationalitiesSelected: "الجنسيات المختارة",
+    positionsSelected: "المناصب المختارة",
+    locationsSelected: "المواقع المختارة",
+    genderSelected: "الجنس المختار",
+    citiesSelected: "المدن المختارة",
     // Navigation
     toggleMenu: "تبديل القائمة",
     whatsappCommunity: "مجتمع واتساب",
+
+    aiJobApplyRequired: "مطلوب التقديم بالذكاء الاصطناعي للتقديم على الوظائف",
+    aiJobApplyRequiredDesc: "يرجى شراء خدمة التقديم بالذكاء الاصطناعي لمتابعة التقديم على الوظائف. ستتمكن من التقديم بسهولة على الوظائف باستخدام سيرتك الذاتية المحسنة بالذكاء الاصطناعي.",
     
     // WhatsApp Community
     latestUpdateFrom: "للحصول على آخر التحديثات من تبشير",
@@ -886,6 +906,7 @@ const translations = {
     educationLevel: "المستوى التعليمي",
     highSchool: "الثانوية العامة",
     bachelors: "درجة البكالوريوس",
+    viewServiceDetails: "عرض تفاصيل الخدمة",
     masters: "درجة الماجستير",
     phd: "درجة الدكتوراه",
     other: "أخرى",
