@@ -15,7 +15,7 @@
   }
 
   .blue-gradient {
-    background: linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%);
+    background: linear-gradient(91.97deg, #042052 25.05%, #0d57e1 176.12%);
   }
 
   /* RTL Support */
@@ -157,7 +157,11 @@ body {
 }
 
 .custom-dropzone button {
-  background-color: linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%)!important;
+  background-color: linear-gradient(
+    91.97deg,
+    #042052 25.05%,
+    #0d57e1 176.12%
+  ) !important;
   color: white !important;
   padding: 10px 20px !important;
   border-radius: 8px !important;
@@ -165,7 +169,7 @@ body {
   margin-bottom: 1rem !important;
 }
 .custom-upload-button {
-  border:2px  dashed linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%) !important ;
+  border: 2px dashed linear-gradient(91.97deg, #042052 25.05%, #0d57e1 176.12%) !important ;
   padding: 2rem !important;
   height: 200px !important;
   width: 200px !important;
@@ -173,14 +177,35 @@ body {
   justify-content: center !important;
   align-items: center !important;
 }
-.custom-upload-button label   {
-  background-color: linear-gradient(91.97deg, #042052 25.05%, #0D57E1 176.12%) !important;
+.custom-upload-button label {
+  background-color: linear-gradient(
+    91.97deg,
+    #042052 25.05%,
+    #0d57e1 176.12%
+  ) !important;
   color: white !important;
   padding: 10px 20px !important;
   border-radius: 8px !important;
   cursor: pointer !important;
   margin-bottom: 1rem !important;
   white-space: nowrap !important;
-
 }
 
+/* Remove table cell borders in the DOCX preview */
+.docx-wrapper .docx table,
+.docx-wrapper .docx td,
+.docx-wrapper .docx th {
+  border: none !important;
+  background: transparent !important;
+}
+
+/* Remove page outline and shadows */
+.docx-wrapper .docx .docx-page {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Prevent any inline border styles from Word from showing */
+.docx-wrapper .docx [style*="border"] {
+  border: none !important;
+}

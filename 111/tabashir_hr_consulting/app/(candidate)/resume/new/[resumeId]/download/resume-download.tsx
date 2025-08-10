@@ -14,8 +14,6 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { FileText } from "lucide-react"
 import { useResumeStore } from "../../store/resume-store"
 import { renderAsync } from "docx-preview"
 import { useTranslation } from "@/lib/use-translation"
@@ -25,7 +23,6 @@ const A4_WIDTH_PX = 794 // 210mm at 96 DPI
 const A4_HEIGHT_PX = 1123 // 297mm at 96 DPI
 
 export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
-  console.log("Resume URL:", resumeUrl);
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages] = useState(1)
   const [zoomLevel, setZoomLevel] = useState(1)
@@ -83,6 +80,37 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
           renderFooters: true,
           renderHeaders: true,
         });
+
+        // Remove unwanted borders after rendering
+        setTimeout(() => {
+          if (docxContainerRef.current) {
+            const container = docxContainerRef.current;
+
+            // Remove borders from all paragraphs and divs
+            const paragraphs = container.querySelectorAll('p');
+            paragraphs.forEach(p => {
+              p.style.border = 'none';
+              p.style.borderBottom = 'none';
+              p.style.borderTop = 'none';
+            });
+
+            const divs = container.querySelectorAll('div');
+            divs.forEach(div => {
+              div.style.border = 'none';
+              div.style.borderBottom = 'none';
+              div.style.borderTop = 'none';
+            });
+
+            // Preserve legitimate HR elements
+            const hrs = container.querySelectorAll('hr');
+            hrs.forEach(hr => {
+              hr.style.borderTop = '1px solid #000';
+              hr.style.borderBottom = 'none';
+              hr.style.borderLeft = 'none';
+              hr.style.borderRight = 'none';
+            });
+          }
+        }, 100);
       } catch (error) {
         console.error('Error loading DOCX:', error);
       }
@@ -209,7 +237,7 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
               {/* DOCX Content */}
               <div
                 ref={docxContainerRef}
-                className={`max-w-[${A4_WIDTH_PX}px] mx-auto`}
+                className={`max-w-[${A4_WIDTH_PX}px] docx-wrapper mx-auto`}
                 style={{
                   width: `${A4_WIDTH_PX}px`,
                   margin: "0 auto",
