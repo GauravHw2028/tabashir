@@ -52,6 +52,7 @@ export async function POST(request: Request) {
 
 async function handleCheckoutSessionCompleted(session: any) {
   const { serviceId, userId, resumeId, serviceTitle } = session.metadata;
+  console.log(`Session metadata: ${JSON.stringify(session.metadata)}`);
   const amount = session.amount_total / 100; // Convert from cents
   const currency = session.currency.toUpperCase();
 
@@ -99,7 +100,7 @@ async function handleCheckoutSessionCompleted(session: any) {
         console.error('Failed to send LinkedIn email:', error);
       }
     }
-  } else if (serviceId === 'ai-resume-optimization' && resumeId) {
+  } else if (serviceId === 'ai-resume-optimization' && (resumeId)) {
     // Update resume payment status
     await prisma.aiResume.update({
       where: { id: resumeId },
@@ -109,6 +110,7 @@ async function handleCheckoutSessionCompleted(session: any) {
         paymentDate: new Date() 
       }
     });
+    console.log(`Resume payment status updated for ${resumeId}`);
   } else if (serviceId === 'linkedin-optimization') {
     // Handle LinkedIn optimization purchase
     console.log(`LinkedIn optimization purchased by user ${userId}`);

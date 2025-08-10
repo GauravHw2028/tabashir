@@ -33,7 +33,7 @@ export default function ResumePayment({
         body: JSON.stringify({
           serviceId: 'ai-resume-optimization',
           userId,
-          resumeId,
+          enhancedResumeId: resumeId,
           successUrl: success,
           cancelUrl: cancel,
         }),

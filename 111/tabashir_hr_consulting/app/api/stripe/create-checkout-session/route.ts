@@ -4,7 +4,7 @@ import { paymentData } from '@/lib/payment-data';
 
 export async function POST(request: Request) {
   try {
-    const { serviceId, userId, resumeId, successUrl, cancelUrl } = await request.json();
+    const { serviceId, userId, resumeId, enhancedResumeId, successUrl, cancelUrl } = await request.json();
 
     if (!serviceId) {
       return NextResponse.json({ error: 'Service ID is required' }, { status: 400 });
@@ -27,6 +27,10 @@ export async function POST(request: Request) {
     if(resumeId){
       finalSuccessUrl = `${process.env.NEXT_PUBLIC_APP_URL}/resume/new/${resumeId}/skills/?payment_completed=true`;
     }
+
+    if(enhancedResumeId){
+      finalSuccessUrl = `${process.env.NEXT_PUBLIC_APP_URL}/resume/enhanced?id=${enhancedResumeId}`;
+    }
     
     // Build cancel URL
     const finalCancelUrl = cancelUrl || `${process.env.NEXT_PUBLIC_APP_URL}/service-details`;
@@ -46,7 +50,7 @@ export async function POST(request: Request) {
       metadata: {
         serviceId,
         userId,
-        resumeId: resumeId || '',
+        resumeId: resumeId || enhancedResumeId || '',
         serviceTitle: service.title,
       },
       // we expect web to use signed-in user id for metadata, but set email when provided via headers
