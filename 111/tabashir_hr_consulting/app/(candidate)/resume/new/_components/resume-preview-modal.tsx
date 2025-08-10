@@ -111,7 +111,7 @@ export function ResumePreviewModal({ isOpen, onClose, resumeName, resumeScore }:
 
           <div className="relative">
             <Button className="bg-[#002B6B] hover:bg-[#042052] text-white gap-2" onClick={handleDownload}>
-              Export As <ChevronRight size={16} className="ml-1" />
+              Export Resume
             </Button>
           </div>
         </div>

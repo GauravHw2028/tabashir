@@ -481,7 +481,7 @@ const translations = {
     
     // Resume Download & Export
     editorMode: "Editor Mode",
-    exportAs: "Export As",
+    exportAs: "Export Resume",
     wordDocument: "Word Document",
     unlockFullResumeView: "Unlock Full Resume View",
     completePaymentToUnlock: "To view and download your resume without blur, please complete the payment.",

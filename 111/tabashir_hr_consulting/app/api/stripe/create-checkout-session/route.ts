@@ -21,7 +21,12 @@ export async function POST(request: Request) {
     }
 
     // Build success URL with metadata
-    const finalSuccessUrl = successUrl || `${process.env.NEXT_PUBLIC_APP_URL}/service-details?payment_completed=true&service_id=${serviceId}&user_info=${userId}`;
+    let finalSuccessUrl = successUrl || `${process.env.NEXT_PUBLIC_APP_URL}/service-details?payment_completed=true&service_id=${serviceId}&user_info=${userId}`;
+
+    // Success URL of the resume should be the resume page
+    if(resumeId){
+      finalSuccessUrl = `${process.env.NEXT_PUBLIC_APP_URL}/resume/new/${resumeId}/skills/?payment_completed=true`;
+    }
     
     // Build cancel URL
     const finalCancelUrl = cancelUrl || `${process.env.NEXT_PUBLIC_APP_URL}/service-details`;
@@ -44,7 +49,7 @@ export async function POST(request: Request) {
         resumeId: resumeId || '',
         serviceTitle: service.title,
       },
-      customer_email: userId, // You can pass user email here if available
+      // we expect web to use signed-in user id for metadata, but set email when provided via headers
     });
 
     return NextResponse.json({ 

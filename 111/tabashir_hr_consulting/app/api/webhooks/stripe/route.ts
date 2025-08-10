@@ -99,7 +99,7 @@ async function handleCheckoutSessionCompleted(session: any) {
         console.error('Failed to send LinkedIn email:', error);
       }
     }
-  } else if (serviceId === 'cv-transformer' && resumeId) {
+  } else if (serviceId === 'ai-resume-optimization' && resumeId) {
     // Update resume payment status
     await prisma.aiResume.update({
       where: { id: resumeId },

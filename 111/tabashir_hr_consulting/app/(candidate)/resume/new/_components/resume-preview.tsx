@@ -154,32 +154,9 @@ export function ResumePreview({ isOpen, onClose, resumeName, resumeScore, resume
               <span className="text-sm text-gray-700">Editor Mode</span>
               <Switch checked={editorMode} onCheckedChange={handleEditorModeToggle} />
             </div>
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button className="bg-[#002B6B] hover:bg-[#042052] text-white gap-2">
-                  Export As <ChevronRight size={16} className="ml-1" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-48 p-0">
-                <div className="flex flex-col">
-                  <button
-                    onClick={() => handleExport("pdf")}
-                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors text-gray-700"
-                  >
-                    <FileText size={16} />
-                    <span>PDF</span>
-                  </button>
-                  <button
-                    onClick={() => handleExport("docx")}
-                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors text-gray-700"
-                  >
-                    <FileText size={16} />
-                    <span>Word Document</span>
-                  </button>
-                </div>
-              </PopoverContent>
-            </Popover>
+            <Button onClick={() => handleExport("docx")} className="bg-[#002B6B] hover:bg-[#042052] text-white gap-2">
+              Export Resume
+            </Button>
           </div>
         </div>
 

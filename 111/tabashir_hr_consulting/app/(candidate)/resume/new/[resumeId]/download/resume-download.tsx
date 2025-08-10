@@ -166,32 +166,9 @@ export default function ResumeDownload({ resumeUrl }: { resumeUrl: string }) {
           <Switch checked={editorMode} onCheckedChange={handleEditorModeToggle} />
         </div>
 
-        <Popover>
-          <PopoverTrigger asChild>
-
-            <Button className="bg-[#002B6B] hover:bg-[#042052] text-gray-50 gap-2">
-              {t('exportAs')} <ChevronRight size={16} className={isRTL ? "mr-1" : "ml-1"} />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-48 p-0">
-            <div className="flex flex-col">
-              <button
-                onClick={() => handleExport("pdf")}
-                className={`flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors text-gray-700 ${isRTL ? 'flex-row-reverse' : ''}`}
-              >
-                <FileText size={16} />
-                <span>PDF</span>
-              </button>
-              <button
-                onClick={() => handleExport("docx")}
-                className={`flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors text-gray-700 ${isRTL ? 'flex-row-reverse' : ''}`}
-              >
-                <FileText size={16} />
-                <span>{t('wordDocument')}</span>
-              </button>
-            </div>
-          </PopoverContent>
-        </Popover>
+        <Button onClick={() => handleExport("docx")} className="bg-[#002B6B] hover:bg-[#042052] text-gray-50 gap-2">
+          {t('exportAs')}
+        </Button>
       </div>
       <div className="max-w-6xl mx-auto px-4 py-6 rounded-[6px]">
         {/* Header with Controls */}
