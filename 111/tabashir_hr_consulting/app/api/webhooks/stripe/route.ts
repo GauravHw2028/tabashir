@@ -52,7 +52,6 @@ export async function POST(request: Request) {
 
 async function handleCheckoutSessionCompleted(session: any) {
   const { serviceId, userId, resumeId, serviceTitle } = session.metadata;
-  console.log(`Session metadata: ${JSON.stringify(session.metadata)}`);
   const amount = session.amount_total / 100; // Convert from cents
   const currency = session.currency.toUpperCase();
 
@@ -113,7 +112,28 @@ async function handleCheckoutSessionCompleted(session: any) {
     console.log(`Resume payment status updated for ${resumeId}`);
   } else if (serviceId === 'linkedin-optimization') {
     // Handle LinkedIn optimization purchase
-    console.log(`LinkedIn optimization purchased by user ${userId}`);
+    const subscription = await prisma.subscription.create({
+      data: {
+        userId: userId,
+        plan: 'LINKEDIN_OPTIMIZATION',
+        status: 'ACTIVE',
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      }
+    });
+    
+    // Update the payment to link it to the subscription
+    await prisma.payment.updateMany({
+      where: { 
+        transactionId: session.payment_intent,
+        userId: userId 
+      },
+      data: { 
+        subscriptionId: subscription.id 
+      }
+    });
+    
+    console.log(`LinkedIn optimization purchased by user ${userId}, subscription ID: ${subscription.id}`);
     // Add any specific logic for LinkedIn optimization
   } else if (serviceId === 'interview-training') {
     // Handle interview training purchase

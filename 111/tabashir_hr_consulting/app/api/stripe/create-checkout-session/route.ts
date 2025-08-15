@@ -32,6 +32,10 @@ export async function POST(request: Request) {
       finalSuccessUrl = `${process.env.NEXT_PUBLIC_APP_URL}/resume/enhanced?id=${enhancedResumeId}`;
     }
 
+    if(serviceId === "linkedin-optimization"){
+      finalSuccessUrl = `${process.env.NEXT_PUBLIC_APP_URL}/whatsapp-community?payment_completed=true&service_id=${serviceId}`;
+    }
+
     if(serviceId === "ai-job-apply"){
       finalSuccessUrl = `${process.env.NEXT_PUBLIC_APP_URL}/ai-job-apply?payment_completed=true`;
     }

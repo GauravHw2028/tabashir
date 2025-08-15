@@ -418,6 +418,7 @@ enum PlanType {
     BUSINESS
     PRO_PLAYER
     AI_JOB_APPLY
+    LINKEDIN_OPTIMIZATION
 }
 
 model Subscription {

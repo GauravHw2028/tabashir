@@ -57,10 +57,10 @@ export function ServiceModal({ isOpen, onClose, service }: ServiceModalProps) {
         const data = await response.json()
         if (!data?.url) throw new Error('No checkout URL returned')
 
-        window.location.href = data.url
+        // window.location.href = data.url
 
         // Redirect directly to Stripe checkout link
-        window.location.href = checkoutLink
+        window.location.href = data.url
       } else {
         throw new Error('No checkout link available for this service')
       }

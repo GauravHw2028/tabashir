@@ -13,7 +13,7 @@ export const paymentData = {
     ]
   },
   linkedinOptimization: {
-    id: "linkedin-enhancement",
+    id: "linkedin-optimization",
     title: "LinkedIn Optimization",
     price: 60,
     priceId: process.env.NEXT_PUBLIC_NODE_ENV === "development" ? "price_1RuW2xB1BQRwW7MaHP7rfRw1" : "price_1RmrmgCuDksz8I2d7NljczWE",

@@ -28,7 +28,7 @@ interface SidebarProps {
 
 export default function Sidebar({ open, setOpen }: SidebarProps) {
   const pathname = usePathname();
-  const { canAccess, isLoading } = useAdminPermissions();
+  // const { canAccess, isLoading } = useAdminPermissions();
 
   const navItems = [
     {
@@ -76,7 +76,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
   ];
 
   // Filter navigation items based on permissions
-  const accessibleNavItems = navItems.filter(item => canAccess(item.permission));
+  const accessibleNavItems = navItems.filter(item => true);
 
   const profileItems = [
     {
@@ -94,7 +94,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
   ];
 
   // Filter profile items based on permissions
-  const accessibleProfileItems = profileItems.filter(item => canAccess(item.permission));
+  const accessibleProfileItems = profileItems.filter(item => true);
 
   return (
     <aside
@@ -124,7 +124,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
               Main Navigation
             </h2>
             <div className="space-y-1">
-              {!isLoading && accessibleNavItems.map((item) => {
+              {accessibleNavItems.map((item) => {
                 const isActive = pathname.includes(item.href);
 
                 return (
@@ -132,13 +132,13 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                     key={item.name}
                     href={item.href}
                     className={`group flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
-                        ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25"
-                        : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                      ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25"
+                      : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                       }`}
                   >
                     <div className={`p-1.5 rounded-lg mr-3 transition-all duration-200 ${isActive
-                        ? "bg-white/20"
-                        : "bg-slate-100 group-hover:bg-slate-200"
+                      ? "bg-white/20"
+                      : "bg-slate-100 group-hover:bg-slate-200"
                       }`}>
                       <item.icon
                         className={`h-4 w-4 ${isActive ? "text-white" : "text-slate-600"
@@ -156,7 +156,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
           </div>
 
           {/* Profile Section */}
-          {!isLoading && accessibleProfileItems.length > 0 && (
+          {accessibleProfileItems.length > 0 && (
             <div className="pt-4 border-t border-slate-200/60">
               <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-4 mb-3">
                 Account
@@ -169,13 +169,13 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                       key={item.name}
                       href={item.href}
                       className={`group flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
-                          ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25"
-                          : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                        ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25"
+                        : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                         }`}
                     >
                       <div className={`p-1.5 rounded-lg mr-3 transition-all duration-200 ${isActive
-                          ? "bg-white/20"
-                          : "bg-slate-100 group-hover:bg-slate-200"
+                        ? "bg-white/20"
+                        : "bg-slate-100 group-hover:bg-slate-200"
                         }`}>
                         <item.icon
                           className={`h-4 w-4 ${isActive ? "text-white" : "text-slate-600"

@@ -129,7 +129,7 @@ export default function ServiceDetailsPage() {
     //   ],
     // },
     {
-      id: "linkedin-enhancement",
+      id: "linkedin-optimization",
       title: t('linkedinEnhancement'),
       price: 60,
       description: t('linkedinEnhancementDesc'),
