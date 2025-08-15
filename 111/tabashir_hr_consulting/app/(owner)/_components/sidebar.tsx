@@ -14,6 +14,7 @@ import {
   Users,
   Mail,
   UserCog,
+  ChevronRight,
 } from "lucide-react";
 import { signOut } from "@/app/utils/auth";
 import { onLogout } from "@/actions/auth";
@@ -97,70 +98,114 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
 
   return (
     <aside
-      className={`bg-white border-r border-gray-200 w-64 sticky top-0 inset-y-0 left-0 z-50 transform h-screen ${open ? "translate-x-0" : "-translate-x-full"
+      className={`bg-gradient-to-b from-slate-50 to-white border-r border-slate-200/60 w-72 sticky top-0 inset-y-0 left-0 z-50 transform h-screen shadow-sm ${open ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:inset-auto`}
     >
       <div className="flex flex-col h-full">
-        <div className="p-6 border-b border-gray-200">
-          <h1 className="text-2xl font-bold">TABASHIR</h1>
+        {/* Logo Section */}
+        <div className="p-6 border-b border-slate-200/60 bg-white/50 backdrop-blur-sm">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-lg">T</span>
+            </div>
+            <div>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+                TABASHIR
+              </h1>
+              <p className="text-xs text-slate-500 font-medium">Admin Panel</p>
+            </div>
+          </div>
         </div>
 
-        <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
-          {!isLoading && accessibleNavItems.map((item) => {
-            const isActive = pathname.includes(item.href);
+        {/* Navigation Section */}
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+          <div className="mb-4">
+            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-4 mb-3">
+              Main Navigation
+            </h2>
+            <div className="space-y-1">
+              {!isLoading && accessibleNavItems.map((item) => {
+                const isActive = pathname.includes(item.href);
 
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex items-center px-4 py-3 my-1 rounded-lg text-sm ${isActive
-                  ? "blue-gradient text-white"
-                  : "text-gray-700 hover:bg-gray-100"
-                  }`}
-              >
-                <item.icon
-                  className={`h-5 w-5 mr-3 ${isActive ? "text-white" : "text-gray-500"
-                    }`}
-                />
-                {item.name}
-              </Link>
-            );
-          })}
-
-          {!isLoading && accessibleProfileItems.length > 0 && (
-            <div className="pt-6 mt-6 border-t border-gray-200">
-              {accessibleProfileItems.map((item) => {
-                const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center px-4 py-3 my-1 rounded-lg text-sm ${isActive
-                      ? "blue-gradient text-white"
-                      : "text-gray-700 hover:bg-gray-100"
+                    className={`group flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
+                        ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25"
+                        : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                       }`}
                   >
-                    <item.icon
-                      className={`h-5 w-5 mr-3 ${isActive ? "text-white" : "text-gray-500"
-                        }`}
-                    />
-                    {item.name}
+                    <div className={`p-1.5 rounded-lg mr-3 transition-all duration-200 ${isActive
+                        ? "bg-white/20"
+                        : "bg-slate-100 group-hover:bg-slate-200"
+                      }`}>
+                      <item.icon
+                        className={`h-4 w-4 ${isActive ? "text-white" : "text-slate-600"
+                          }`}
+                      />
+                    </div>
+                    <span className="flex-1">{item.name}</span>
+                    {isActive && (
+                      <ChevronRight className="h-4 w-4 text-white/80" />
+                    )}
                   </Link>
                 );
               })}
             </div>
+          </div>
+
+          {/* Profile Section */}
+          {!isLoading && accessibleProfileItems.length > 0 && (
+            <div className="pt-4 border-t border-slate-200/60">
+              <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-4 mb-3">
+                Account
+              </h2>
+              <div className="space-y-1">
+                {accessibleProfileItems.map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`group flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
+                          ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25"
+                          : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                        }`}
+                    >
+                      <div className={`p-1.5 rounded-lg mr-3 transition-all duration-200 ${isActive
+                          ? "bg-white/20"
+                          : "bg-slate-100 group-hover:bg-slate-200"
+                        }`}>
+                        <item.icon
+                          className={`h-4 w-4 ${isActive ? "text-white" : "text-slate-600"
+                            }`}
+                        />
+                      </div>
+                      <span className="flex-1">{item.name}</span>
+                      {isActive && (
+                        <ChevronRight className="h-4 w-4 text-white/80" />
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
           )}
         </nav>
 
-        <div className="p-4 border-t border-gray-200">
+        {/* Logout Section */}
+        <div className="p-4 border-t border-slate-200/60 bg-white/50 backdrop-blur-sm">
           <button
-            className="flex items-center px-4 py-2 text-sm text-red-500 hover:bg-red-50 rounded-lg w-full"
+            className="group flex items-center px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 rounded-xl w-full transition-all duration-200"
             onClick={() => {
               onLogout("/admin/login");
             }}
           >
-            <LogOut className="h-5 w-5 mr-3" />
-            Logout
+            <div className="p-1.5 rounded-lg mr-3 bg-red-100 group-hover:bg-red-200 transition-all duration-200">
+              <LogOut className="h-4 w-4" />
+            </div>
+            <span>Logout</span>
           </button>
         </div>
       </div>

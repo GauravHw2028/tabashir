@@ -322,7 +322,7 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
                 {/* DOCX Content */}
                 <div
                   ref={docxContainerRef}
-                  className="docx-container mx-auto overflow-x-auto"
+                  className="docx-container mx-auto overflow-x-auto relative"
                   style={{
                     width: "100%",
                     maxWidth: `${A4_WIDTH_PX}px`,
@@ -332,8 +332,41 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
                     backgroundColor: "#fff",
                     transform: `scale(${zoomLevel})`,
                     transformOrigin: "top center",
+                    filter: !isPaid ? "blur(8px)" : "none",
+                    userSelect: !isPaid ? "none" : "auto",
+                    pointerEvents: !isPaid ? "none" : "auto",
                   }}
                 />
+
+                {/* Overlay for unpaid users */}
+                {!isPaid && (
+                  <div
+                    className="absolute inset-0 flex items-center justify-center bg-black/20 z-10"
+                    style={{
+                      top: "3rem",
+                      bottom: "2rem",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: `${A4_WIDTH_PX}px`,
+                      maxWidth: "100%",
+                    }}
+                  >
+                    <div className="bg-white/90 backdrop-blur-sm rounded-lg p-6 text-center shadow-lg">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        Payment Required
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        Please complete payment to view and download your enhanced resume
+                      </p>
+                      <Button
+                        onClick={() => setIsPaymentOpened(true)}
+                        className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:opacity-90 text-white"
+                      >
+                        Pay Now
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
                 {/* Global styles to prevent unwanted borders */}
                 <style dangerouslySetInnerHTML={{
@@ -375,6 +408,26 @@ export default function EnhancedResumeDisplay({ resumeId }: EnhancedResumeDispla
                     .docx-container th {
                       border: 1px solid #000 !important;
                     }
+                    
+                    /* Prevent copying and selection when not paid */
+                    ${!isPaid ? `
+                      .docx-container * {
+                        -webkit-user-select: none !important;
+                        -moz-user-select: none !important;
+                        -ms-user-select: none !important;
+                        user-select: none !important;
+                        -webkit-touch-callout: none !important;
+                        -webkit-tap-highlight-color: transparent !important;
+                      }
+                      
+                      .docx-container {
+                        -webkit-user-select: none !important;
+                        -moz-user-select: none !important;
+                        -ms-user-select: none !important;
+                        user-select: none !important;
+                        pointer-events: none !important;
+                      }
+                    ` : ''}
                   `
                 }} />
 
