@@ -95,6 +95,7 @@ export default function ServiceDetailsPage() {
       features: [
         t('aiJobSearch'),
         t('aiJobApplication'),
+        t('aiJobLinkedin'),
         t('aiJobTracking'),
         t('aiJobInterview'),
         t('aiJobOffer')
