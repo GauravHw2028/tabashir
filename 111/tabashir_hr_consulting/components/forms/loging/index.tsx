@@ -76,7 +76,7 @@ const CandidateLoginForm = () => {
       setShowResendVerification(false);
 
       const response = await onLogin({
-        email: values.email,
+        email: values.email.toLowerCase(),
         password: values.password,
       });
 
