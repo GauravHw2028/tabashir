@@ -52,7 +52,7 @@ const RegistrationForm = () => {
           description: response.message,
         })
         setTimeout(() => {
-          router.push('/candidate/verify-email')
+          router.push(`/candidate/verify-email?email=${encodeURIComponent(values.email)}`)
         }, 2000)
       }
     } catch (error) {

@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,9 +11,20 @@ import Link from "next/link";
 import { Mail, ArrowLeft } from "lucide-react";
 
 export default function VerifyEmailPage() {
+  const searchParams = useSearchParams();
+  const emailFromUrl = searchParams.get("email");
+
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [showResendForm, setShowResendForm] = useState(false);
+
+  useEffect(() => {
+    if (emailFromUrl) {
+      setEmail(emailFromUrl);
+      setEmailSent(true); // Show success message immediately if email is provided
+    }
+  }, [emailFromUrl]);
 
   async function handleResendVerification() {
     if (!email) {
@@ -68,15 +80,17 @@ export default function VerifyEmailPage() {
             </div>
             <CardTitle className="text-2xl">Email Verification</CardTitle>
             <CardDescription>
-              {emailSent
-                ? "We've sent a new verification email to your address"
-                : "Enter your email address to resend the verification link"
+              {emailFromUrl && emailSent
+                ? `We've sent a verification email to ${emailFromUrl}`
+                : emailSent
+                  ? "We've sent a new verification email to your address"
+                  : "Enter your email address to resend the verification link"
               }
             </CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-4">
-            {emailSent ? (
+            {emailSent && !showResendForm ? (
               <div className="text-center space-y-4">
                 <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
                   <p className="text-green-800 text-sm">
@@ -85,13 +99,26 @@ export default function VerifyEmailPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Button
-                    onClick={() => setEmailSent(false)}
-                    variant="outline"
-                    className="w-full"
-                  >
-                    Send to Different Email
-                  </Button>
+                  {emailFromUrl ? (
+                    <Button
+                      onClick={() => {
+                        setShowResendForm(true);
+                        setEmailSent(false);
+                      }}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Resend Verification Email
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => setEmailSent(false)}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Send to Different Email
+                    </Button>
+                  )}
 
                   <Button asChild className="w-full bg-gradient-to-r from-[#042052] to-[#0D57E1] text-white hover:opacity-90">
                     <Link href="/candidate/login">

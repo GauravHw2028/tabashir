@@ -9,24 +9,8 @@ export default function CandidateRegistration() {
   return (
     <div className="grid lg:grid-cols-2 min-h-screen w-full">
       <div className="flex flex-col justify-center px-8 py-12 sm:px-3 mx-auto w-[500px] max-w-full max-sm:w-full">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Create Account</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Enter your information to make you job searching process easy
-          </p>
-        </div>
 
         <RegistrationForm />
-
-        <div className="mt-6 text-center text-sm">
-          <span className="text-gray-500">Already have an account? </span>
-          <Link
-            href="/candidate/login"
-            className="text-[#002B6B] font-medium hover:underline"
-          >
-            Log in
-          </Link>
-        </div>
 
         <div className="mt-6 flex items-center">
           <div className="flex-grow h-px bg-gray-300"></div>
