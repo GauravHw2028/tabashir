@@ -39,7 +39,7 @@ export default function AdminJobCard({
   }
 
   const getStatusText = (status: string) => {
-    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()
+    return status?.charAt(0).toUpperCase() + status?.slice(1).toLowerCase()
   }
 
   const formatDate = (dateString: string) => {

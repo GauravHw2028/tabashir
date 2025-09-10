@@ -185,4 +185,66 @@ export async function updateAdminJob(jobId: string, formData: {
     console.error("Error updating job:", error)
     return { success: false, error: "Failed to update job" }
   }
+}
+
+export async function deleteAdminJob(jobId: string) {
+  try {
+    const session = await auth()
+    if (!session?.user?.id) {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    // Check if user is an admin/owner
+    // const owner = await prisma.owner.findFirst({
+    //   where: { userId: session.user.id }
+    // })
+
+    // if (!owner) {
+    //   return { success: false, error: "Unauthorized - Admin access required" }
+    // }
+
+    // Get the existing job to check if it has external API ID
+    const existingJob = await prisma.job.findUnique({
+      where: { id: jobId },
+      include: {
+        applicants: {
+          select: { id: true }
+        }
+      }
+    })
+
+    if (!existingJob) {
+      return { success: false, error: "Job not found" }
+    }
+
+    // If there are applicants, we might want to prevent deletion or handle it differently
+    if (existingJob.applicants.length > 0) {
+      // For now, we'll allow deletion but you might want to change this behavior
+      console.log(`Deleting job with ${existingJob.applicants.length} applicants`)
+    }
+
+    // If there's an external API job ID, delete it via API
+    if (existingJob.externalApiJobId) {
+      try {
+        // Note: You might need to implement deleteJobAPI in your lib/api.ts
+        // For now, we'll just log it and continue with local deletion
+        console.log(`Would delete external API job: ${existingJob.externalApiJobId}`)
+      } catch (apiError) {
+        console.error("Error deleting job via API:", apiError)
+        // Continue with local deletion even if API deletion fails
+      }
+    }
+
+    // Delete from local database (this will cascade delete related records)
+    await prisma.job.delete({
+      where: { id: jobId }
+    })
+
+    revalidatePath("/admin/jobs")
+    revalidatePath("/admin/dashboard")
+    return { success: true, message: "Job deleted successfully" }
+  } catch (error) {
+    console.error("Error deleting job:", error)
+    return { success: false, error: "Failed to delete job" }
+  }
 } 

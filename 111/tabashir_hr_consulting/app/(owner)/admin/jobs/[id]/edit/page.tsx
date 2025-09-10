@@ -26,9 +26,20 @@ import {
 } from "@/components/ui/select"
 import { toast } from "sonner"
 import { useRouter, useParams } from "next/navigation"
-import { ArrowLeft, Save, Plus, Loader2 } from "lucide-react"
+import { ArrowLeft, Save, Plus, Loader2, Trash2 } from "lucide-react"
 import Link from "next/link"
-import { getAdminJobById, updateAdminJob } from "../../actions"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { getAdminJobById, updateAdminJob, deleteAdminJob } from "../../actions"
 
 const jobFormSchema = z.object({
   title: z.string().min(5, "Job title must be at least 5 characters"),
@@ -65,6 +76,7 @@ type JobFormData = z.infer<typeof jobFormSchema>
 export default function AdminEditJobPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingJob, setIsLoadingJob] = useState(true)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [skills, setSkills] = useState<string[]>([])
   const [benefits, setBenefits] = useState<string[]>([])
   const [skillInput, setSkillInput] = useState("")
@@ -255,6 +267,35 @@ export default function AdminEditJobPage() {
       })
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true)
+
+      const result = await deleteAdminJob(jobId)
+
+      if (result.success) {
+        toast.success("Job deleted successfully!", {
+          description: "The job posting has been deleted.",
+          className: "bg-green-500 text-white",
+        })
+        router.push("/admin/jobs")
+      } else {
+        toast.error("Error deleting job", {
+          description: result.error || "There was an error deleting the job posting. Please try again.",
+          className: "bg-red-500 text-white",
+        })
+      }
+    } catch (error) {
+      console.error("Error deleting job:", error)
+      toast.error("Error deleting job", {
+        description: "There was an error deleting the job posting. Please try again.",
+        className: "bg-red-500 text-white",
+      })
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -753,32 +794,74 @@ export default function AdminEditJobPage() {
             </CardContent>
           </Card>
 
-          {/* Submit Button */}
-          <div className="flex justify-end gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push("/admin/jobs")}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:from-[#0D57E1] hover:to-[#042052] text-white"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Updating...
-                </>
-              ) : (
-                <>
-                  <Save className="h-4 w-4 mr-2" />
-                  Update Job
-                </>
-              )}
-            </Button>
+          {/* Action Buttons */}
+          <div className="flex justify-between">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  disabled={isDeleting || isLoading}
+                >
+                  {isDeleting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete Job
+                    </>
+                  )}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete the job posting
+                    and all associated data including applications from candidates.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDelete}
+                    className="bg-red-600 hover:bg-red-700"
+                  >
+                    Delete Job
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <div className="flex gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.push("/admin/jobs")}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isLoading || isDeleting}
+                className="bg-gradient-to-r from-[#042052] to-[#0D57E1] hover:from-[#0D57E1] hover:to-[#042052] text-white"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Update Job
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </form>
       </Form>

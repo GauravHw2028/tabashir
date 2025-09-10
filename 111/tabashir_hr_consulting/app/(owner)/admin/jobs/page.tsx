@@ -24,6 +24,7 @@ export default function JobsPage() {
     const fetchJobs = async () => {
       try {
         const result = await getJobs(currentPage, itemsPerPage)
+
         setJobs(result.jobs)
         setTotalJobs(result.total)
         setTotalPages(result.totalPages)
@@ -75,7 +76,7 @@ export default function JobsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
         <CreateJobCard />
         {jobs.map((job) => (
-          <AdminJobCard key={job.id} job={job} />
+          <AdminJobCard key={job.id} {...job} />
         ))}
       </div>
 

@@ -20,6 +20,7 @@ export default function PaymentsPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedSubscription, setSelectedSubscription] = useState<any>(null)
   const [subscriptionDialogOpen, setSubscriptionDialogOpen] = useState(false)
+  const [searching, setSearching] = useState(false)
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -32,6 +33,7 @@ export default function PaymentsPage() {
         console.error('Error fetching payments:', error)
       } finally {
         setLoading(false)
+        setSearching(false)
       }
     }
 
@@ -40,6 +42,7 @@ export default function PaymentsPage() {
 
   const handleSearch = () => {
     setCurrentPage(1) // Reset to first page when searching
+    setSearching(true)
   }
 
   const handleSubscriptionView = async (subscriptionId: string) => {
@@ -91,7 +94,7 @@ export default function PaymentsPage() {
               />
             </div>
           </div>
-          <Button onClick={handleSearch} className="bg-blue-950 hover:bg-blue-900">
+          <Button onClick={handleSearch} className={`bg-blue-950 hover:bg-blue-900 ${searching ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={loading}>
             Search
           </Button>
         </div>
