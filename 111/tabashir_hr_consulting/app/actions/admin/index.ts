@@ -58,21 +58,24 @@ export async function createJob(formData: {
       phone: formData.contactPhone || "",
     }
 
-    // Send to external API
-    const apiResult = await createJobAPI(apiPayload)
-    
-    if (!apiResult.success) {
-      return { success: false, error: "Failed to create job via API" }
-    }
-
     // Also save to local database for admin management
-    const owner = await prisma.owner.findUnique({
+    let owner = await prisma.owner.findUnique({
       where: { userId: session.user.id }
     })
 
     if (!owner) {
-      return { success: false, error: "Owner not found" }
+      owner = await prisma.owner.create({
+        data: {
+          userId: session.user.id,
+          phone: formData.contactPhone || "",
+        }
+      })
     }
+
+    console.log("owner", owner)
+
+    // Send to external API
+    const apiResult = await createJobAPI(apiPayload)
 
     const job = await prisma.job.create({
       data: {
@@ -91,7 +94,8 @@ export async function createJob(formData: {
         contactEmail: formData.contactEmail,
         contactPhone: formData.contactPhone,
         requiredSkills: formData.requiredSkills,
-        ownerId: owner.id
+        ownerId: owner.id,
+        externalApiJobId: apiResult.data?.job_id.toString() || null
       }
     })
 

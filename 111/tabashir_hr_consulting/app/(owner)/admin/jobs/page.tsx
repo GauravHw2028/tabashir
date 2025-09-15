@@ -25,6 +25,8 @@ export default function JobsPage() {
       try {
         const result = await getJobs(currentPage, itemsPerPage)
 
+        console.log(result)
+
         setJobs(result.jobs)
         setTotalJobs(result.total)
         setTotalPages(result.totalPages)
@@ -76,7 +78,7 @@ export default function JobsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
         <CreateJobCard />
         {jobs.map((job) => (
-          <AdminJobCard key={job.id} {...job} />
+          <AdminJobCard key={job.id} externalApiJobId={job.externalApiJobId} {...job} />
         ))}
       </div>
 

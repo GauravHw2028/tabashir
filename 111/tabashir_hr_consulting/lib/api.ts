@@ -91,7 +91,6 @@ export const createJobAPI = async (jobData: {
   phone: string
 }) => {
   try {
-    console.log("jobData", jobData);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs`,
       {
@@ -157,12 +156,52 @@ export const updateJobAPI = async (jobId: string, jobData: {
   }
 }
 
+export const getApplicationsByJobId = async (jobId: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs/${jobId}/applicants-count`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-TOKEN": `${token}`,
+        },
+      }
+    )
+    const data = await response.json()
+    return { success: response.ok, data: data }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: error }
+  }
+}
+
 export const getJobByApiId = async (jobId: string) => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs/${jobId}`,
       {
         method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-TOKEN": `${token}`,
+        },
+      }
+    )
+    const data = await response.json()
+    return { success: response.ok, data: data }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: error }
+  }
+}
+
+export const deleteJobAPI = async (jobId: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs/${jobId}`,
+      {
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           "X-API-TOKEN": `${token}`,

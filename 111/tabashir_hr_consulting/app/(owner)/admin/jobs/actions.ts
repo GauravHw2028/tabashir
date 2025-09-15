@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/app/utils/auth"
-import { updateJobAPI, getJobByApiId } from "@/lib/api"
+import { updateJobAPI, deleteJobAPI } from "@/lib/api"
 import { revalidatePath } from "next/cache"
 
 export async function getJobs(page: number = 1, limit: number = 10) {
@@ -226,9 +226,11 @@ export async function deleteAdminJob(jobId: string) {
     // If there's an external API job ID, delete it via API
     if (existingJob.externalApiJobId) {
       try {
-        // Note: You might need to implement deleteJobAPI in your lib/api.ts
-        // For now, we'll just log it and continue with local deletion
-        console.log(`Would delete external API job: ${existingJob.externalApiJobId}`)
+        const apiResult = await deleteJobAPI(existingJob.externalApiJobId)
+        if (!apiResult.success) {
+          console.error("API Delete Error:", apiResult.error)
+          // Continue with local deletion even if API deletion fails
+        }
       } catch (apiError) {
         console.error("Error deleting job via API:", apiError)
         // Continue with local deletion even if API deletion fails

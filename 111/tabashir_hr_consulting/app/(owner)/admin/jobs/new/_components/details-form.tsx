@@ -9,6 +9,7 @@ import { X } from "lucide-react"
 import TiptapEditor from "@/components/tiptap-editor"
 import * as z from "zod"
 import { detailsFormSchema } from "./job-form-schema"
+import { Textarea } from "@/components/ui/textarea"
 
 interface DetailsFormProps {
   form: UseFormReturn<any>
@@ -186,7 +187,7 @@ export default function DetailsForm({ form, onNext, onPrev }: DetailsFormProps) 
                 <FormItem>
                   <FormLabel>Job Description</FormLabel>
                   <FormControl>
-                    <TiptapEditor field={field} />
+                    <Textarea {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -200,7 +201,7 @@ export default function DetailsForm({ form, onNext, onPrev }: DetailsFormProps) 
                 <FormItem>
                   <FormLabel>Requirements</FormLabel>
                   <FormControl>
-                    <TiptapEditor field={field} />
+                    <Textarea {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
