@@ -120,9 +120,9 @@ export default function JobsPage() {
   }
 
   return (
-    <div className={`flex gap-6 h-[calc(100vh-35px)] ${isRTL ? 'flex-row-reverse' : ''}`}>
+    <div className={`flex gap-6 h-[calc(100vh-35px)] max-md:flex-col max-w-[90vw] ${isRTL ? 'flex-row-reverse' : ''}`}>
       {/* First column: Search preferences */}
-      <div className={`w-80 bg-white rounded-lg shadow-sm overflow-y-auto ${showFilters ? 'block' : 'hidden'}`}>
+      <div className={`w-80 bg-white rounded-lg shadow-sm overflow-y-auto ${showFilters ? 'block' : 'hidden '}`}>
         <SearchPreferences
           onFilterChange={handleFilters}
           location={location}

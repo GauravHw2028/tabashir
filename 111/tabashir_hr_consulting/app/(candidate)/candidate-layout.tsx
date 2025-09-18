@@ -53,7 +53,7 @@ export default function CandidateLayout({
         <SidebarLayout />
         <div className="flex-1 flex flex-col">
           <main className="pl-0 lg:pl-4 lg:pt-0 flex-1">
-            <div className={`max-w-7xl mx-auto py-2 ${pathname.startsWith("/resume") ? 'mb-6' : ''}`}>
+            <div className={`max-w-7xl max-md:max-w-[90vw] mx-auto py-2 ${pathname.startsWith("/resume") ? 'mb-6' : ''}`}>
               <div className={`flex items-center mb-2 ${isRTL ? 'flex-row-reverse' : 'flex-row'} ${pathname.startsWith("/resume") ? 'max-md:flex-col justify-between' : 'justify-end'}`}>
 
                 {pathname.startsWith("/resume") && <h1 className="text-4xl font-bold text-gray-900 mb-6">TABASHIR</h1>}

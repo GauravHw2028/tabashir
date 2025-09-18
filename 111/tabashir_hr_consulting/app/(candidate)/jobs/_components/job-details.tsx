@@ -151,7 +151,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-[90vw]">
       {/* Application Modal - Only show if not in preview mode */}
       {!isPreview && (
         <ApplicationModal
