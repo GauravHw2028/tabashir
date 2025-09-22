@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getUsers } from "./actions"
+import { Input } from "@/components/ui/input"
 
 export default function UsersPage() {
   const [currentPage, setCurrentPage] = useState(1)
@@ -12,11 +13,14 @@ export default function UsersPage() {
   const [totalUsers, setTotalUsers] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [query, setQuery] = useState("")
+
+  const debouncedQuery = useDebounce(query, 300)
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const result = await getUsers(currentPage, itemsPerPage)
+        const result = await getUsers(currentPage, itemsPerPage, debouncedQuery)
         setUsers(result.users)
         setTotalUsers(result.total)
         setTotalPages(result.totalPages)
@@ -28,7 +32,7 @@ export default function UsersPage() {
     }
 
     fetchUsers()
-  }, [currentPage, itemsPerPage])
+  }, [currentPage, itemsPerPage, debouncedQuery])
 
   if (loading) {
     return <div className="p-6">Loading...</div>
@@ -38,6 +42,16 @@ export default function UsersPage() {
     <div className="p-6 text-gray-900">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">User Management</h1>
+        <div className="w-72">
+          <Input
+            placeholder="Search by name or email"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setCurrentPage(1)
+            }}
+          />
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm p-6">
@@ -132,4 +146,20 @@ export default function UsersPage() {
       </div>
     </div>
   );
-} 
+}
+
+function useDebounce<T>(value: T, delay: number) {
+  const [debouncedValue, setDebouncedValue] = useState(value)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value, delay])
+
+  return debouncedValue
+}

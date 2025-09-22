@@ -38,6 +38,7 @@ model User {
     Recruiter        Recruiter?
     JobApplication   JobApplication[]
     adminPermissions AdminPermissionAssignment[]
+    createdCourses   Course[]
 
     @@map("users")
 }
@@ -501,4 +502,29 @@ model api_tokens {
     active      Boolean  @default(true)
     created_at  DateTime @default(now())
     updated_at  DateTime @updatedAt
+}
+
+model Course {
+    id          String   @id @default(cuid())
+    title       String
+    subtitle    String?
+    description String   @db.Text
+    imageUrl    String
+    price       Float? // null for free courses
+    isFree      Boolean  @default(false)
+    courseUrl   String // Link to the actual course
+    studio      String? // Course provider/studio
+    tags        String[] // Array of tags like "BEST SELLER", "NEW", etc.
+    category    String? // Course category
+    isActive    Boolean  @default(true)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    // Course created by admin/owner
+    createdById String
+    createdBy   User   @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+    @@index([createdById])
+    @@index([isActive])
+    @@index([category])
 }

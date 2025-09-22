@@ -15,6 +15,7 @@ import {
   Mail,
   UserCog,
   ChevronRight,
+  Book,
 } from "lucide-react";
 import { signOut } from "@/app/utils/auth";
 import { onLogout } from "@/actions/auth";
@@ -66,6 +67,11 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
       href: "/admin/payments",
       icon: CreditCard,
       permission: AdminPermission.MANAGE_PAYMENTS,
+    },
+    {
+      name: "Courses",
+      href: "/admin/courses",
+      icon: Book,
     },
     {
       name: "Manage Admins",
