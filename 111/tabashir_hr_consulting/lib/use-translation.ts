@@ -217,6 +217,18 @@ const translations = {
     thisMonth: "This Month",
     lastMonth: "Last Month",
     daysAgo: "days ago",
+
+    // Courses
+    coursesAvailable: "course available",
+    coursesAvailablePlural: "courses available",
+    noCourses: "No courses available",
+    noCoursesFound: "No courses found",
+    tryAdjustingSearch: "Try adjusting your search or filter criteria",
+    checkBackLater: "Check back later for new courses",
+    allCategories: "All Categories",
+    searchCourses: "Search courses...",
+    startCourse: "Start Course",
+    by: "by",
     hoursAgo: "hours ago",
     minutesAgo: "minutes ago",
     
@@ -1113,6 +1125,18 @@ const translations = {
     or: "أو",
 
     startApplyingMyApplication: "ابدأ التقديم على سيرتي",
+
+    // Courses
+    coursesAvailable: "دورة متاحة",
+    coursesAvailablePlural: "دورات متاحة",
+    noCourses: "لا توجد دورات متاحة",
+    noCoursesFound: "لم يتم العثور على دورات",
+    tryAdjustingSearch: "حاول تعديل معايير البحث أو التصفية",
+    checkBackLater: "تحقق لاحقاً من الدورات الجديدة",
+    allCategories: "جميع الفئات",
+    searchCourses: "البحث في الدورات...",
+    startCourse: "ابدأ الدورة",
+    by: "بواسطة"
   }
 };
 

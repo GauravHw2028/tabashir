@@ -136,7 +136,7 @@ export default function FreeCourses() {
           <div className="relative flex-1 max-w-md">
             <input
               type="text"
-              placeholder={t("searchInVideos") || "Search courses..."}
+              placeholder={t("searchCourses")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full h-10 ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'} text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
@@ -149,13 +149,13 @@ export default function FreeCourses() {
             <Filter className="w-4 h-4 text-gray-500" />
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="All Categories" />
+                <SelectValue placeholder={t("allCategories")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="all">{t("allCategories")}</SelectItem>
                 {categories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  <SelectItem key={category} value={category || ""}>
+                    {category?.charAt(0).toUpperCase() || "" + category?.slice(1) || ""}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -170,7 +170,7 @@ export default function FreeCourses() {
           {t("recommendedVideos") || "Available Courses"}
         </h2>
         <p className="text-gray-600">
-          {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''} available
+          {filteredCourses.length} {filteredCourses.length === 1 ? t("coursesAvailable") : t("coursesAvailablePlural")}
         </p>
       </div>
 
@@ -179,12 +179,12 @@ export default function FreeCourses() {
         <Card className="p-12 text-center">
           <div className="text-gray-500">
             <h3 className="text-lg font-medium mb-2">
-              {searchQuery || selectedCategory !== "all" ? "No courses found" : "No courses available"}
+              {searchQuery || selectedCategory !== "all" ? t("noCoursesFound") : t("noCourses")}
             </h3>
             <p className="text-sm">
               {searchQuery || selectedCategory !== "all"
-                ? "Try adjusting your search or filter criteria"
-                : "Check back later for new courses"
+                ? t("tryAdjustingSearch")
+                : t("checkBackLater")
               }
             </p>
           </div>
@@ -259,7 +259,7 @@ export default function FreeCourses() {
 
                   {course.studio && (
                     <p className="text-xs text-gray-500 font-medium">
-                      by {course.studio}
+                      {t("by")} {course.studio}
                     </p>
                   )}
 
@@ -285,7 +285,7 @@ export default function FreeCourses() {
                         className="flex items-center justify-center gap-2"
                       >
                         <ExternalLink className="w-4 h-4" />
-                        Start Course
+                        {t("startCourse")}
                       </Link>
                     </Button>
                   </div>

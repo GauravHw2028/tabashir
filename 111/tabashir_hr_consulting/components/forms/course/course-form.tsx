@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -60,6 +60,8 @@ export default function CourseForm({ initialData, onSuccess, onCancel }: CourseF
   const { t, isRTL } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newTag, setNewTag] = useState("");
+  const [customCategory, setCustomCategory] = useState("");
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
 
   const form = useForm<CourseFormData>({
     resolver: zodResolver(courseSchema),
@@ -80,6 +82,17 @@ export default function CourseForm({ initialData, onSuccess, onCancel }: CourseF
   const watchIsFree = form.watch("isFree");
   const watchTags = form.watch("tags");
   const watchImageUrl = form.watch("imageUrl");
+
+  // Handle initial custom category state
+  useEffect(() => {
+    if (initialData?.category) {
+      const isPreDefinedCategory = COURSE_CATEGORIES.some(cat => cat.value === initialData.category);
+      setIsCustomCategory(!isPreDefinedCategory);
+      if (!isPreDefinedCategory) {
+        setCustomCategory(initialData.category);
+      }
+    }
+  }, [initialData?.category]);
 
   const onSubmit = async (data: CourseFormData) => {
     try {
@@ -247,20 +260,47 @@ export default function CourseForm({ initialData, onSuccess, onCancel }: CourseF
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Category</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {COURSE_CATEGORIES.map((category) => (
-                      <SelectItem key={category.value} value={category.value}>
-                        {category.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="space-y-4">
+                  <Select
+                    onValueChange={(value) => {
+                      if (value === "custom") {
+                        setIsCustomCategory(true);
+                        field.onChange("");
+                      } else {
+                        setIsCustomCategory(false);
+                        field.onChange(value);
+                      }
+                    }}
+                    defaultValue={field.value || "custom"}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="custom">Add Custom Category</SelectItem>
+                      {COURSE_CATEGORIES.map((category) => (
+                        <SelectItem key={category.value} value={category.value}>
+                          {category.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {isCustomCategory && (
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter custom category"
+                        value={customCategory}
+                        onChange={(e) => {
+                          setCustomCategory(e.target.value);
+                          field.onChange(e.target.value);
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
                 <FormMessage />
               </FormItem>
             )}

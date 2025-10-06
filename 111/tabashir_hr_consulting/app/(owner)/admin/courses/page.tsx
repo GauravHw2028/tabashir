@@ -13,7 +13,7 @@ import Link from "next/link";
 import { getCourses, deleteCourse, toggleCourseStatus } from "@/actions/course";
 import CourseForm from "@/components/forms/course/course-form";
 import { toast } from "@/hooks/use-toast";
-import { useTranslation } from "@/lib/use-translation";
+
 
 interface Course {
   id: string;
@@ -37,7 +37,6 @@ interface Course {
 }
 
 export default function CoursesPage() {
-  const { t, isRTL } = useTranslation();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
@@ -122,9 +121,9 @@ export default function CoursesPage() {
   }
 
   return (
-    <div className={`w-full p-6 ${isRTL ? 'text-right' : 'text-left'}`}>
+    <div className="w-full p-6">
       {/* Header */}
-      <div className={`flex items-center justify-between mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Course Management</h1>
           <p className="text-gray-600 mt-1">Manage and organize your courses</p>
@@ -200,7 +199,7 @@ export default function CoursesPage() {
                   fill
                   className="object-cover"
                 />
-                <div className={`absolute top-4 ${isRTL ? 'right-4' : 'left-4'}`}>
+                <div className="absolute top-4 left-4">
                   <div className="flex gap-1 flex-wrap">
                     {course.tags.map((tag, index) => (
                       <Badge
@@ -213,7 +212,7 @@ export default function CoursesPage() {
                     ))}
                   </div>
                 </div>
-                <div className={`absolute top-4 ${isRTL ? 'left-4' : 'right-4'}`}>
+                <div className="absolute top-4 right-4">
                   <Switch
                     checked={course.isActive}
                     onCheckedChange={(checked) => handleToggleStatus(course.id, checked)}
