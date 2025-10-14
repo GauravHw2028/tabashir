@@ -11,10 +11,15 @@ interface SearchPreferencesProps {
   salaryMax: string
   experience: string
   attendance: string
-  onFilterChange: (
-    type: "location" | "jobType" | "salaryMin" | "salaryMax" | "experience" | "attendance" | "query" | "sort",
-    value: string
-  ) => void
+  onFilterChange: (filters: {
+    location?: string
+    jobType?: string
+    salaryMin?: string
+    salaryMax?: string
+    experience?: string
+    attendance?: string
+    sort?: string
+  }) => void
 }
 
 export function SearchPreferences({
@@ -28,7 +33,16 @@ export function SearchPreferences({
 }: SearchPreferencesProps) {
   const { t, isRTL } = useTranslation()
 
-  const LOCATIONS = ["Dubai, UAE", "Abu Dhabi, UAE", "Sharjah, UAE", "Ras Al Khaimah, UAE", "Fujairah, UAE", "Ajman, UAE", "Umm Al Quwain, UAE", "Al Ain, UAE"]
+  const LOCATIONS = [
+    { key: "Dubai, UAE", label: t("Dubai, UAE") },
+    { key: "Abu Dhabi, UAE", label: t("Abu Dhabi, UAE") },
+    { key: "Sharjah, UAE", label: t("Sharjah, UAE") },
+    { key: "Ras Al Khaimah, UAE", label: t("Ras Al Khaimah, UAE") },
+    { key: "Fujairah, UAE", label: t("Fujairah, UAE") },
+    { key: "Ajman, UAE", label: t("Ajman, UAE") },
+    { key: "Umm Al Quwain, UAE", label: t("Umm Al Quwain, UAE") },
+    { key: "Al Ain, UAE", label: t("Al Ain, UAE") }
+  ]
   const JOB_TYPES = [
     { key: "fulltime", label: t("fullTime") },
     { key: "parttime", label: t("partTime") },
@@ -52,7 +66,7 @@ export function SearchPreferences({
     const newRange = [...salaryRange] as [number, number]
     newRange[idx] = Number(e.target.value)
     setSalaryRange(newRange)
-    onFilterChange(idx === 0 ? "salaryMin" : "salaryMax", e.target.value)
+    onFilterChange(idx === 0 ? { salaryMin: e.target.value } : { salaryMax: e.target.value })
   }
 
   return (
@@ -77,11 +91,11 @@ export function SearchPreferences({
           <select
             className={`w-full p-2 border border-gray-300 rounded-md pr-8 text-sm appearance-none text-gray-700 ${isRTL ? 'text-right' : ''}`}
             value={location}
-            onChange={e => onFilterChange("location", e.target.value)}
+            onChange={e => onFilterChange({ location: e.target.value })}
           >
             <option value="">{t("selectLocation")}</option>
             {LOCATIONS.map(loc => (
-              <option key={loc} value={loc}>{loc}</option>
+              <option key={loc.key} value={loc.key}>{loc.label}</option>
             ))}
           </select>
           <ChevronDown className={`absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none`} size={16} />
@@ -100,7 +114,7 @@ export function SearchPreferences({
           <select
             className={`w-full p-2 border border-gray-300 rounded-md pr-8 text-sm appearance-none text-gray-700 ${isRTL ? 'text-right' : ''}`}
             value={jobType}
-            onChange={e => onFilterChange("jobType", e.target.value)}
+            onChange={e => onFilterChange({ jobType: e.target.value })}
           >
             <option value="">{t("selectJobType")}</option>
             {JOB_TYPES.map(type => (
@@ -124,7 +138,7 @@ export function SearchPreferences({
           placeholder={t("yearsExperience")}
           className={`w-full p-2 border border-gray-300 rounded-md text-sm text-gray-700 ${isRTL ? 'text-right' : ''}`}
           value={experience}
-          onChange={e => onFilterChange("experience", e.target.value)}
+          onChange={e => onFilterChange({ experience: e.target.value })}
         />
       </div>
 
@@ -143,7 +157,7 @@ export function SearchPreferences({
               className={`px-3 py-1 text-xs rounded-full border transition-colors ${attendance === type.label ? "bg-blue-500 text-white border-blue-500" : "bg-gray-200 text-gray-700 border-gray-200"}`}
               onClick={e => {
                 e.preventDefault();
-                onFilterChange("attendance", attendance === type.label ? "" : type.label)
+                onFilterChange({ attendance: attendance === type.label ? "" : type.label })
               }}
               type="button"
             >

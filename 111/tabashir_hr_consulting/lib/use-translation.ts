@@ -475,6 +475,16 @@ const translations = {
     selectJobType: "Select Job Type",
     yearsExperience: "2 Years",
     attendance: "Attendance",
+    
+    // UAE Cities
+    "Dubai, UAE": "Dubai, UAE",
+    "Abu Dhabi, UAE": "Abu Dhabi, UAE",
+    "Sharjah, UAE": "Sharjah, UAE",
+    "Ras Al Khaimah, UAE": "Ras Al Khaimah, UAE",
+    "Fujairah, UAE": "Fujairah, UAE",
+    "Ajman, UAE": "Ajman, UAE",
+    "Umm Al Quwain, UAE": "Umm Al Quwain, UAE",
+    "Al Ain, UAE": "Al Ain, UAE",
     freelance: "Freelance",
     hideFilters: "Hide Filters",
     showFilters: "Show Filters",
@@ -1023,6 +1033,16 @@ const translations = {
     selectJobType: "اختر نوع الوظيفة",
     yearsExperience: "سنتين",
     attendance: "الحضور",
+    
+    // UAE Cities
+    "Dubai, UAE": "دبي، الإمارات العربية المتحدة",
+    "Abu Dhabi, UAE": "أبو ظبي، الإمارات العربية المتحدة",
+    "Sharjah, UAE": "الشارقة، الإمارات العربية المتحدة",
+    "Ras Al Khaimah, UAE": "رأس الخيمة، الإمارات العربية المتحدة",
+    "Fujairah, UAE": "الفجيرة، الإمارات العربية المتحدة",
+    "Ajman, UAE": "عجمان، الإمارات العربية المتحدة",
+    "Umm Al Quwain, UAE": "أم القيوين، الإمارات العربية المتحدة",
+    "Al Ain, UAE": "العين، الإمارات العربية المتحدة",
     freelance: "العمل الحر",
     hideFilters: "إخفاء المرشحات",
     showFilters: "إظهار المرشحات",
@@ -1136,12 +1156,14 @@ const translations = {
     allCategories: "جميع الفئات",
     searchCourses: "البحث في الدورات...",
     startCourse: "ابدأ الدورة",
-    by: "بواسطة"
+    by: "بواسطة",
+    newest: "الأحدث",
+    oldest: "الأقدم",
   }
 };
 
 export function useTranslation() {
-  const [language, setLanguage] = useState<'en' | 'ar'>('en');
+  const [language, setLanguage] = useState<'en' | 'ar'>('ar');
 
   useEffect(() => {
     // Load saved language preference
