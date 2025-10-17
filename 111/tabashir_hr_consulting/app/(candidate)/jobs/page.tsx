@@ -41,7 +41,7 @@ export default function JobsPage() {
 
   const fetchJobs = async () => {
     setLoading(true)
-    const jobs = await getJobs(session.data?.user?.email || "", location, jobType, salaryMin, salaryMax, experience, attendance, query, sort, page, limit)
+    const jobs = await getJobs(session.data?.user?.email || "", location, jobType, salaryMin, salaryMax, experience, attendance, query, sort, page, limit, isRTL ? "ar" : "en")
 
     if (jobs.success) {
       if (jobs.pagination) {

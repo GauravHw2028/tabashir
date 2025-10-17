@@ -122,9 +122,9 @@ function LikedJobCard({ job, onClick, isSelected, onUnlike }: {
                       : "bg-pink-500"
                     }`}
                 >
-                  {job.match.type === "top"
+                  {job.match?.type === "top"
                     ? t("topMatch")
-                    : job.match.type === "best"
+                    : job.match?.type === "best"
                       ? t("bestForYou")
                       : `${job.match.value}% ${t("match")}`}
                 </div>
@@ -223,7 +223,7 @@ export default function LikedJobsPage() {
 
       // Fetch individual job details for each liked job
       const jobPromises = likedJobsResult.success.map(async (likedJob: any) => {
-        const jobResult = await getJobById(likedJob.jobId);
+        const jobResult = await getJobById(likedJob.jobId, isRTL ? "ar" : "en");
         if (jobResult.success && jobResult.data) {
           // Transform API data to match frontend Job type
           const transformedJob: Job = {
@@ -251,10 +251,10 @@ export default function LikedJobsPage() {
             department: jobResult.data.job_title,
             team: jobResult.data.entity,
             isLikded: true,
-            match: {
+            match: jobResult.data.match_score ? {
               type: "percentage" as const,
-              value: 85 // Default match percentage
-            },
+              value: jobResult.data.match_score // Default match percentage
+            } : undefined,
           };
           return transformedJob;
         }

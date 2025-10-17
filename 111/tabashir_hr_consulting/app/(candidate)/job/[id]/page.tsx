@@ -10,6 +10,7 @@ import { getAiJobApplyStatus } from "@/actions/ai-resume"
 import { toast } from "sonner"
 import { ArrowLeft, Loader2 } from "lucide-react"
 import { transformJob } from "@/lib/transformJobs"
+import { useTranslation } from "@/lib/use-translation"
 
 export default function JobDetailsPage() {
   const params = useParams()
@@ -18,7 +19,7 @@ export default function JobDetailsPage() {
   const [job, setJob] = useState<Job | null>(null)
   const [loading, setLoading] = useState(true)
   const [jobApplyCount, setJobApplyCount] = useState(0)
-
+  const { isRTL } = useTranslation()
   const jobId = params.id as string
 
   useEffect(() => {
@@ -27,7 +28,7 @@ export default function JobDetailsPage() {
 
       try {
         setLoading(true)
-        const response = await getJobById(jobId)
+        const response = await getJobById(jobId, isRTL ? "ar" : "en")
 
         if (response.success && response.data) {
           // Transform API data to match Job interface

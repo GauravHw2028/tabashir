@@ -22,7 +22,7 @@ export interface Job {
     currency: string
     period: string
   }
-  match?: number | string | null
+  match?: any
   team?: string
   department?: string
   qualifications?: string[]

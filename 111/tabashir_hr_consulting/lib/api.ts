@@ -13,7 +13,8 @@ export const getJobs = async (
   query?: string,
   sort?: "job_date_desc" | "job_date_asc" | "salary_asc" | "salary_desc",
   page: number = 1,
-  limit: number = 60
+  limit: number = 60,
+  lang: string = "en"
 ) => {
   const session = await getSession()
   try {
@@ -28,6 +29,7 @@ export const getJobs = async (
     if (attendance) params.append("attendance", attendance)
     if (query) params.append("search", query)
     if (sort) params.append("sort", sort)
+    if (lang) params.append("lang", lang)
 
     // Add pagination parameters
     params.append("page", page.toString())
@@ -52,10 +54,10 @@ export const getJobs = async (
   }
 }
 
-export const getJobById = async (jobId: string) => {
+export const getJobById = async (jobId: string, lang: string = "en") => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs/${jobId}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs/${jobId}?lang=${lang}`,
       {
         method: "GET",
         headers: {

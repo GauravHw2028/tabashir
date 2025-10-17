@@ -446,7 +446,7 @@ export default function AIJobApplyPage() {
 
             {/* Step 1: Select Resume */}
             <div className="mb-10">
-              <div className={`flex items-center justify-between mb-6 max-lg:flex-col max-lg:items-start max-lg:gap-4 max-lg:mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <div className={`flex items-center justify-between mb-6 max-lg:flex-col max-lg:items-start max-lg:gap-4 max-lg:mb-4`}>
                 <div className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold ${isRTL ? 'ml-3' : 'mr-3'} max-lg:w-6 max-lg:h-6 max-lg:text-sm`}>
                     1
@@ -531,14 +531,11 @@ export default function AIJobApplyPage() {
 
             {/* Step 2: Job Position (Multi-select dropdown) */}
             <div className="mb-10">
-              <div className="flex items-center mb-6 max-lg:mb-4">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3 max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0">
+              <div className={`flex items-center mb-6 max-lg:mb-4 w-full`}>
+                <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold ${isRTL ? 'ml-3' : 'mr-3'} max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0`}>
                   2
                 </div>
-                <div className="flex items-center max-lg:flex-col max-lg:items-start max-lg:gap-2">
-                  <h2 className="text-xl font-semibold max-lg:text-lg">{t("whichJobPositionYouPrefer")}</h2>
-                  <span className="text-xs text-gray-500 ml-2 max-lg:ml-0">{t("minMaxPositions")}</span>
-                </div>
+                <h2 className="text-xl font-semibold max-lg:text-lg">{t("citiesYouPrefer")}</h2>
               </div>
 
               <FormField
@@ -614,8 +611,8 @@ export default function AIJobApplyPage() {
 
             {/* Step 3: Location */}
             <div className="mb-16 max-lg:mb-10">
-              <div className="flex items-center mb-6 max-lg:mb-4">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3 max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0">
+              <div className={`flex items-center mb-6 max-lg:mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold ${isRTL ? 'ml-3' : 'mr-3'} max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0`}>
                   3
                 </div>
                 <h2 className="text-xl font-semibold max-lg:text-lg">{t("citiesYouPrefer")}</h2>
@@ -697,8 +694,8 @@ export default function AIJobApplyPage() {
 
             {/* Step 4: Nationality (Multi-select dropdown) */}
             <div className="mb-10">
-              <div className="flex items-center mb-6 max-lg:mb-4">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3 max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0">
+              <div className={`flex items-center mb-6 max-lg:mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold ${isRTL ? 'ml-3' : 'mr-3'} max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0`}>
                   4
                 </div>
                 <h2 className="text-xl font-semibold max-lg:text-lg">{t("nationality")}</h2>
@@ -779,8 +776,8 @@ export default function AIJobApplyPage() {
 
             {/* Step 5: Gender (Single-select dropdown) */}
             <div className="mb-10">
-              <div className="flex items-center mb-6 max-lg:mb-4">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold mr-3 max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0">
+              <div className={`flex items-center mb-6 max-lg:mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-950 to-blue-700 text-white font-bold ${isRTL ? 'ml-3' : 'mr-3'} max-lg:w-6 max-lg:h-6 max-lg:text-sm shrink-0`}>
                   5
                 </div>
                 <h2 className="text-xl font-semibold max-lg:text-lg">{t("gender")}</h2>
