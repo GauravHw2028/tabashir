@@ -308,6 +308,8 @@ const translations = {
     operationFailed: "Operation Failed",
     pleaseTryAgain: "Please try again",
     action: "Action",
+
+    minMaxPositions: "Min and Max Positions",
     
     // Navigation & UI
     home: "Home",
@@ -1159,6 +1161,7 @@ const translations = {
     by: "بواسطة",
     newest: "الأحدث",
     oldest: "الأقدم",
+    minMaxPositions: "الحد الأدنى والحد الأقصى للمناصب",
   }
 };
 
