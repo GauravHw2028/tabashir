@@ -5,7 +5,6 @@ import type { Job } from "./types";
 import JobCard from "@/components/job-card";
 import { useTranslation } from "@/lib/use-translation";
 
-
 interface JobListingsProps {
   jobs: Job[]
   onSelectJob: (job: Job) => void
@@ -28,8 +27,6 @@ export function JobListings({
   onSelectJob,
   selectedJobId,
   setShowFilter,
-  showFilters,
-  selectedJob,
   loading,
   query,
   onQueryChange,
@@ -265,94 +262,3 @@ function JobPagination({ currentPage, totalPages, onPageChange }: JobPaginationP
     </div>
   )
 }
-
-// interface JobCardProps {
-//   job: Job;
-//   onClick: () => void;
-//   isSelected: boolean;
-// }
-
-// function JobCard({ job, onClick, isSelected }: JobCardProps) {
-//   return (
-//     <div
-//       className={`bg-white rounded-lg p-4 shadow-sm cursor-pointer transition-all   ${
-//         isSelected ? "border-2 border-blue-500" : ""
-//       }`}
-//       onClick={onClick}
-//     >
-//       <div className="flex gap-4">
-//         <div className="w-16 h-16 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
-//           <Image
-//             src={job.logo || "/placeholder.svg"}
-//             alt={job.company}
-//             width={64}
-//             height={64}
-//             className="w-full h-full object-contain p-2"
-//           />
-//         </div>
-
-//         <div className="flex-1">
-//           <div className="flex justify-between">
-//             <div>
-//               <h3 className="font-medium text-gray-900">{job.title}</h3>
-//               <p className="text-sm text-gray-600">{job.company}</p>
-//             </div>
-
-//             <div className="flex items-start gap-2">
-//               {job.match && (
-//                 <div
-//                   className={`px-3 py-1 rounded-full text-xs text-white ${
-//                     job.match.type === "top"
-//                       ? "bg-orange-500"
-//                       : job.match.type === "best"
-//                       ? "bg-blue-500"
-//                       : "bg-pink-500"
-//                   }`}
-//                 >
-//                   {job.match.type === "top"
-//                     ? "Top Match"
-//                     : job.match.type === "best"
-//                     ? "Best For You"
-//                     : `${job.match.value}% Match`}
-//                 </div>
-//               )}
-
-//               <button className="text-gray-400 hover:text-red-500">
-//                 <Heart size={20} />
-//               </button>
-//             </div>
-//           </div>
-
-//           <div className="mt-2 flex items-center text-xs text-gray-500 gap-4">
-//             <div className="flex items-center gap-1">
-//               <MapPin size={14} />
-//               <span>{job.location}</span>
-//             </div>
-//             <div>{job.views} views</div>
-//             <div>{job.postedTime}</div>
-//             <div>{job.jobType}</div>
-//             <div>{job.applicationsCount} applied</div>
-//           </div>
-
-//           <div className="mt-2 flex justify-between items-center">
-//             <div className="flex gap-2">
-//               <div className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">
-//                 Team
-//               </div>
-//               <div className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">
-//                 {job.department}
-//               </div>
-//             </div>
-
-//             <div className="text-sm font-medium text-blue-500">
-//               {job.salary.amount.toLocaleString()} {job.salary.currency}
-//               <span className="text-xs text-gray-500">
-//                 /{job.salary.period}
-//               </span>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
