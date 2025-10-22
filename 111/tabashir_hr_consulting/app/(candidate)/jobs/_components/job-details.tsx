@@ -35,7 +35,7 @@ interface JobDetailsProps {
 }
 
 export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0, onJobApplied, userId }: JobDetailsProps) {
-  const { t } = useTranslation()
+  const { t, isRTL, loading } = useTranslation()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [showResumeModal, setShowResumeModal] = useState(false)
   const [resumeList, setResumeList] = useState<Resume[]>([])
@@ -250,7 +250,7 @@ export function JobDetails({ job, onClose, isPreview = false, jobApplyCount = 0,
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100">
             <Image
-              src={getJobEntity(job.entity, t) === (t ? t('government') : 'Government') ? "/government_image.png" : "/private_image.png"}
+              src={getJobEntity(job.entity, t) === (t ? t('government') : 'Government') ? (isRTL ? "/Gov_ar.png" : "/Gov_en.png") : (isRTL ? "/private_ar.png" : "/private_en.png")}
               alt={job.company ? job.company + ' logo' : 'Company logo'}
               width={48}
               height={48}

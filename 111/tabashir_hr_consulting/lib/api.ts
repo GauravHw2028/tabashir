@@ -36,6 +36,8 @@ export const getJobs = async (
     params.append("limit", limit.toString())
     params.append("email", session?.user?.email || "")
 
+    console.log(params.toString())
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/resume/jobs?${params.toString()}`,
       {

@@ -32,7 +32,7 @@ export default function JobsPage() {
   const [sort, setSort] = useState<"job_date_desc" | "job_date_asc" | "salary_desc" | "salary_asc">(
     (searchParams.get("sort") as "job_date_desc" | "job_date_asc" | "salary_asc" | "salary_desc") || "job_date_desc"
   )
-  const { t, isRTL } = useTranslation()
+  const { t, isRTL, loading: translationLoading } = useTranslation()
 
   // Pagination
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"))
@@ -71,9 +71,11 @@ export default function JobsPage() {
 
   useEffect(() => {
     if (session.status === "loading") return
+    if (translationLoading) return
+
     fetchJobs()
     fetchJobApplyStatus()
-  }, [session.status, location, jobType, salaryMin, salaryMax, experience, attendance, query, sort, page])
+  }, [session.status, location, jobType, salaryMin, salaryMax, experience, attendance, query, sort, page, translationLoading])
 
   useEffect(() => {
     const params = new URLSearchParams()

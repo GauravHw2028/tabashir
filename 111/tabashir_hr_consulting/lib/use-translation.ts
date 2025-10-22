@@ -1167,12 +1167,14 @@ const translations = {
 
 export function useTranslation() {
   const [language, setLanguage] = useState<'en' | 'ar'>('ar');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Load saved language preference
     const savedLanguage = localStorage.getItem('preferred-language');
     if (savedLanguage && ['en', 'ar'].includes(savedLanguage)) {
       setLanguage(savedLanguage as 'en' | 'ar');
+      setLoading(false);
     }
 
     // Listen for language changes
@@ -1197,6 +1199,7 @@ export function useTranslation() {
   return {
     t,
     language,
+    loading,
     isRTL: language === 'ar',
   };
 } 

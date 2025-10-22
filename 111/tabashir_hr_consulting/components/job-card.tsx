@@ -65,7 +65,7 @@ export default function JobCard({ job, onClick, isSelected, }: JobCardProps) {
         {/* Mobile: Image and title row */}
         <div className={`flex gap-3 sm:contents ${isRTL ? 'flex-row-reverse' : ''}`}>
           <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
-            <Image src={getJobEntity(job.entity, () => "") === "Government" ? "/government_image.png" : "/private_image.png"} width={74} height={74} className="w-full h-full object-contain p-1 sm:p-2" alt="government" />
+            <Image src={getJobEntity(job.entity, () => "") === "Government" ? (isRTL ? "/Gov_ar.png" : "/Gov_en.png") : (isRTL ? "/private_ar.png" : "/private_en.png")} width={74} height={74} className="w-full h-full object-contain p-1 sm:p-2" alt="government" />
           </div>
 
           <div className="flex-1 sm:hidden">
