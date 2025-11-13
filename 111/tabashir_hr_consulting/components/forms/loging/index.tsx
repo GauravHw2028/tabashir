@@ -95,7 +95,14 @@ const CandidateLoginForm = () => {
       }
 
       toast.success(response.message);
-      router.push(response.redirectTo as string);
+
+      // Check for redirect parameter from URL, otherwise use default redirectTo
+      const redirectParam = searchParams.get("redirect");
+      const redirectTo = redirectParam
+        ? decodeURIComponent(redirectParam)
+        : (response.redirectTo as string);
+
+      router.push(redirectTo);
     } catch (error) {
       console.error("Login error:", error);
     } finally {

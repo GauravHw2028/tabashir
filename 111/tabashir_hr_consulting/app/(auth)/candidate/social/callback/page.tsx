@@ -3,9 +3,12 @@ import React from 'react'
 import { prisma } from '@/app/utils/db'
 import { redirect } from 'next/navigation'
 import { auth } from '@/app/utils/auth'
-import { strict } from 'assert'
-import { string } from 'zod'
-const CandidateSocialCallback = async () => {
+
+const CandidateSocialCallback = async ({
+  searchParams,
+}: {
+  searchParams?: Promise<{ redirect?: string }>;
+}) => {
   const session = await auth()
   const userId =  session?.user.id
 
@@ -21,6 +24,10 @@ const CandidateSocialCallback = async () => {
       }
     }
   })
+
+  // Get redirect parameter from searchParams
+  const params = await searchParams;
+  const redirectParam = params?.redirect;
 
   if(!candidaet){
    
@@ -46,7 +53,11 @@ const CandidateSocialCallback = async () => {
   }
 
   if(candidaet && candidaet.profile?.onboardingCompleted === true){
-    return redirect("/dashboard")
+    // Use redirect parameter if available, otherwise default to dashboard
+    const finalRedirect = redirectParam 
+      ? decodeURIComponent(redirectParam)
+      : "/dashboard";
+    return redirect(finalRedirect)
   }
 
   return <h1>Redirecting...</h1>

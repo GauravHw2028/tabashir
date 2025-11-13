@@ -1,8 +1,11 @@
 import type React from "react"
-import { auth } from "../utils/auth"
+import { headers } from "next/headers"
 import { redirect } from "next/navigation"
+import { auth } from "../utils/auth"
 import { onGetUserProfile } from "@/actions/auth";
 import CandidateLayout from "./candidate-layout";
+
+type RequestHeaders = Awaited<ReturnType<typeof headers>>;
 
 export default async function CandidateLayoutPage({
   children,
@@ -11,7 +14,12 @@ export default async function CandidateLayoutPage({
 }) {
   const session = await auth();
   if (!session?.user) {
-    redirect("/candidate/login")
+    const headersList = await headers();
+    const loginRedirectTarget = getRedirectTarget(headersList);
+    const loginUrl = loginRedirectTarget
+      ? `/candidate/login?redirect=${encodeURIComponent(loginRedirectTarget)}`
+      : "/candidate/login";
+    redirect(loginUrl);
   }
   const candidate = await onGetUserProfile();
   if (!candidate) {
@@ -22,4 +30,55 @@ export default async function CandidateLayoutPage({
       {children}
     </CandidateLayout>
   )
+}
+
+function getRedirectTarget(headersList: RequestHeaders) {
+  const headerCandidates = [
+    "x-url",
+    "x-next-url",
+    "x-invoke-path",
+    "x-pathname",
+    "x-forwarded-uri",
+    "x-original-uri",
+  ];
+
+  for (const headerName of headerCandidates) {
+    const value = headersList.get(headerName);
+    const normalized = normalizeRedirectPath(value);
+    if (normalized) {
+      return normalized;
+    }
+  }
+
+  const forwardedProto = headersList.get("x-forwarded-proto");
+  const forwardedHost = headersList.get("x-forwarded-host");
+  const forwardedUri = headersList.get("x-forwarded-uri") || headersList.get("x-original-uri");
+
+  if (forwardedProto && forwardedHost && forwardedUri) {
+    const normalized = normalizeRedirectPath(`${forwardedProto}://${forwardedHost}${forwardedUri}`);
+    if (normalized) {
+      return normalized;
+    }
+  }
+
+  return "/dashboard";
+}
+
+function normalizeRedirectPath(value: string | null) {
+  if (!value) return null;
+
+  try {
+    const url = value.startsWith("http://") || value.startsWith("https://")
+      ? new URL(value)
+      : new URL(value, "http://localhost");
+
+    const pathWithQuery = `${url.pathname}${url.search}`;
+    return pathWithQuery || "/";
+  } catch {
+    if (value.startsWith("/")) {
+      return value;
+    }
+
+    return `/${value}`;
+  }
 }

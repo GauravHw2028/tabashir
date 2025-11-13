@@ -26,7 +26,14 @@ function LoginFormSkeleton() {
   );
 }
 
-export default function CandidateLogin() {
+export default async function CandidateLogin({
+  searchParams,
+}: {
+  searchParams?: Promise<{ redirect?: string }>;
+}) {
+  const params = await searchParams;
+  const redirectParam = params?.redirect;
+
   return (
     <div className="grid lg:grid-cols-2 min-h-screen w-full">
       <div className="flex flex-col justify-center px-8 py-12 sm:px-3 mx-auto w-[500px] max-w-full max-sm:w-full">
@@ -57,12 +64,19 @@ export default function CandidateLogin() {
           <div className="flex-grow h-px bg-gray-300"></div>
         </div>
 
-        <form action={async () => {
+        <form action={async (formData: FormData) => {
           "use server";
+          const redirect = formData.get("redirect") as string | null;
+          const callbackUrl = redirect
+            ? `/candidate/social/callback?redirect=${encodeURIComponent(redirect)}`
+            : "/candidate/social/callback";
           await signIn("google", {
-            redirectTo: "/candidate/social/callback"
+            redirectTo: callbackUrl
           });
         }}>
+          {redirectParam && (
+            <input type="hidden" name="redirect" value={redirectParam} />
+          )}
           <Button
             type="submit"
             variant="outline"
