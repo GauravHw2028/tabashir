@@ -76,17 +76,44 @@ function normalizeRedirectPath(value: string | null) {
   if (!value) return null;
 
   try {
+    // Handle full URLs (from referer or forwarded headers)
     const url = value.startsWith("http://") || value.startsWith("https://")
       ? new URL(value)
       : new URL(value, "http://localhost");
 
     const pathWithQuery = `${url.pathname}${url.search}`;
-    return pathWithQuery || "/";
+
+    // Don't redirect to login or auth pages
+    if (pathWithQuery.startsWith("/candidate/login") ||
+      pathWithQuery.startsWith("/candidate/registration") ||
+      pathWithQuery.startsWith("/candidate/verify-email")) {
+      return null;
+    }
+
+    return pathWithQuery || null;
   } catch {
+    // Handle relative paths
     if (value.startsWith("/")) {
+      // Don't redirect to login or auth pages
+      if (value.startsWith("/candidate/login") ||
+        value.startsWith("/candidate/registration") ||
+        value.startsWith("/candidate/verify-email")) {
+        return null;
+      }
       return value;
     }
 
-    return `/${value}`;
+    // Try to extract path from malformed URLs
+    const pathMatch = value.match(/\/([^?#]*)/);
+    if (pathMatch) {
+      const path = `/${pathMatch[1]}`;
+      if (!path.startsWith("/candidate/login") &&
+        !path.startsWith("/candidate/registration") &&
+        !path.startsWith("/candidate/verify-email")) {
+        return path;
+      }
+    }
+
+    return null;
   }
 }
