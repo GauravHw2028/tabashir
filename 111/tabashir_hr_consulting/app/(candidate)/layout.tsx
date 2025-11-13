@@ -40,13 +40,17 @@ function getRedirectTarget(headersList: RequestHeaders) {
     "x-pathname",
     "x-forwarded-uri",
     "x-original-uri",
+    "referer",
   ];
 
   for (const headerName of headerCandidates) {
     const value = headersList.get(headerName);
-    const normalized = normalizeRedirectPath(value);
-    if (normalized) {
-      return normalized;
+    if (value) {
+      const normalized = normalizeRedirectPath(value);
+      if (normalized && normalized !== "/candidate/login") {
+        console.log(`Found redirect target from header ${headerName}:`, normalized);
+        return normalized;
+      }
     }
   }
 
@@ -56,12 +60,16 @@ function getRedirectTarget(headersList: RequestHeaders) {
 
   if (forwardedProto && forwardedHost && forwardedUri) {
     const normalized = normalizeRedirectPath(`${forwardedProto}://${forwardedHost}${forwardedUri}`);
-    if (normalized) {
+    if (normalized && normalized !== "/candidate/login") {
+      console.log("Found redirect target from forwarded headers:", normalized);
       return normalized;
     }
   }
 
-  return "/dashboard";
+  // Don't default to dashboard - return null so we don't add redirect parameter
+  // This way, if no path is found, the login form will use the default redirectTo from onLogin
+  console.log("No redirect target found in headers, returning null");
+  return null;
 }
 
 function normalizeRedirectPath(value: string | null) {

@@ -75,12 +75,17 @@ const CandidateLoginForm = () => {
       setIsLoading(true);
       setShowResendVerification(false);
 
+      // Get redirect parameter BEFORE login (in case URL changes)
+      const redirectParam = searchParams.get("redirect");
+      console.log("Redirect parameter from URL:", redirectParam);
+      console.log("Current URL:", window.location.href);
+
       const response = await onLogin({
         email: values.email.toLowerCase(),
         password: values.password,
       });
 
-      console.log("Reponse: ", response);
+      console.log("Login response: ", response);
 
       if (response?.error) {
         if (response.needsVerification) {
@@ -96,12 +101,24 @@ const CandidateLoginForm = () => {
 
       toast.success(response.message);
 
-      // Check for redirect parameter from URL, otherwise use default redirectTo
-      const redirectParam = searchParams.get("redirect");
-      const redirectTo = redirectParam
-        ? decodeURIComponent(redirectParam)
-        : (response.redirectTo as string);
+      // Use redirect parameter if available and valid, otherwise use default redirectTo from response
+      let redirectTo: string;
+      if (redirectParam && redirectParam.trim() !== "") {
+        try {
+          redirectTo = decodeURIComponent(redirectParam);
+          // Validate that it's a valid path
+          if (!redirectTo.startsWith("/")) {
+            redirectTo = `/${redirectTo}`;
+          }
+        } catch (e) {
+          console.error("Error decoding redirect parameter:", e);
+          redirectTo = response.redirectTo as string;
+        }
+      } else {
+        redirectTo = response.redirectTo as string;
+      }
 
+      console.log("Final redirect destination:", redirectTo);
       router.push(redirectTo);
     } catch (error) {
       console.error("Login error:", error);
